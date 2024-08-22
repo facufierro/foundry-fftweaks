@@ -1,0 +1,6 @@
+{
+    "material-icon-theme.activeIconPack": "angular",
+    "editor.suggest.showIcons": true,
+    "workbench.iconTheme": "material-icon-theme",
+    "material-icon-theme.folders.theme": "classic"
+}
