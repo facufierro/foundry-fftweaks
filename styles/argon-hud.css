@@ -1,0 +1,24 @@
+.extended-combat-hud .ability-menu .ability {
+    font-size: 1.7em;
+}
+
+.extended-combat-hud .ability-menu .ability.ability-title {
+    font-size: 1.6em;
+}
+
+.extended-combat-hud .ability-menu .ability i {
+    font-size: 1.2em;
+
+}
+
+.extended-combat-hud .player-detail {
+    display: none;
+}
+
+.extended-combat-hud .player-name {
+    display: none;
+}
+
+.extended-combat-hud .portrait-hud .player-button {
+    display: none;
+}
