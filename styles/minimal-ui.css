@@ -1,6 +1,6 @@
 #controls {
     position: absolute;
-    top: 35px;
+    top: -35px;
     left: 15px;
     overflow: visible;
     z-index: 1000;
