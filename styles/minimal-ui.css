@@ -16,3 +16,7 @@
 #controls .sub-controls {
     display: none;
 }
+
+#hotbar {
+    transform: scale(0.75);
+}
