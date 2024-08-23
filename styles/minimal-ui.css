@@ -1,13 +1,10 @@
 #controls {
     position: absolute;
     top: 0;
-    /* Places the controls at the top of the screen */
-    left: 20px;
-    /* Aligns the controls to the left */
+    left: 15px;
+    overflow: visible;
     z-index: 1000;
-    /* Ensures the controls are on top of other elements */
     padding: 0;
-    /* Removes padding to keep it tight to the edges */
 }
 
 #controls .main-controls {
@@ -18,5 +15,4 @@
 
 #controls .sub-controls {
     display: none;
-    /* Hides sub-controls if not needed */
 }
