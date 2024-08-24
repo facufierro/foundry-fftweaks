@@ -18,5 +18,5 @@
 }
 
 #hotbar {
-    transform: scale(0.75);
+    transform: scale(0.75) translateY(10px);
 }
