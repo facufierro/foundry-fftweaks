@@ -6,21 +6,17 @@ import * as battlemapGenerator from './battlemapGenerator/index.js';
 Hooks.once('ready', () => {
     // characterAnvil.initialize();
     tokenBarExtender.initialize();
-    // battlemapGenerator.initialize();
 });
 
 Hooks.on('renderActorSheet5e', (sheet, html, data) => {
     // characterAnvil.initializeUI(html, sheet.actor);
-
 });
 
 Hooks.on("pauseGame", (paused) => {
     autoTimer.initialize(paused);
 });
 
+// Passing controls to battlemapGenerator.initializeUI
 Hooks.on('getSceneControlButtons', (controls) => {
-
     battlemapGenerator.initializeUI(controls);
 });
-
-
