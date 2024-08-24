@@ -1,16 +1,38 @@
+import * as terrain_generator from "../services/terrain-generator.js";
+
 export function renderButtons(controls) {
+
     controls.push({
         name: "battlemapGenerator",
         title: "Battlemap Generator",
-        icon: "fas fa-map",
+        icon: "fas fa-compass-drafting",
         layer: "controls",
         tools: [
+
             {
-                name: "generateTerrain",
-                title: "Generate Terrain",
-                icon: "fas fa-mountain",
+                name: "generateForest",
+                title: "Generate Forest",
+                icon: "fas fa-trees",
                 onClick: () => {
-                    ui.notifications.info("Generating Terrain...");
+                    terrain_generator.generate("background image path", "forest");
+                },
+                button: true
+            },
+            {
+                name: "generateCave",
+                title: "Generate Cave",
+                icon: "fas fa-icicles",
+                onClick: () => {
+                    ui.notifications.info("Generating Cave Terrain...");
+                },
+                button: true
+            },
+            {
+                name: "generateMountain",
+                title: "Generate Mountain",
+                icon: "fas fa-mountains",
+                onClick: () => {
+                    ui.notifications.info("Generating Mountain Terrain...");
                 },
                 button: true
             },
@@ -25,6 +47,6 @@ export function renderButtons(controls) {
             }
         ],
         visible: true,
-        activeTool: "generateTerrain"  
+        activeTool: "generateForest"
     });
 }
