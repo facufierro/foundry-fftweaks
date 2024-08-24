@@ -14,7 +14,7 @@ export function renderButtons(controls) {
                 title: "Generate Forest",
                 icon: "fas fa-trees",
                 onClick: () => {
-                    terrain_generator.generate("background image path", "forest");
+                    terrain_generator.generateTerrain("forest");
                 },
                 button: true
             },
