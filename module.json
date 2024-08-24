@@ -11,7 +11,7 @@
       {
         "id": "dnd5e",
         "type": "system",
-        "compatibility": { }
+        "compatibility": {}
       }
     ]
   },
@@ -67,12 +67,23 @@
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
+    },
+    {
+      "name": "scenes",
+      "label": "Scenes",
+      "path": "packs/scenes",
+      "type": "Scene",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
     }
   ],
   "authors": [
     {
       "name": "fierrof",
-      "flags": { }
+      "flags": {}
     }
   ]
 }
