@@ -11,23 +11,23 @@
       {
         "id": "dnd5e",
         "type": "system",
-        "compatibility": {}
+        "compatibility": { }
       }
     ]
   },
   "esmodules": [
-    "scripts/main.mjs"
+    "src/scripts/main.mjs"
   ],
   "styles": [
-    "styles/style.css",
-    "styles/argon-hud.css",
-    "styles/minimal-ui.css"
+    "src/styles/style.css",
+    "src/styles/argon-hud.css",
+    "src/styles/minimal-ui.css"
   ],
   "packs": [
     {
       "name": "items",
       "label": "Items",
-      "path": "packs/items",
+      "path": "src/packs/items",
       "type": "Item",
       "system": "dnd5e",
       "ownership": {
@@ -38,7 +38,7 @@
     {
       "name": "spells",
       "label": "Spells",
-      "path": "packs/spells",
+      "path": "src/packs/spells",
       "type": "Item",
       "system": "dnd5e",
       "ownership": {
@@ -49,7 +49,7 @@
     {
       "name": "creatures",
       "label": "Creatures",
-      "path": "packs/creatures",
+      "path": "src/packs/creatures",
       "type": "Actor",
       "system": "dnd5e",
       "ownership": {
@@ -60,30 +60,19 @@
     {
       "name": "character-creation",
       "label": "Character Creation",
-      "path": "packs/character-creation",
+      "path": "src/packs/character-creation",
       "type": "Item",
       "system": "dnd5e",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
-    },
-    {
-      "name": "test",
-      "label": "test",
-      "path": "packs/test",
-      "type": "Item",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "system": "dnd5e"
     }
   ],
   "authors": [
     {
       "name": "fierrof",
-      "flags": {}
+      "flags": { }
     }
   ]
 }

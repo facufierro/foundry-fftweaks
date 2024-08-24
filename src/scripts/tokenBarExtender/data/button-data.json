@@ -1,0 +1,26 @@
+{
+    "btn-hurt": {
+        "name": "Hurt",
+        "icon": "fas fa-heart-broken",
+        "row": 0,
+        "script": "/modules/fftweaks/src/scripts/tokenBarExtender/services/health/hurt.js"
+    },
+    "btn-heal": {
+        "name": "Heal",
+        "icon": "fas fa-heart",
+        "row": 0,
+        "script": "/modules/fftweaks/src/scripts/tokenBarExtender/services/health/heal.js"
+    },
+    "btn-rest": {
+        "name": "Rest",
+        "icon": "fas fa-bed",
+        "row": 0,
+        "script": "/modules/fftweaks/src/scripts/tokenBarExtender/services/rest/rest.js"
+    },
+    "btn-combat": {
+        "name": "Combat",
+        "icon": "fas fa-swords",
+        "row": 0,
+        "script": "/modules/fftweaks/src/scripts/tokenBarExtender/services/combat/combat.js"
+    }
+}
