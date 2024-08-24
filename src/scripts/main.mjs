@@ -23,3 +23,4 @@ Hooks.on('getSceneControlButtons', (controls) => {
     battlemapGenerator.initializeUI(controls);
 });
 
+

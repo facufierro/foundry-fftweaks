@@ -1,5 +1,5 @@
+import * as ui_manager from './ui/ui-manager.js';
 
-export function initialize() {
-    ui.notifications.info('Battlemap Generator Initialized');
-
+export function initializeUI(controls) {
+    ui_manager.addControlButton(controls);
 }
