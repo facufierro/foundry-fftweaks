@@ -23,20 +23,26 @@
     display: none;
 }
 
+
 .extended-combat-hud .action-hud .actions-container:before {
     font-size: 2rem;
     text-shadow:
-        -1px -1px 0 #000,
-        1px -1px 0 #000,
-        -1px 1px 0 #000,
-        1px 1px 0 #000;
+        0 1px 2px #000,
+        /* Bottom shadow */
+        0 2px 4px #000,
+        /* Slightly larger bottom shadow */
+        0 3px 6px #000;
+    /* Even larger bottom shadow */
 }
+
 
 .extended-combat-hud .action-hud .actions-container[data-title="Action"]:before {
     background-color: rgb(0, 128, 0);
 }
 
+
 .extended-combat-hud .action-hud .actions-container[data-title="Bonus Action"]:before {
+    content: "Bonus";
     background-color: rgb(255, 165, 0);
 }
 
