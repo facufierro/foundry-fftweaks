@@ -1,5 +1,5 @@
 
 export function initialize() {
-    ui
-    
+    ui.notifications.info('Battlemap Generator Initialized');
+
 }
