@@ -49,6 +49,8 @@ export class ForestMap extends BattleMap {
         }
 
         for (let i = 0; i < numberOfTrees; i++) {
+            notifications.toggle(2);
+
             const preset = this.random.element(treeList);
             const x = this.random.number(0, sceneWidth);
             const y = this.random.number(0, sceneHeight);
@@ -61,7 +63,6 @@ export class ForestMap extends BattleMap {
 
 
     async generate() {
-        notifications.toggle(10000);
 
         await this.initialize(); // Ensure preset data is loaded before generating
         // this.setBackgroundImage()
