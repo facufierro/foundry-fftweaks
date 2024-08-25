@@ -1,6 +1,8 @@
 import { BattleMap } from './BattleMap.js';
 import { Random } from '../utils/randomizer.js';
 import * as backgroundManager from '../services/background-manager.js';
+import * as presetManager from '../services/preset-manager.js';
+import * as notifications from '../utils/notifications.js';
 
 export class ForestMap extends BattleMap {
     constructor(backgroundImage, gridSize = { x: 10, y: 10 }, padding = 0, treeDensity = 0.5) {
@@ -9,44 +11,72 @@ export class ForestMap extends BattleMap {
         this.currentScene = game.scenes.viewed;
         this.random = new Random();
         this.backgroundImageList = backgroundManager.getBackgroundImages();
+        this.presetData = null; // Will be populated after async fetch
     }
 
-    // Method to set the grid size based on the selected background image's name
+    async initialize() {
+        // Fetch the preset data asynchronously
+        this.presetData = await (await fetch('modules/fftweaks/src/scripts/battlemapGenerator/data/preset-data.json')).json();
+    }
+
     setBackgroundSize(newBackgroundImage) {
         const sceneSize = backgroundManager.getBackgroundSize(newBackgroundImage);
 
         if (sceneSize.width && sceneSize.height) {
-            this.currentScene.update({ width: sceneSize.width, height: sceneSize.height }).then(() => {
-                ui.notifications.info(`Scene dimensions updated successfully to ${sceneSize.width}x${sceneSize.height}!`);
-            }).catch(err => {
-                console.error("Error updating the scene dimensions:", err);
-                ui.notifications.error("Failed to update the scene dimensions.");
-            });
+            return this.currentScene.update({ width: sceneSize.width, height: sceneSize.height });
         } else {
             ui.notifications.error("Failed to determine scene dimensions from the image name.");
+            return Promise.reject(new Error("Failed to determine scene dimensions from the image name."));
         }
     }
 
-    // Method to set the background image
     setBackgroundImage() {
-        const newBackgroundImage = this.random.image(this.backgroundImageList);
-        if (this.currentScene) {
-            this.currentScene.update({ "background.src": newBackgroundImage }).then(() => {
-                this.setBackgroundSize(newBackgroundImage); // Set grid size based on the new background image
-                ui.notifications.info(`Background image updated successfully to ${newBackgroundImage}!`);
-            }).catch(err => {
-                console.error("Error updating the background image:", err);
-                ui.notifications.error("Failed to update the background image.");
-            });
-        } else {
-            ui.notifications.error("No scene is currently active.");
+        const newBackgroundImage = this.random.element(this.backgroundImageList);
+        return this.currentScene.update({ "background.src": newBackgroundImage }).then(() => newBackgroundImage);
+    }
+
+    async spawnTrees(numberOfTrees = 1) {
+        if (!this.presetData || !this.presetData.forest || !Array.isArray(this.presetData.forest.trees) || this.presetData.forest.trees.length === 0) {
+            return;
+        }
+
+        const treeList = this.presetData.forest.trees;
+        const sceneWidth = this.currentScene.width || this.currentScene.data.width;
+        const sceneHeight = this.currentScene.height || this.currentScene.data.height;
+
+        if (sceneWidth === undefined || sceneHeight === undefined) {
+            return;
+        }
+
+        for (let i = 0; i < numberOfTrees; i++) {
+            const preset = this.random.element(treeList);
+            const x = this.random.number(0, sceneWidth);
+            const y = this.random.number(0, sceneHeight);
+
+            await presetManager.spawnPresetByUUID(preset, x, y);
         }
     }
 
-    generate() {
-        // Generate the map by setting the background image and adjusting the grid size
-        this.setBackgroundImage();
-        ui.notifications.info(`Generating forest map with tree density of ${this.treeDensity}`);
-        // Additional forest generation logic would go here
+
+
+
+    async generate() {
+        notifications.toggle(10000);
+
+        await this.initialize(); // Ensure preset data is loaded before generating
+        // this.setBackgroundImage()
+        //     .then((newBackgroundImage) => {
+        //         return this.setBackgroundSize(newBackgroundImage);
+        //     })
+        //     .then(() => {
+        //         ui.notifications.info(`Forest map generated with tree density of ${this.treeDensity}.`);
+        //     })
+        //     .catch(err => {
+        //         console.error("Error generating the forest map:", err);
+        //         ui.notifications.error("Failed to generate the forest map.");
+        //     });
+
+        await this.spawnTrees(10);
     }
 }
+
