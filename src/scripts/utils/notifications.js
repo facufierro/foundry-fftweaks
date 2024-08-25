@@ -2,7 +2,7 @@ let notificationsEnabled = true;
 let originalInfo;
 let toggleTimeout;
 
-export function toggle(delay = 10) {
+export function toggle(delay = 1) {
     delay *= 1000; // Convert the delay to milliseconds
     if (notificationsEnabled) {
         disable(); // Explicitly call the disable function

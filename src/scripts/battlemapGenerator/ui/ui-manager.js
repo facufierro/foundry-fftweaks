@@ -1,4 +1,4 @@
-import * as terrain_generator from "../services/terrain-generator.js";
+import * as terrainManager from "../services/terrain-manager.js";
 
 export function renderButtons(controls) {
 
@@ -14,7 +14,7 @@ export function renderButtons(controls) {
                 title: "Generate Forest",
                 icon: "fas fa-trees",
                 onClick: () => {
-                    terrain_generator.generateTerrain("forest");
+                    terrainManager.generateTerrain("forest");
                 },
                 button: true
             },

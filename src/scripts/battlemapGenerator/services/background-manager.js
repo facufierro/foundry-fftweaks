@@ -1,12 +1,4 @@
 
-export function getBackgroundImages() {
-    return [
-        'assets/fftweaks/battlemaps/cave40x20.webp',
-        'assets/fftweaks/battlemaps/forest_floor_32x32.webp',
-        'assets/fftweaks/battlemaps/prison27x17.webp'
-    ];
-}
-
 export function getBackgroundSize(name) {
     // Regular expression to match the size pattern in the name (e.g., 40x20)
     const sizePattern = /(\d+)x(\d+)/;

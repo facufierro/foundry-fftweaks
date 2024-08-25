@@ -1,22 +1,20 @@
 import { BattleMap } from './BattleMap.js';
-import { Random } from '../utils/randomizer.js';
 import * as backgroundManager from '../services/background-manager.js';
 import * as presetManager from '../services/preset-manager.js';
-import * as notifications from '../utils/notifications.js';
+import * as random from '../../utils/random.js';
+import * as notifications from '../../utils/notifications.js';
 
 export class ForestMap extends BattleMap {
-    constructor(backgroundImage, gridSize = { x: 10, y: 10 }, padding = 0, treeDensity = 0.5) {
-        super(backgroundImage, gridSize, padding);
-        this.treeDensity = treeDensity;
-        this.currentScene = game.scenes.viewed;
-        this.random = new Random();
-        this.backgroundImageList = backgroundManager.getBackgroundImages();
-        this.presetData = null; // Will be populated after async fetch
+    constructor() {
     }
 
     async initialize() {
         // Fetch the preset data asynchronously
         this.presetData = await (await fetch('modules/fftweaks/src/scripts/battlemapGenerator/data/preset-data.json')).json();
+        this.backgroundImageList = this.presetData.forest.backgrounds;
+        this.treeList = this.presetData.forest.trees;
+
+
     }
 
     setBackgroundSize(newBackgroundImage) {
@@ -31,16 +29,11 @@ export class ForestMap extends BattleMap {
     }
 
     setBackgroundImage() {
-        const newBackgroundImage = this.random.element(this.backgroundImageList);
+        const newBackgroundImage = random.element(this.backgroundImageList);
         return this.currentScene.update({ "background.src": newBackgroundImage }).then(() => newBackgroundImage);
     }
 
     async spawnTrees(numberOfTrees = 1) {
-        if (!this.presetData || !this.presetData.forest || !Array.isArray(this.presetData.forest.trees) || this.presetData.forest.trees.length === 0) {
-            return;
-        }
-
-        const treeList = this.presetData.forest.trees;
         const sceneWidth = this.currentScene.width || this.currentScene.data.width;
         const sceneHeight = this.currentScene.height || this.currentScene.data.height;
 
@@ -49,35 +42,41 @@ export class ForestMap extends BattleMap {
         }
 
         for (let i = 0; i < numberOfTrees; i++) {
-            notifications.toggle(2);
+            notifications.toggle(1);
+            const tree = random.element(this.treeList);
+            const x = random.number(0, sceneWidth);
+            const y = random.number(0, sceneHeight);
 
-            const preset = this.random.element(treeList);
-            const x = this.random.number(0, sceneWidth);
-            const y = this.random.number(0, sceneHeight);
-
-            await presetManager.spawnPresetByUUID(preset, x, y);
+            await presetManager.spawnPresetByUUID(tree, x, y);
         }
     }
 
-
-
-
     async generate() {
+        try {
+            // Initialize preset data
+            await this.initialize();
 
-        await this.initialize(); // Ensure preset data is loaded before generating
-        // this.setBackgroundImage()
-        //     .then((newBackgroundImage) => {
-        //         return this.setBackgroundSize(newBackgroundImage);
-        //     })
-        //     .then(() => {
-        //         ui.notifications.info(`Forest map generated with tree density of ${this.treeDensity}.`);
-        //     })
-        //     .catch(err => {
-        //         console.error("Error generating the forest map:", err);
-        //         ui.notifications.error("Failed to generate the forest map.");
-        //     });
+            // Set the background image and get the new background image path
+            const newBackgroundImage = await this.setBackgroundImage();
 
-        await this.spawnTrees(10);
+            // Set the scene size based on the new background image
+            await this.setBackgroundSize(newBackgroundImage);
+
+            // Introduce a delay before spawning the trees
+            await this.delay(1000); // Delay in milliseconds, e.g., 1000ms = 1 second
+
+            // Spawn trees on the map
+            await this.spawnTrees(25);
+        } catch (err) {
+            // Handle errors that occur during the map generation process
+            console.error("Error generating the forest map:", err);
+        }
     }
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+
 }
 
