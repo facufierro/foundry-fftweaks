@@ -1,13 +1,23 @@
 {
     "forest": {
+        "backgrounds": [
+            "assets/fftweaks/battlemaps/backgrounds/forest/grass00-40x40.webp",
+            "assets/fftweaks/battlemaps/backgrounds/forest/grass01-40x40.webp",
+            "assets/fftweaks/battlemaps/backgrounds/forest/grass02-40x40.webp",
+            "assets/fftweaks/battlemaps/backgrounds/forest/grass03-40x40.webp"
+        ],
+        "encounters": [ ],
         "trees": [
             "Compendium.baileywiki-maps-premium-towns.prefabs-02.JournalEntry.pyVRSZj3yjoqy4G5",
             "Compendium.baileywiki-maps-premium-towns.prefabs-02.JournalEntry.T3wqb3EgT5GI8HtX",
-            "Compendium.baileywiki-maps-premium-towns.prefabs-02.JournalEntry.S7K26UmkpomjiN4h"
+            "Compendium.baileywiki-maps-premium-towns.prefabs-02.JournalEntry.uy2IIlUEIZBEglNY",
+            "Compendium.baileywiki-maps-premium-towns.prefabs-02.JournalEntry.SmLLtjC9S4woShGe",
+            "Compendium.baileywiki-maps-premium-towns.prefabs-02.JournalEntry.gr9YpiPfuPrvFcc8",
+            "Compendium.baileywiki-maps-premium-towns.prefabs-02.JournalEntry.hXJrHw4Wh17I0bhB",
+            "Compendium.baileywiki-maps-premium-towns.prefabs-02.JournalEntry.RCMkMy6rzCoDAhcx"
         ],
-        "rocks": [
-        ],
-        "bushes": [
-        ]
+        "stumps": [ ],
+        "rocks": [ ],
+        "bushes": [ ]
     }
 }
