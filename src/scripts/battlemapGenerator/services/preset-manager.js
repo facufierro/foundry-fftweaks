@@ -17,15 +17,20 @@ export async function spawnPresetByUUID(uuid, x, y, snapToGrid = true, hidden = 
     }
 }
 
-export async function spawnRandomPreset(list, sceneSize) {
+export async function spawnRandomPreset(list, sceneSize, padding = 0, presetNumber = 1) {
     if (!sceneSize || typeof sceneSize.width !== 'number' || typeof sceneSize.height !== 'number') {
         console.error("Invalid scene size provided:", sceneSize);
         return;
     }
 
-    const preset = random.element(list);
-    const x = random.number(0, sceneSize.width);
-    const y = random.number(0, sceneSize.height);
+    for (let i = 0; i < presetNumber; i++) {
+        const preset = random.element(list);
 
-    await spawnPresetByUUID(preset, x, y);
+        const x = random.number(padding, sceneSize.width - padding);
+        const y = random.number(padding, sceneSize.height - padding);
+
+        await spawnPresetByUUID(preset, x, y);
+    }
 }
+
+

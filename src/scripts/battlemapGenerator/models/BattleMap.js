@@ -4,13 +4,13 @@ import * as presetManager from '../services/preset-manager.js';
 
 export class BattleMap {
     constructor() {
-        this.scene = game.scenes.get('4xErahF7PDwMuy2e');
+        this.scene = game.scenes.get('4xErahF7PDwMuy2e');  // Replace with the correct scene ID or method to get the scene
         if (!this.scene) {
             throw new Error("Scene not found");
         }
 
         this.gridSize = { x: this.scene.grid.size, y: this.scene.grid.size };
-        this.padding = this.scene.padding || 0;
+        this.padding = this.scene.padding || 0;  // Get the scene padding
         this.backgroundImage = this.scene.background.src;
         this.sceneSize = { width: this.scene.width, height: this.scene.height }; // Make sure scene size is defined
     }
@@ -18,7 +18,7 @@ export class BattleMap {
     async initializeData() {
         this.presetData = await (await fetch('modules/fftweaks/src/scripts/battlemapGenerator/data/preset-data.json')).json();
         this.backgroundImageList = this.presetData.forest.backgrounds;
-        this.treeList = this.presetData.forest.trees;
+        this.treeList = this.presetData.forest.trees; // This is the preset list you need to use
     }
 
     setBackgroundSize(newBackgroundImage) {
@@ -40,13 +40,25 @@ export class BattleMap {
     async generate() {
         try {
             await this.initializeData();
-            // const newBackgroundImage = await this.setBackgroundImage();
-            // await this.setBackgroundSize(newBackgroundImage);
-            // await new Promise(resolve => setTimeout(resolve, 1000));
-            await presetManager.spawnRandomPreset(this.treeList, this.sceneSize);
+
+            // Set the background image and get the new background image path
+            const newBackgroundImage = await this.setBackgroundImage();
+
+            // Set the scene size based on the new background image
+            await this.setBackgroundSize(newBackgroundImage);
+
+            // Introduce a delay before spawning the trees
+            await this.delay(1000); // Delay in milliseconds, e.g., 1000ms = 1 second
+
+            // Spawn trees on the map, considering the scene size and padding
+            await presetManager.spawnRandomPreset(this.treeList, this.sceneSize, this.padding, 10);
         } catch (err) {
             // Handle errors that occur during the map generation process
             console.error("Error generating the forest map:", err);
         }
+    }
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
