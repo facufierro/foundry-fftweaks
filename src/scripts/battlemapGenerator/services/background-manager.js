@@ -14,17 +14,21 @@ export function getBackgroundSize(name) {
     }
 }
 
-export function setBackgroundSize(newBackgroundImage) {
+export function setBackgroundSize(scene, newBackgroundImage) {
     const sceneSize = getBackgroundSize(newBackgroundImage);
 
     if (sceneSize.width && sceneSize.height) {
-        return this.scene.update({ width: sceneSize.width, height: sceneSize.height });
+        return scene.update({ width: sceneSize.width, height: sceneSize.height });
     } else {
         return Promise.reject(new Error("Failed to determine scene dimensions from the image name."));
     }
 }
 
-export function setBackgroundImage(scene) {
-    const newBackgroundImage = random.element(this.backgroundImageList);
+
+export function setBackgroundImage(scene, backgroundImageList) {
+    if (!Array.isArray(backgroundImageList) || backgroundImageList.length === 0) {
+        throw new Error("The background image list is empty or not an array.");
+    }
+    const newBackgroundImage = random.element(backgroundImageList);
     return scene.update({ "background.src": newBackgroundImage }).then(() => newBackgroundImage);
 }

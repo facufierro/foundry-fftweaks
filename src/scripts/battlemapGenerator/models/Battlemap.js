@@ -1,4 +1,3 @@
-import * as random from '../../utils/random.js';
 import * as backgroundManager from '../services/background-manager.js';
 import * as presetManager from '../services/preset-manager.js';
 import * as dataManager from '../services/data-manager.js';
@@ -18,32 +17,41 @@ export class Battlemap {
 
     async generateForest() {
         try {
-            const presetData = await dataManager.initializeData();  // Fetch all data
+            const presetData = await dataManager.initializeData();
 
-            // Validate that backgrounds are an array and not empty
             if (!Array.isArray(presetData.forest.backgrounds) || presetData.forest.backgrounds.length === 0) {
                 throw new Error("The background image list is empty or not an array.");
             }
 
-            this.backgroundImageList = presetData.forest.backgrounds;  // Use forest backgrounds
+            this.backgroundImageList = presetData.forest.backgrounds;
 
-            const newBackgroundImage = await backgroundManager.setBackgroundImage(this.scene);
-            await backgroundManager.setBackgroundSize(newBackgroundImage);
+            // Set the background image
+            const newBackgroundImage = await backgroundManager.setBackgroundImage(this.scene, this.backgroundImageList);
 
-            await this.delay(1000);
+            // Update the scene size
+            await backgroundManager.setBackgroundSize(this.scene, newBackgroundImage);
 
-            // Validate that trees are an array and not empty before spawning
+            // Wait for the scene update using Foundry's Hooks
+            await new Promise(resolve => {
+                Hooks.once('updateScene', (scene, updateData) => {
+                    if (scene.id === this.scene.id) {
+                        // Ensure the scene size is updated after the background change
+                        this.sceneSize = { width: this.scene.width, height: this.scene.height };
+                        resolve();
+                    }
+                });
+            });
+
+            // Ensure trees data is valid
             if (!Array.isArray(presetData.forest.trees) || presetData.forest.trees.length === 0) {
                 throw new Error("The trees list is empty or not an array.");
             }
 
+            // Spawn trees on the updated scene
             await presetManager.spawnRandomPreset(presetData.forest.trees, this.sceneSize, this.padding, 10);
         } catch (err) {
             console.error("Error generating the forest map:", err);
         }
     }
-
-    delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
 }
+
