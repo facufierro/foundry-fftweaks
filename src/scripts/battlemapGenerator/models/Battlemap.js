@@ -17,6 +17,7 @@ export class Battlemap {
 
     async generateForest() {
         try {
+            const treeDensity = 30;
             const presetData = await dataManager.initializeData();
 
             if (!Array.isArray(presetData.forest.backgrounds) || presetData.forest.backgrounds.length === 0) {
@@ -48,7 +49,7 @@ export class Battlemap {
             }
 
             // Spawn trees on the updated scene
-            await presetManager.spawnRandomPreset(presetData.forest.trees, this.sceneSize, this.padding, 10);
+            await presetManager.spawnRandomPreset(presetData.forest.trees, this.sceneSize, this.padding, treeDensity);
         } catch (err) {
             console.error("Error generating the forest map:", err);
         }
