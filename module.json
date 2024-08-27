@@ -27,7 +27,7 @@
     {
       "name": "items",
       "label": "Items",
-      "path": "src/packs/items",
+      "path": "packs/items",
       "type": "Item",
       "system": "dnd5e",
       "ownership": {
@@ -38,7 +38,7 @@
     {
       "name": "spells",
       "label": "Spells",
-      "path": "src/packs/spells",
+      "path": "packs/spells",
       "type": "Item",
       "system": "dnd5e",
       "ownership": {
@@ -49,7 +49,7 @@
     {
       "name": "creatures",
       "label": "Creatures",
-      "path": "src/packs/creatures",
+      "path": "packs/creatures",
       "type": "Actor",
       "system": "dnd5e",
       "ownership": {
@@ -60,7 +60,7 @@
     {
       "name": "character-creation",
       "label": "Character Creation",
-      "path": "src/packs/character-creation",
+      "path": "packs/character-creation",
       "type": "Item",
       "system": "dnd5e",
       "ownership": {
