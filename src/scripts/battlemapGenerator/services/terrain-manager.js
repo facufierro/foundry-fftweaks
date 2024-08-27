@@ -6,7 +6,6 @@ export function generateTerrain(terrainType) {
     switch (terrainType) {
         case 'forest':
             battlemap.generateForest();
-            return battlemap;
     }
 }
 
