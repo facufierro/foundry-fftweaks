@@ -2,7 +2,7 @@ import * as random from '../../utils/random.js';
 import * as backgroundManager from '../services/background-manager.js';
 import * as presetManager from '../services/preset-manager.js';
 
-export class BattleMap {
+export class Battlemap {
     constructor() {
         this.scene = game.scenes.get('4xErahF7PDwMuy2e');  // Replace with the correct scene ID or method to get the scene
         if (!this.scene) {
@@ -37,7 +37,7 @@ export class BattleMap {
         return this.scene.update({ "background.src": newBackgroundImage }).then(() => newBackgroundImage);
     }
 
-    async generate() {
+    async generateForest() {
         try {
             await this.initializeData();
 

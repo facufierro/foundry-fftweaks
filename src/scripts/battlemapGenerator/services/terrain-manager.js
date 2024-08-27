@@ -1,12 +1,12 @@
-import { BattleMap } from "../models/BattleMap.js";
+import { Battlemap } from "../models/Battlemap.js";
 
 
 export function generateTerrain(terrainType) {
+    const battlemap = new Battlemap();
     switch (terrainType) {
         case 'forest':
-            const forestMap = new BattleMap();
-            forestMap.generate();
-            return forestMap;
+            battlemap.generateForest();
+            return battlemap;
     }
 }
 
