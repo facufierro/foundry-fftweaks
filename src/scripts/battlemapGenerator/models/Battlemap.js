@@ -14,45 +14,17 @@ export class Battlemap {
         this.backgroundImage = this.scene.background.src;
         this.sceneSize = { width: this.scene.width, height: this.scene.height };
     }
-
     async generateForest() {
         try {
-            const treeDensity = 30;
-            const presetData = await dataManager.initializeData();
-
-            if (!Array.isArray(presetData.forest.backgrounds) || presetData.forest.backgrounds.length === 0) {
-                throw new Error("The background image list is empty or not an array.");
-            }
-
-            this.backgroundImageList = presetData.forest.backgrounds;
-
-            // Set the background image
-            const newBackgroundImage = await backgroundManager.setBackgroundImage(this.scene, this.backgroundImageList);
-
-            // Update the scene size
+            const { backgrounds, trees } = (await dataManager.initializeData()).forest;
+            const newBackgroundImage = await backgroundManager.setBackgroundImage(this.scene, backgrounds);
             await backgroundManager.setBackgroundSize(this.scene, newBackgroundImage);
-
-            // Wait for the scene update using Foundry's Hooks
-            await new Promise(resolve => {
-                Hooks.once('updateScene', (scene, updateData) => {
-                    if (scene.id === this.scene.id) {
-                        // Ensure the scene size is updated after the background change
-                        this.sceneSize = { width: this.scene.width, height: this.scene.height };
-                        resolve();
-                    }
-                });
-            });
-
-            // Ensure trees data is valid
-            if (!Array.isArray(presetData.forest.trees) || presetData.forest.trees.length === 0) {
-                throw new Error("The trees list is empty or not an array.");
-            }
-
-            // Spawn trees on the updated scene
-            await presetManager.spawnRandomPreset(presetData.forest.trees, this.sceneSize, this.padding, treeDensity);
+            await new Promise(resolve => Hooks.once('updateScene', scene => {
+                if (scene.id === this.scene.id) resolve(this.sceneSize = { width: scene.width, height: scene.height });
+            }));
+            await presetManager.spawnRandomPreset(trees, this.sceneSize, this.padding, 30);
         } catch (err) {
             console.error("Error generating the forest map:", err);
         }
     }
 }
-

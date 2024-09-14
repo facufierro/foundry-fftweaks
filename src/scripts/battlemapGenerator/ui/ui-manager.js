@@ -1,4 +1,4 @@
-import * as terrainManager from "../services/terrain-manager.js";
+import * as battlemapManager from "../services/battlemap-manager.js";
 
 export function renderButtons(controls) {
 
@@ -14,7 +14,7 @@ export function renderButtons(controls) {
                 title: "Generate Forest",
                 icon: "fas fa-trees",
                 onClick: () => {
-                    terrainManager.generateTerrain("forest");
+                    battlemapManager.generateTerrain("forest");
                 },
                 button: true
             },

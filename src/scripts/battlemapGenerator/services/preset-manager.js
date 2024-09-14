@@ -34,3 +34,24 @@ export async function spawnRandomPreset(list, sceneSize, padding = 0, presetNumb
 }
 
 
+
+export async function getPresetFromFolder(folderName) {
+    try {
+        console.log(`Fetching presets from folder: ${folderName}`);
+
+        const presets = await MassEdit.getPresets({ folder: folderName });
+        console.log(`Found presets:`, presets);
+
+        if (!presets || presets.length === 0) {
+            console.warn(`No presets found in folder: ${folderName}`);
+        }
+
+        return presets.map(preset => preset.uuid);
+    } catch (err) {
+        console.error(`Error retrieving presets from folder "${folderName}":`, err);
+        return [];
+    }
+}
+
+
+
