@@ -25,3 +25,10 @@ Hooks.on('getSceneControlButtons', (controls) => {
     battlemapGenerator.initializeUI(controls);
 });
 
+// Hook into the creation of a folder and apply colors
+Hooks.on('createFolder', () => {
+    // Add a slight delay to ensure the folder is fully created and rendered before updating colors
+    setTimeout(() => {
+        folderColorizer.initialize();
+    }, 25); // Adjust delay as needed
+});
