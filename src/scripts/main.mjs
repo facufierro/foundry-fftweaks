@@ -7,13 +7,13 @@ import * as folderColorizer from './folderColorizer/index.js';
 
 Hooks.once('ready', () => {
     folderColorizer.initialize();
-    // characterAnvil.initialize();
+    characterAnvil.initialize();
     tokenBarExtender.initialize();
     chatAutoClean.initialize();
 });
 
 Hooks.on('renderActorSheet5e', (sheet, html, data) => {
-    // characterAnvil.initializeUI(html, sheet.actor);
+    characterAnvil.initializeUI(html, sheet.actor);
 });
 
 Hooks.on("pauseGame", (paused) => {

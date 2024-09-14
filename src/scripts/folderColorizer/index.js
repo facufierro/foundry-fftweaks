@@ -1,5 +1,5 @@
+
 export function initialize() {
-    // List of colors to be used. Add as many colors as you like here.
     let colors = [
         '#4b0000',
         '#003300',
@@ -12,10 +12,26 @@ export function initialize() {
         '#4b4b00',
         '#4b6600'
     ];
-    // Example: Three colors to alternate
+    let lightenColorPercent = 10;
+
+    // Function to lighten a hex color by a given percentage
+    function lightenColor(color) {
+        let num = parseInt(color.slice(1), 16),
+            amt = Math.round(2.55 * lightenColorPercent),
+            R = (num >> 16) + amt,
+            G = (num >> 8 & 0x00FF) + amt,
+            B = (num & 0x0000FF) + amt;
+
+        return '#' + (
+            0x1000000 +
+            (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+            (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+            (B < 255 ? B < 1 ? 0 : B : 255)
+        ).toString(16).slice(1);
+    }
 
     // Define an array of all relevant sidebar tab IDs, including the Compendiums tab
-    let tabIds = ["actors", "items", "scenes", "journal", "cards", "tables", "playlists", "compendium"];
+    let tabIds = ["actors", "items", "scenes", "journal", "cards", "rolltable", "playlists", "compendium"];
 
     // Iterate over each tab to apply the folder color updates
     tabIds.forEach(tabId => {
@@ -36,7 +52,8 @@ export function initialize() {
                 folderTree[rootFolderId] = [];
 
                 // Set color based on index and rotate through the colors list
-                let color = colors[index % colors.length];
+                let rootColor = colors[index % colors.length];
+                let lightColor = lightenColor(rootColor, 30); // Lighten the color by 30%
 
                 // Now find all subfolders that belong to this root folder
                 let currentDepth = 1;
@@ -52,14 +69,17 @@ export function initialize() {
 
                 // Update the color of the root folder
                 let rootFolder = game.folders.get(rootFolderId);
-                rootFolder.update({ color: color });
+                rootFolder.update({ color: rootColor });
 
-                // Update the color of all subfolders belonging to this root
-                folderTree[rootFolderId].forEach(subfolderId => {
+                // Alternate subfolder colors between the root color and the lighter version
+                folderTree[rootFolderId].forEach((subfolderId, subIndex) => {
                     let subfolder = game.folders.get(subfolderId);
-                    subfolder.update({ color: color });
+                    let subfolderColor = (subIndex % 2 === 0) ? lightColor : rootColor;
+                    subfolder.update({ color: subfolderColor });
                 });
             });
         }
     });
+
+
 }
