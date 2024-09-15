@@ -1,15 +1,8 @@
-2024/09/14-08:44:48.281065 7fff70f9f0c0 Recovering log #114
-2024/09/14-08:44:48.284166 7fff70f9f0c0 Delete type=0 #114
-2024/09/14-08:44:48.284187 7fff70f9f0c0 Delete type=3 #112
-2024/09/14-08:50:51.792976 7ffd4a3cb0c0 Level-0 table #119: started
-2024/09/14-08:50:51.794024 7ffd4a3cb0c0 Level-0 table #119: 2474 bytes OK
-2024/09/14-08:50:51.795255 7ffd4a3cb0c0 Delete type=0 #117
-2024/09/14-08:50:51.795317 7ffd4a3cb0c0 Manual compaction at level-0 from '!items!arxPUUIB72JsRNfm' @ 72057594037927935 : 1 .. '!items!arxPUUIB72JsRNfm' @ 0 : 0; will stop at (end)
-2024/09/14-08:50:51.795337 7ffd4a3cb0c0 Manual compaction at level-1 from '!items!arxPUUIB72JsRNfm' @ 72057594037927935 : 1 .. '!items!arxPUUIB72JsRNfm' @ 0 : 0; will stop at '!items!arxPUUIB72JsRNfm' @ 2 : 1
-2024/09/14-08:50:51.795342 7ffd4a3cb0c0 Compacting 1@1 + 1@2 files
-2024/09/14-08:50:51.796367 7ffd4a3cb0c0 Generated table #120@1: 1 keys, 2474 bytes
-2024/09/14-08:50:51.796377 7ffd4a3cb0c0 Compacted 1@1 + 1@2 files => 2474 bytes
-2024/09/14-08:50:51.797592 7ffd4a3cb0c0 compacted to: files[ 0 0 1 0 0 0 0 ]
-2024/09/14-08:50:51.797626 7ffd4a3cb0c0 Delete type=2 #101
-2024/09/14-08:50:51.797668 7ffd4a3cb0c0 Delete type=2 #119
-2024/09/14-08:50:51.797706 7ffd4a3cb0c0 Manual compaction at level-1 from '!items!arxPUUIB72JsRNfm' @ 2 : 1 .. '!items!arxPUUIB72JsRNfm' @ 0 : 0; will stop at (end)
+2024/09/14-15:11:15.978637 7fffa57af0c0 Recovering log #122
+2024/09/14-15:11:15.981399 7fffa57af0c0 Delete type=0 #122
+2024/09/14-15:11:15.981415 7fffa57af0c0 Delete type=3 #121
+2024/09/14-16:44:42.843270 7fff977ef0c0 Level-0 table #126: started
+2024/09/14-16:44:42.843284 7fff977ef0c0 Level-0 table #126: 0 bytes OK
+2024/09/14-16:44:42.844536 7fff977ef0c0 Delete type=0 #124
+2024/09/14-16:44:42.847133 7fff977ef0c0 Manual compaction at level-0 from '!items!arxPUUIB72JsRNfm' @ 72057594037927935 : 1 .. '!items!arxPUUIB72JsRNfm' @ 0 : 0; will stop at (end)
+2024/09/14-16:44:42.851840 7fff977ef0c0 Manual compaction at level-1 from '!items!arxPUUIB72JsRNfm' @ 72057594037927935 : 1 .. '!items!arxPUUIB72JsRNfm' @ 0 : 0; will stop at (end)
