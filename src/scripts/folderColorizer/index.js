@@ -53,8 +53,8 @@ export function initialize() {
 
                     // Set color based on index and rotate through the colors list
                     let rootColor = colors[index % colors.length];
-                    let lightColor1 = lightenColor(rootColor, 20);
-                    let lightColor2 = lightenColor(rootColor, 40);
+                    let lightColor1 = lightenColor(rootColor, 10);
+                    let lightColor2 = lightenColor(rootColor, 20);
 
                     // Now find all subfolders that belong to this root folder
                     let currentDepth = 1;
