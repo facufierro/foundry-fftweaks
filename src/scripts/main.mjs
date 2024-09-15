@@ -18,19 +18,6 @@ Hooks.once('ready', () => {
     tokenBarExtender.initialize();
     chatAutoClean.initialize();
     tokenCustomizer.initialize();
-
-    window.fftweaks = window.fftweaks || {};
-
-    game.actors.forEach(actor => {
-        // Only instantiate actors that have player owners (i.e., player characters)
-        if (actor.hasPlayerOwner) {
-            // Create a variable name dynamically based on the actor's name
-            const characterName = actor.name.replace(/\s+/g, '').toLowerCase(); // Remove spaces and lowercase the name
-            window.fftweaks[characterName] = new Character(actor.id);
-        }
-    });
-
-    ui.notifications.info("Player characters initialized!");
 });
 
 Hooks.on('renderActorSheet5e', (sheet, html, data) => {
