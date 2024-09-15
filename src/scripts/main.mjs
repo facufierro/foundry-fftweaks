@@ -11,6 +11,7 @@ Hooks.once('ready', () => {
     characterAnvil.initialize();
     tokenBarExtender.initialize();
     chatAutoClean.initialize();
+    tokenCustomizer.initialize();
 });
 
 Hooks.on('renderActorSheet5e', (sheet, html, data) => {
@@ -31,6 +32,3 @@ Hooks.on('createFolder', () => {
     }, 25);
 });
 
-Hooks.on("createToken", (tokenDocument) => {
-    tokenCustomizer.initialize(tokenDocument);
-});
