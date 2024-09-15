@@ -5,9 +5,11 @@ import * as battlemapGenerator from './battlemapGenerator/index.js';
 import * as chatAutoClean from './chatAutoClean/index.js';
 import * as folderColorizer from './folderColorizer/index.js';
 import * as tokenCustomizer from './tokenCustomizer/index.js';
+import * as levelsHandler from './levelsHandler/index.js';
 
 Hooks.once('ready', () => {
     folderColorizer.initialize();
+    levelsHandler.initialize();
     // characterAnvil.initialize();
     tokenBarExtender.initialize();
     chatAutoClean.initialize();
