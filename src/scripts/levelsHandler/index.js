@@ -10,10 +10,20 @@ export function initialize() {
                 if (floorInput) {
                     console.log("Found floor level: " + floorInput.value + ". Selecting it.");
                     floorInput.click();
+
+                    // After selecting the floor, switch back to Token Controls
+                    const tokenControls = document.querySelector('li[data-control="token"][data-canvas-layer="tokens"]');
+                    if (tokenControls) {
+                        console.log("Switching back to Token Controls.");
+                        tokenControls.click();
+                    } else {
+                        console.log("Token Controls not found.");
+                    }
+
                 } else {
                     console.log("No matching floor level (0 or 'ground floor') found.");
                 }
-            }, 200);
+            }, 200); // Delay to ensure the Levels UI loads
         } else {
             console.log("Levels control not found.");
         }

@@ -7,13 +7,25 @@ import * as folderColorizer from './folderColorizer/index.js';
 import * as tokenCustomizer from './tokenCustomizer/index.js';
 import * as levelsHandler from './levelsHandler/index.js';
 
+import { ActorWrapper } from './models/actorWrapper.js';
+
 Hooks.once('ready', () => {
     folderColorizer.initialize();
-    levelsHandler.initialize();
+    // levelsHandler.initialize();
     // characterAnvil.initialize();
     tokenBarExtender.initialize();
     chatAutoClean.initialize();
     tokenCustomizer.initialize();
+    const myActor = game.actors.get("y0J7wKfvQyNIC1RS"); // Fetch the actor by its ID
+
+    if (myActor) {
+        const actorWrapper = new ActorWrapper(myActor);
+
+        // Make the actorWrapper globally accessible (for testing and macros)
+        window.myActorWrapper = actorWrapper;
+    } else {
+        ui.notifications.error("Actor not found.");
+    }
 });
 
 Hooks.on('renderActorSheet5e', (sheet, html, data) => {
