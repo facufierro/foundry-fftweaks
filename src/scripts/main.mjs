@@ -38,3 +38,6 @@ Hooks.on('createFolder', () => {
     }, 25);
 });
 
+Hooks.on("dnd5e.useItem", (chatLog, message, chatData) => {
+    ui.notifications.info(`${message}`);
+});
