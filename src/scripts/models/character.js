@@ -100,21 +100,5 @@ export class Character {
 
         ui.notifications.info(`${this.actor.name}'s conditions have been cleared.`);
     }
-    // Method to get only inventory items (weapons, armor, consumables, equipment, etc.)
-    getInventory() {
-        const items = this.actor.items;
-        const inventory = [];
 
-        // Define the types of items we consider part of the inventory
-        const inventoryTypes = ['weapon', 'armor', 'consumable', 'equipment', 'tool', 'loot', 'backpack'];
-
-        // Loop through the items collection and only return relevant inventory types
-        items.forEach(item => {
-            if (inventoryTypes.includes(item.type)) {
-                inventory.push(new Item(item));  // Push each relevant Item class instance into the array
-            }
-        });
-
-        return inventory;  // Return the array of filtered Item instances
-    }
 }
