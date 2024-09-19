@@ -1,4 +1,4 @@
-import * as random from "../../utils/random.js";
+import * as random from "../../utilities/random.js";
 
 export function getBackgroundSize(name) {
     const sizePattern = /(\d+)x(\d+)/;

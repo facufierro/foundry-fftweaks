@@ -1,5 +1,5 @@
-import * as random from '../../utils/random.js';
-import * as notifications from '../../utils/notifications.js';
+import * as random from '../../utilities/random.js';
+import * as notifications from '../../utilities/notifications.js';
 
 export async function spawnPresetByUUID(uuid, x, y, snapToGrid = true, hidden = false, layerSwitch = true) {
     try {

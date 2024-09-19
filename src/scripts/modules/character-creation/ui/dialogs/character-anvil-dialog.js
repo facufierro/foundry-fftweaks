@@ -1,5 +1,5 @@
 import { extractBackgroundData } from '../../services/compendium-service.js';
-import { renderDialogTemplate } from '../../ui/ui-manager.js';
+import { renderDialogTemplate } from '../ui-manager.js';
 
 export async function openCharacterAnvilDialog() {
     // Render the existing template for the Character Anvil Dialog
