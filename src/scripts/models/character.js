@@ -1,17 +1,8 @@
 // models/character.js
-import { Item } from './item.js';  // Import the Item class
 export class Character {
     constructor(actorId) {
         this.actor = game.actors.get(actorId);
-    }
-
-    getHP() {
-        return this.actor.system.attributes.hp.value;
-    }
-
-    async setHP(newHP) {
-        await this.actor.update({ 'system.attributes.hp.value': newHP });
-        ui.notifications.info(`${this.actor.name}'s HP changed to: ${newHP}`);
+        this.conditions = this.getConditions();
     }
 
     // Method to get active conditions applied to the actor
@@ -30,64 +21,40 @@ export class Character {
 
     // Method to toggle a condition using the token's Active Effect system, with special handling for exhaustion
     async toggleCondition(conditionName, durationRounds = null, exhaustionLevel = null) {
-        // Special case for exhaustion
+        // Special handling for exhaustion
         if (conditionName === 'exhaustion') {
             const currentExhaustion = this.actor.system.attributes.exhaustion || 0;
+            let newExhaustion = exhaustionLevel ?? currentExhaustion + 1;
 
-            const newExhaustionLevel = exhaustionLevel !== null ? exhaustionLevel : currentExhaustion + 1;
-
-            if (newExhaustionLevel > 6) {
-                ui.notifications.warn(`${this.actor.name} is already at maximum exhaustion level.`);
-            } else if (newExhaustionLevel < 0) {
-                ui.notifications.warn(`${this.actor.name}'s exhaustion cannot be less than 0.`);
-            } else {
-                await this.actor.update({ 'system.attributes.exhaustion': newExhaustionLevel });
-                ui.notifications.info(`${this.actor.name}'s exhaustion level set to ${newExhaustionLevel}.`);
+            // Reset exhaustion to 0 if it exceeds 6
+            if (newExhaustion > 6) {
+                newExhaustion = 0;
             }
+
+            await this.actor.update({ 'system.attributes.exhaustion': newExhaustion });
             return;
         }
 
-        // For other conditions, use the standard toggle method
+        // Standard condition toggle
         const token = this.actor.getActiveTokens()[0];
+        if (!token) return;
 
-        if (!token) {
-            ui.notifications.error(`${this.actor.name} does not have an active token.`);
-            return;
-        }
-
-        // Find the condition in the CONFIG.statusEffects (D&D 5e default conditions)
         const conditionData = foundry.utils.deepClone(CONFIG.statusEffects.find(e => e.id === conditionName));
+        if (!conditionData) return;
 
-        if (!conditionData) {
-            ui.notifications.error(`${conditionName} is not a valid condition.`);
-            return;
-        }
+        if (durationRounds) conditionData.duration = { rounds: durationRounds };
 
-        // Optionally set a duration for the condition (in rounds)
-        if (durationRounds) {
-            conditionData.duration = { rounds: durationRounds };
-        }
-
-        // Toggle the condition on the token
         await token.document.toggleActiveEffect(conditionData);
-
-        ui.notifications.info(`${this.actor.name} toggled the condition: ${conditionName}`);
     }
+
 
     // Method to clear all active conditions and reset exhaustion to 0
     async clearConditions() {
         const token = this.actor.getActiveTokens()[0];
+        if (!token) return;
 
-        if (!token) {
-            ui.notifications.error(`${this.actor.name} does not have an active token.`);
-            return;
-        }
-
-        // Get all valid conditions from CONFIG.statusEffects
-        const conditions = CONFIG.statusEffects.map(e => e.id);
-
-        // Iterate through each condition and clear it from the token
-        for (const conditionId of conditions) {
+        // Get all valid conditions from CONFIG.statusEffects and clear each from the token
+        for (const conditionId of CONFIG.statusEffects.map(e => e.id)) {
             const conditionData = foundry.utils.deepClone(CONFIG.statusEffects.find(e => e.id === conditionId));
             await token.document.toggleActiveEffect(conditionData, { active: false });
         }
@@ -95,10 +62,8 @@ export class Character {
         // Reset exhaustion level to 0
         if (this.actor.system.attributes.exhaustion > 0) {
             await this.actor.update({ 'system.attributes.exhaustion': 0 });
-            ui.notifications.info(`${this.actor.name}'s exhaustion level has been reset to 0.`);
         }
-
-        ui.notifications.info(`${this.actor.name}'s conditions have been cleared.`);
     }
+
 
 }
