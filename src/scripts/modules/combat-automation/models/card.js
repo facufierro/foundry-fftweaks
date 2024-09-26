@@ -6,59 +6,56 @@ const TIME_LIMIT_MS = 1000;
 
 export class Card {
     constructor(html) {
-        try {
-            console.log("Initializing Card");
-            this.html = html;
-            console.log("HTML structure:", this.html);
-            this.id = this.html.data('messageId');
-            this.createdAt = Date.now();
-            this.rollResult = html.find('h4.dice-total').first();
-            this.rollAttackButton = html.find('button[data-action="rollAttack"]')[0];
-            this.rollDamageButton = html.find('button[data-action="rollDamage"]')[0];
-            this.applyDamageButton = html.find('button[data-action="applyDamage"]')[0];
-            this.rollSaveButton = html.find('button[data-action="rollSave"]')[0];
-
-            // Fetch the subtitle asynchronously without using setTimeout
-            this.getSubtitle().then(subtitle => {
-                this.subtitle = subtitle;
-                this.type = this.getType();
-            }).catch(err => {
-                console.error("Error retrieving subtitle: ", err);
-            });
-        } catch (e) {
-            console.error(e);
-        }
+        console.log("Initializing Card");
+        this.html = html;
+        this.id = this.html.data('messageId');
+        this.createdAt = Date.now();
+        this.rollResult = html.find('h4.dice-total').first();
+        this.rollAttackButton = html.find('button[data-action="rollAttack"]')[0];
+        this.rollDamageButton = html.find('button[data-action="rollDamage"]')[0];
+        this.applyDamageButton = html.find('button[data-action="applyDamage"]')[0];
+        this.rollSaveButton = html.find('button[data-action="rollSave"]')[0];
+        this.getSubtitle().then(subtitle => {
+            this.subtitle = subtitle;
+            this.type = this.getType();
+            this.isRendered = true;
+        }).catch(console.error);
     }
 
-    // Delete the chat card 
+
+    // Delete the chat card, returning a Promise
     delete() {
-        try {
-            console.log(`Deleting ${this.type}`);
-            let chatMessage = game.messages.get(this.id);
+        return new Promise((resolve, reject) => {
+            const chatMessage = game.messages.get(this.id);
             if (chatMessage) {
-                chatMessage.delete();
+                chatMessage.delete().then(() => {
+                    console.log(`Chat message with ID ${this.id} deleted.`);
+                    resolve(true);
+                }).catch(error => {
+                    console.error(`Failed to delete chat message with ID ${this.id}:`, error);
+                    reject(error);
+                });
+            } else {
+                console.error(`No chat message found with ID ${this.id}.`);
+                reject(new Error(`No chat message found with ID ${this.id}`));
             }
-        } catch (e) {
-            console.error(e);
-        }
+        });
     }
 
     // Return a Promise to handle asynchronous access to subtitle
     getSubtitle() {
         return new Promise((resolve, reject) => {
-            const observer = new MutationObserver((mutations, obs) => {
-                const subtitleElement = this.html.find('.subtitle');
-                if (subtitleElement.length > 0) {
-                    resolve(subtitleElement.text().trim());
-                    obs.disconnect();  // Stop observing once the element is found
-                }
-            });
-
             const subtitleElement = this.html.find('.subtitle');
             if (subtitleElement.length > 0) {
                 resolve(subtitleElement.text().trim());
             } else {
-                // Observe for changes if the element isn't available yet
+                const observer = new MutationObserver((mutations, obs) => {
+                    const subtitleElement = this.html.find('.subtitle');
+                    if (subtitleElement.length > 0) {
+                        resolve(subtitleElement.text().trim());
+                        obs.disconnect();
+                    }
+                });
                 observer.observe(this.html[0], { childList: true, subtree: true });
             }
         });
@@ -66,73 +63,52 @@ export class Card {
 
     // Determine the card type
     getType() {
-        try {
-            console.log("Setting Card Type");
-            if (this.rollAttackButton && this.rollDamageButton) {
-                console.log("Type set: Activation Card");
-                return CardType.ACTIVATION_CARD;
-            } else if (this.subtitle && this.subtitle.includes("Attack")) {
-                console.log("Type set: Attack Card");
-                return CardType.ATTACK_CARD;
-            } else if (this.subtitle && this.subtitle.includes("Damage")) {
-                console.log("Type set: Damage Card");
-                return CardType.DAMAGE_CARD;
-            }
-        } catch (e) {
-            console.error(e);
+        if (this.rollAttackButton && this.rollDamageButton) {
+            return CardType.ACTIVATION_CARD;
+        } else if (this.subtitle?.includes("Attack")) {
+            return CardType.ATTACK_CARD;
+        } else if (this.subtitle?.includes("Damage")) {
+            return CardType.DAMAGE_CARD;
         }
+        return null;
     }
 
-    // Roll attack asynchronously using Promises
+    // Roll attack 
     rollAttack() {
         return new Promise((resolve, reject) => {
-            try {
-                if (this.rollAttackButton && Date.now() - this.createdAt < TIME_LIMIT_MS) {
-                    const event = new MouseEvent('click', { bubbles: true, shiftKey: true });
-                    this.rollAttackButton.dispatchEvent(event);
-                    resolve(true);  // Resolve when the attack is rolled
-                } else {
-                    resolve(false);  // Resolve false if conditions are not met
-                }
-            } catch (e) {
-                reject(e);  // Reject in case of an error
+            if (this.rollAttackButton) {
+                console.log("Rolling attack, button found.");
+                this.rollAttackButton.dispatchEvent(new MouseEvent('click', { bubbles: true, shiftKey: true }));
+                resolve(true);
+            } else {
+                console.error("No roll attack button found in the card.");
+                reject(new Error("No roll attack button found."));
             }
         });
     }
 
-    // Roll damage asynchronously using Promises
+    // Roll damage 
     rollDamage() {
         return new Promise((resolve, reject) => {
-            try {
-                if (this.rollDamageButton && Date.now() - this.createdAt < TIME_LIMIT_MS) {
-                    const event = new MouseEvent('click', { bubbles: true, shiftKey: true });
-                    this.rollDamageButton.dispatchEvent(event);
-                    resolve(true);  // Resolve when the damage is rolled
-                } else {
-                    resolve(false);  // Resolve false if conditions are not met
-                }
-            } catch (e) {
-                reject(e);  // Reject in case of an error
+            if (this.rollDamageButton && Date.now() - this.createdAt < TIME_LIMIT_MS) {
+                this.rollDamageButton.dispatchEvent(new MouseEvent('click', { bubbles: true, shiftKey: true }));
+                resolve(true);
+            } else {
+                resolve(false);
             }
         });
     }
 
-    // Check roll result asynchronously using Promises
+    // Check roll result asynchronously
     getRollResult() {
         return new Promise((resolve, reject) => {
-            try {
-                const rollResult = this.html.find('h4.dice-total').first();
-                if (rollResult.hasClass('success')) {
-                    console.log("Attack Successful");
-                    resolve(true);  // Resolve with success
-                } else if (rollResult.hasClass('failure') || rollResult.hasClass('fumble')) {
-                    console.log("Attack Failed");
-                    resolve(false);  // Resolve with failure
-                } else {
-                    resolve(null);  // Resolve null if no success or failure is detected
-                }
-            } catch (e) {
-                reject(e);  // Reject in case of an error
+            const rollResult = this.html.find('h4.dice-total').first();
+            if (rollResult.hasClass('success')) {
+                resolve(true);
+            } else if (rollResult.hasClass('failure') || rollResult.hasClass('fumble')) {
+                resolve(false);
+            } else {
+                resolve(null);
             }
         });
     }
