@@ -13,70 +13,64 @@ export class Combat {
     async getCardData(html) {
         let card = new Card(html);
 
-        // Wait for the card to be fully rendered
-        await this.waitForCardToRender(card);
+        // Wait until the card is fully rendered
+        await this.waitUntilRendered(card);
 
         // Set the card category based on the type
         this.setCardCategory(card);
 
-        // Handle activation card: roll attack first, wait for attack card, then roll damage
+        // Handle activation card: roll attack and damage, then delete activation card
         if (card.type === CardType.ACTIVATION_CARD) {
             console.log("Handling Activation Card");
 
-            // Roll the attack
+            // Roll the attack from the activation card (simulate shift-click on attack button)
             await card.rollAttack();
 
-            // Wait for the attack card to render after the attack roll
-            console.log("Waiting for Attack Card to render...");
-            while (!this.attackCard?.isRendered) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-
-            // Check if the attack succeeded
-            const result = await this.attackCard.getRollResult();
-            if (!result) {
-                // If attack fails, delete the damage card if created and exit early
-                console.log("Attack failed, deleting Damage Card...");
-                if (this.damageCard) {
-                    await this.damageCard.delete();
-                    this.damageCard = null;
-                }
-                await card.delete(); // Delete activation card after failure
-                this.activationCard = null;
-                return;  // Exit early since damage won't be rolled
-            }
-
-            // Attack succeeded, now roll damage
+            // Roll the damage from the activation card (simulate shift-click on damage button)
             await card.rollDamage();
 
-            // Wait for the damage card to render after the damage roll
-            console.log("Waiting for Damage Card to render...");
-            while (!this.damageCard?.isRendered) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-
-            // Delete the activation card
+            // Once attack and damage are rolled, delete the activation card
             console.log("Deleting Activation Card...");
             await card.delete();
             this.activationCard = null;
+            return; // After deleting the activation card, wait for the next cards to be rendered
         }
 
-        // Handle attack card separately (if it was created independently)
-        if (card.type === CardType.ATTACK_CARD) {
-            console.log("Handling standalone Attack Card");
-
-            // Get the result of the attack roll
-            const result = await card.getRollResult();
-
-            if (!result) {
-                console.log("Attack failed, deleting Damage Card...");
-                if (this.damageCard) {
-                    await this.damageCard.delete();
-                    this.damageCard = null;
-                }
-            } else {
-                console.log("Attack succeeded.");
+        // Handle attack and damage cards (after activation card is deleted)
+        if (this.activationCard === null) {
+            if (card.type === CardType.ATTACK_CARD) {
+                console.log("Attack Card detected.");
+                this.attackCard = card;
             }
+
+            if (card.type === CardType.DAMAGE_CARD) {
+                console.log("Damage Card detected.");
+                this.damageCard = card;
+            }
+
+            // Wait until both the attack and damage cards are rendered
+            if (this.attackCard && this.damageCard) {
+                await this.waitUntilRendered(this.attackCard);
+                await this.waitUntilRendered(this.damageCard);
+
+                // Now check the attack card result
+                const attackSuccess = await this.attackCard.getRollResult();
+                if (!attackSuccess) {
+                    // If attack failed, delete the damage card
+                    console.log("Attack failed. Deleting Damage Card...");
+                    if (this.damageCard) {
+                        await this.damageCard.delete(); // Delete the damage card if attack failed
+                        this.damageCard = null;
+                    }
+                }
+            }
+        }
+    }
+
+    // Helper function to wait until a card is rendered
+    async waitUntilRendered(card) {
+        while (!card?.isRendered) {
+            await new Promise(resolve => setTimeout(resolve, 50)); // Small delay to wait until it's rendered
         }
     }
 
@@ -98,17 +92,5 @@ export class Combat {
             default:
                 console.log("Unknown Card Type.");
         }
-    }
-
-    // Helper method to wait until the card is fully rendered
-    waitForCardToRender(card) {
-        return new Promise((resolve) => {
-            const interval = setInterval(() => {
-                if (card && card.isRendered) {
-                    clearInterval(interval); // Stop checking once it's rendered
-                    resolve(true);
-                }
-            }, 100); // Check every 100ms if the card is rendered
-        });
     }
 }
