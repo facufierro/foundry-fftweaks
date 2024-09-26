@@ -3,13 +3,13 @@
 import { CardType } from "./enums.js";
 
 const TIME_LIMIT_MS = 1000;
-const TIMEOUT_MS = 25;
 
 export class Card {
     constructor(html) {
         try {
             console.log("Initializing Card");
             this.html = html;
+            console.log("HTML structure:", this.html);
             this.id = this.html.data('messageId');
             this.createdAt = Date.now();
             this.rollResult = html.find('h4.dice-total').first();
@@ -18,11 +18,13 @@ export class Card {
             this.applyDamageButton = html.find('button[data-action="applyDamage"]')[0];
             this.rollSaveButton = html.find('button[data-action="rollSave"]')[0];
 
-            this.placeTemplateButton = html.find('button[data-action="placeTemplate"]')[0];
-            this.subtitle = this.getSubtitle();
-            this.type = this.getType();
-
-
+            // Fetch the subtitle asynchronously without using setTimeout
+            this.getSubtitle().then(subtitle => {
+                this.subtitle = subtitle;
+                this.type = this.getType();
+            }).catch(err => {
+                console.error("Error retrieving subtitle: ", err);
+            });
         } catch (e) {
             console.error(e);
         }
@@ -36,29 +38,33 @@ export class Card {
             if (chatMessage) {
                 chatMessage.delete();
             }
-        }
-        catch (e) {
+        } catch (e) {
             console.error(e);
         }
     }
+
+    // Return a Promise to handle asynchronous access to subtitle
     getSubtitle() {
-        try {
-            setTimeout(() => {
-                const subtitleElement = this.html.find('.card-header .summary .name-stacked .subtitle');
+        return new Promise((resolve, reject) => {
+            const observer = new MutationObserver((mutations, obs) => {
+                const subtitleElement = this.html.find('.subtitle');
                 if (subtitleElement.length > 0) {
-                    return subtitleElement.text().trim(); // Return the full subtitle text
-                } else {
-                    return null; // Return null if the subtitle is not found
+                    resolve(subtitleElement.text().trim());
+                    obs.disconnect();  // Stop observing once the element is found
                 }
+            });
+
+            const subtitleElement = this.html.find('.subtitle');
+            if (subtitleElement.length > 0) {
+                resolve(subtitleElement.text().trim());
+            } else {
+                // Observe for changes if the element isn't available yet
+                observer.observe(this.html[0], { childList: true, subtree: true });
             }
-                , TIMEOUT_MS);
-        } catch (e) {
-            console.error("Error retrieving subtitle: ", e);
-            return null;
-        }
+        });
     }
 
-    // Determine the card type immediately
+    // Determine the card type
     getType() {
         try {
             console.log("Setting Card Type");
@@ -72,65 +78,62 @@ export class Card {
                 console.log("Type set: Damage Card");
                 return CardType.DAMAGE_CARD;
             }
-        }
-        catch (e) {
+        } catch (e) {
             console.error(e);
         }
     }
 
-    // If rollAttackButton is not null and createdAt is less than TIME_LIMIT_MS, press the button using shift+click
+    // Roll attack asynchronously using Promises
     rollAttack() {
-        try {
-            setTimeout(() => {
-                console.log(`Rolling Attack`);
+        return new Promise((resolve, reject) => {
+            try {
                 if (this.rollAttackButton && Date.now() - this.createdAt < TIME_LIMIT_MS) {
                     const event = new MouseEvent('click', { bubbles: true, shiftKey: true });
                     this.rollAttackButton.dispatchEvent(event);
+                    resolve(true);  // Resolve when the attack is rolled
+                } else {
+                    resolve(false);  // Resolve false if conditions are not met
                 }
+            } catch (e) {
+                reject(e);  // Reject in case of an error
             }
-                , TIMEOUT_MS);
-        } catch (e) {
-            console.error(e);
-        }
-
+        });
     }
-    // If rollDamageButton is not null and createdAt is less than TIME_LIMIT_MS, press the button using shift+click
-    rollDamage() {
-        try {
-            setTimeout(() => {
 
-                console.log("Rolling Damage");
-                if (this.rollAttackButton && Date.now() - this.createdAt < TIME_LIMIT_MS) {
+    // Roll damage asynchronously using Promises
+    rollDamage() {
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.rollDamageButton && Date.now() - this.createdAt < TIME_LIMIT_MS) {
                     const event = new MouseEvent('click', { bubbles: true, shiftKey: true });
                     this.rollDamageButton.dispatchEvent(event);
+                    resolve(true);  // Resolve when the damage is rolled
+                } else {
+                    resolve(false);  // Resolve false if conditions are not met
                 }
+            } catch (e) {
+                reject(e);  // Reject in case of an error
             }
-                , TIMEOUT_MS);
-        } catch (e) {
-            console.error(e);
-        }
+        });
     }
 
-    // Check for success or failure asynchronously and call the callback with the result
+    // Check roll result asynchronously using Promises
     getRollResult() {
-        try {
-            setTimeout(() => {
+        return new Promise((resolve, reject) => {
+            try {
                 const rollResult = this.html.find('h4.dice-total').first();
-
                 if (rollResult.hasClass('success')) {
                     console.log("Attack Successful");
-                    return true;
+                    resolve(true);  // Resolve with success
                 } else if (rollResult.hasClass('failure') || rollResult.hasClass('fumble')) {
-                    // Check for both 'failure' and 'fumble' classes
                     console.log("Attack Failed");
-                    return false;
+                    resolve(false);  // Resolve with failure
+                } else {
+                    resolve(null);  // Resolve null if no success or failure is detected
                 }
-            }, TIMEOUT_MS); // Introduce a small delay to ensure rendering
-        }
-        catch (e) {
-            console.error(e);
-        }
+            } catch (e) {
+                reject(e);  // Reject in case of an error
+            }
+        });
     }
-
 }
-

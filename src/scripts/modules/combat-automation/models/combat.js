@@ -10,6 +10,17 @@ export class Combat {
         this.damageCard = null;
         this.attackResult = null;
     }
+    getCardData(html) {
+        let card = new Card(html);
+        console.log(card.type);
+        // If it's the activation card, roll both attack and damage
+        if (this.activationCard) {
+            this.activationCard.rollAttack();
+            this.activationCard.rollDamage();
+            this.activationCard.delete();
+            this.activationCard = null;
+        }
+    }
 
     setCardCategory(card) {
         console.log("Setting Card Category");
@@ -29,34 +40,6 @@ export class Combat {
         }
     }
 
-    getCardData(html) {
-        console.log("Getting Card Data");
-        let card = new Card(html);
-        this.setCardCategory(card);
 
-        // If it's the activation card, roll both attack and damage
-        if (this.activationCard) {
-            this.activationCard.rollAttack();
-            this.activationCard.rollDamage();
-            this.activationCard.delete();
-            this.activationCard = null;
-        }
 
-        // Wait for the attack card result asynchronously
-        if (this.attackCard) {
-            this.attackResult = this.attackCard.getRollResult();
-        }
-
-        // Defer deletion of damage card until it is rendered and attack result is false
-        if (this.attackResult === false) {
-            // Wait until the damage card is rendered
-            setTimeout(() => {
-                if (this.damageCard) {
-                    console.log("Deleting Damage Card due to Attack Failure");
-                    this.damageCard.delete();
-                    this.damageCard = null; // Reset after deletion
-                }
-            }, 100); // Adjust delay if necessary based on when damage card is rendered
-        }
-    }
 }
