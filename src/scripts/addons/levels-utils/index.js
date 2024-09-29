@@ -1,5 +1,7 @@
 export function initialize() {
     Hooks.on("canvasReady", (canvas) => {
+        if (!game.user.isGM) return; // Only proceed if the user is the GM
+
         const levelsControl = document.querySelector('li[data-control="levels"]');
         if (levelsControl) {
             console.log("Levels control found. Clicking the Levels control.");
