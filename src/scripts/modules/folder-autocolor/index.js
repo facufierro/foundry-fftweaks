@@ -1,4 +1,5 @@
 export function initialize() {
+    if (!game.user.isGM) return; // Only proceed if the user is the GM
     let colors = [
         '#4b0000',
         '#003300',
