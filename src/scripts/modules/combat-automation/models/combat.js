@@ -4,14 +4,13 @@ import { CardType } from "./enums.js";
 
 export class Combat {
     constructor() {
-        this.activationCard = null;
-        this.attackCard = null;
-        this.damageCard = null;
+        this.cardsMap = new Map();  // Use a Map to store cards by their chat message ID
     }
 
     // Get card data and handle the card based on its type
     async getCardData(html) {
         let card = new Card(html);
+        const messageId = card.id;
 
         // Wait until the card is fully rendered
         await this.waitUntilRendered(card);
@@ -32,38 +31,52 @@ export class Combat {
             // Once attack and damage are rolled, delete the activation card
             console.log("Deleting Activation Card...");
             await card.delete();
-            this.activationCard = null;
+
+            // Remove from map
+            this.cardsMap.delete(messageId);
+
             return; // After deleting the activation card, wait for the next cards to be rendered
         }
 
         // Handle attack and damage cards (after activation card is deleted)
-        if (this.activationCard === null) {
-            if (card.type === CardType.ATTACK_CARD) {
-                console.log("Attack Card detected.");
-                this.attackCard = card;
-            }
+        if (!this.cardsMap.has(messageId)) {
+            this.cardsMap.set(messageId, { attackCard: null, damageCard: null });
+        }
 
-            if (card.type === CardType.DAMAGE_CARD) {
-                console.log("Damage Card detected.");
-                this.damageCard = card;
-            }
+        const currentCards = this.cardsMap.get(messageId);
 
-            // Wait until both the attack and damage cards are rendered
-            if (this.attackCard && this.damageCard) {
-                await this.waitUntilRendered(this.attackCard);
-                await this.waitUntilRendered(this.damageCard);
+        if (card.type === CardType.ATTACK_CARD) {
+            console.log("Attack Card detected.");
+            currentCards.attackCard = card;
+        }
 
-                // Now check the attack card result
-                const attackSuccess = await this.attackCard.getRollResult();
-                if (!attackSuccess) {
-                    // If attack failed, delete the damage card
-                    console.log("Attack failed. Deleting Damage Card...");
-                    if (this.damageCard) {
-                        await this.damageCard.delete(); // Delete the damage card if attack failed
-                        this.damageCard = null;
+        if (card.type === CardType.DAMAGE_CARD) {
+            console.log("Damage Card detected.");
+            currentCards.damageCard = card;
+        }
+
+        // Ensure both cards (attack and damage) have been rendered before proceeding
+        if (currentCards.attackCard && currentCards.damageCard) {
+            await this.waitUntilRendered(currentCards.attackCard);
+            await this.waitUntilRendered(currentCards.damageCard);
+
+            // Check the attack card result AFTER both cards are rendered to avoid timing issues
+            const attackSuccess = await currentCards.attackCard.getRollResult();
+            if (!attackSuccess) {
+                // If attack failed, delete the damage card
+                console.log("Attack failed. Deleting Damage Card...");
+                if (currentCards.damageCard) {
+                    try {
+                        await currentCards.damageCard.delete(); // Delete the damage card if attack failed
+                        currentCards.damageCard = null;
+                    } catch (err) {
+                        console.error(`Failed to delete damage card: ${err}`);
                     }
                 }
             }
+
+            // Clean up cards from the map once processing is done
+            this.cardsMap.delete(messageId);
         }
     }
 
@@ -78,15 +91,12 @@ export class Combat {
     setCardCategory(card) {
         switch (card.type) {
             case CardType.ACTIVATION_CARD:
-                this.activationCard = card;
                 console.log("Activation Card detected.");
                 break;
             case CardType.ATTACK_CARD:
-                this.attackCard = card;
                 console.log("Attack Card detected.");
                 break;
             case CardType.DAMAGE_CARD:
-                this.damageCard = card;
                 console.log("Damage Card detected.");
                 break;
             default:
