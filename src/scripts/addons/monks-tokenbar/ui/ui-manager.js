@@ -8,7 +8,7 @@ export function createButton(id, title, icon, row, onClick) {
 }
 
 async function createButtons() {
-    const buttonData = await (await fetch('modules/fftweaks/src/scripts/tokenBarExtender/data/button-data.json')).json();
+    const buttonData = await (await fetch('modules/fftweaks/src/scripts/addons/monks-tokenbar/data/button-data.json')).json();
     const tokenBar = document.getElementById('tokenbar-controls');
 
     // Remove existing custom rows to avoid duplicates

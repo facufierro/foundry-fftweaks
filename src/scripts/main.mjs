@@ -1,8 +1,8 @@
 // path: src/scripts/main.mjs
 // import { CharacterController } from "./controllers/character-controller.js";
-import * as comabtAutomation from "./modules/combat-automation/index.js";
-import * as folderAutoColor from "./modules/folder-autocolor/index.js";
-import * as tokenbarUtils from "./addons/tokenbar-utils/index.js";
+// import * as comabtAutomation from "./modules/combat-automation/index.js";
+import * as monksTokenbarAddon from "./addons/monks-tokenbar/index.js";
+import * as folderAutocolorModule from "./modules/folder-autocolor/index.js";
 import * as simpleCalendarUtils from "./addons/simplecalendar-utils/index.js";
 import * as levelsUtils from "./addons/levels-utils/index.js";
 
@@ -10,8 +10,8 @@ import * as levelsUtils from "./addons/levels-utils/index.js";
 Hooks.once('ready', () => {
     // CharacterController.initializeAllPlayerCharacters();
     // comabtAutomation.initialize();
-    folderAutoColor.initialize();
-    tokenbarUtils.initialize();
+    folderAutocolorModule.initialize();
+    monksTokenbarAddon.initialize();
     simpleCalendarUtils.initialize();
     levelsUtils.initialize();
 });
