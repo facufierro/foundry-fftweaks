@@ -1,13 +1,8 @@
-import { addLevelUpButton } from "./ui/buttons/level-up-button.js";
-import { extractBackgroundData } from "./services/compendium-service.js";
+import { addCharacterCreationButton } from "./ui/buttons/character-creation-button.js";
 
 export function initialize() {
-
-}
-
-export function initializeUI(html, actor) {
-    addLevelUpButton(html, actor);
-    extractBackgroundData(game.packs.get('fftweaks.character-creation')).then(backgrounds => {
-        console.log('Backgrounds:', backgrounds);
+    Hooks.on("renderActorSheet", (app, html, data) => {
+        addCharacterCreationButton(html, app.actor);
     });
 }
+
