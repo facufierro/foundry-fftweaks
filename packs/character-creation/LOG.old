@@ -1,8 +1,15 @@
-2024/10/27-15:59:42.624535 7fff97fff0c0 Recovering log #303
-2024/10/27-15:59:42.627485 7fff97fff0c0 Delete type=3 #301
-2024/10/27-15:59:42.627510 7fff97fff0c0 Delete type=0 #303
-2024/10/27-16:13:26.505031 7fff977ef0c0 Level-0 table #309: started
-2024/10/27-16:13:26.505047 7fff977ef0c0 Level-0 table #309: 0 bytes OK
-2024/10/27-16:13:26.506453 7fff977ef0c0 Delete type=0 #307
-2024/10/27-16:13:26.510697 7fff977ef0c0 Manual compaction at level-0 from '!folders!0gnlWpITHSfunrO0' @ 72057594037927935 : 1 .. '!items.effects!zMKRIulku4ZT66yf.TE0Eb2K6svn1hd7E' @ 0 : 0; will stop at (end)
-2024/10/27-16:13:26.512105 7fff977ef0c0 Manual compaction at level-1 from '!folders!0gnlWpITHSfunrO0' @ 72057594037927935 : 1 .. '!items.effects!zMKRIulku4ZT66yf.TE0Eb2K6svn1hd7E' @ 0 : 0; will stop at (end)
+2024/10/27-17:25:51.506972 7fffa57af0c0 Recovering log #312
+2024/10/27-17:25:51.509955 7fffa57af0c0 Delete type=3 #310
+2024/10/27-17:25:51.509982 7fffa57af0c0 Delete type=0 #312
+2024/10/27-17:46:07.456608 7fff977ef0c0 Level-0 table #318: started
+2024/10/27-17:46:07.457771 7fff977ef0c0 Level-0 table #318: 3543 bytes OK
+2024/10/27-17:46:07.459002 7fff977ef0c0 Delete type=0 #316
+2024/10/27-17:46:07.465503 7fff977ef0c0 Manual compaction at level-0 from '!folders!0gnlWpITHSfunrO0' @ 72057594037927935 : 1 .. '!items.effects!zMKRIulku4ZT66yf.TE0Eb2K6svn1hd7E' @ 0 : 0; will stop at (end)
+2024/10/27-17:46:07.465538 7fff977ef0c0 Manual compaction at level-1 from '!folders!0gnlWpITHSfunrO0' @ 72057594037927935 : 1 .. '!items.effects!zMKRIulku4ZT66yf.TE0Eb2K6svn1hd7E' @ 0 : 0; will stop at '!items!yJXOtimAJetc0OQW' @ 843 : 1
+2024/10/27-17:46:07.465543 7fff977ef0c0 Compacting 1@1 + 1@2 files
+2024/10/27-17:46:07.468401 7fff977ef0c0 Generated table #319@1: 106 keys, 133227 bytes
+2024/10/27-17:46:07.468415 7fff977ef0c0 Compacted 1@1 + 1@2 files => 133227 bytes
+2024/10/27-17:46:07.469598 7fff977ef0c0 compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/10/27-17:46:07.469630 7fff977ef0c0 Delete type=2 #318
+2024/10/27-17:46:07.469677 7fff977ef0c0 Delete type=2 #314
+2024/10/27-17:46:07.475530 7fff977ef0c0 Manual compaction at level-1 from '!items!yJXOtimAJetc0OQW' @ 843 : 1 .. '!items.effects!zMKRIulku4ZT66yf.TE0Eb2K6svn1hd7E' @ 0 : 0; will stop at (end)
