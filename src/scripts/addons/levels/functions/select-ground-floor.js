@@ -1,6 +1,6 @@
-export function initialize() {
+export function selectGroundFloor() {
     Hooks.on("canvasReady", (canvas) => {
-        if (!game.user.isGM) return; // Only proceed if the user is the GM
+        if (!game.user.isGM) return;
 
         const levelsControl = document.querySelector('li[data-control="levels"]');
         if (levelsControl) {
@@ -25,7 +25,7 @@ export function initialize() {
                 } else {
                     console.log("No matching floor level (0 or 'ground floor') found.");
                 }
-            }, 200); // Delay to ensure the Levels UI loads
+            }, 200);
         } else {
             console.log("Levels control not found.");
         }
