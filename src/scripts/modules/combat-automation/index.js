@@ -3,54 +3,69 @@ let action = null;
 export function initialize() {
     Hooks.on('dnd5e.preUseActivity', (activity) => {
         action = new Action(activity);
-        ui.notifications.info(action.checkDistance());
-        action.rollAttack();
-        console.log(activity);
+        if (action.checkDistance()) {
+            action.rollAttack().then(isSuccessful => {
+                if (isSuccessful) {
+                    action.rollDamage();
+                }
+            });
+        }
         return false;
     });
 }
+
 class Action {
     constructor(activity) {
         this.actor = activity.actor;
         this.token = canvas.tokens.controlled[0];
+
+        if (!this.token) {
+            ui.notifications.warn("Please select a controlled token.");
+            return;
+        }
+
         this.item = activity.item;
         this.activity = activity;
-        this.targets = Array.from(game.user.targets);
+        this.target = this._getSingleTarget();
+    }
+
+    _getSingleTarget() {
+        const targets = Array.from(game.user.targets);
+        if (targets.length !== 1) {
+            ui.notifications.warn("Please try again selecting a single target.");
+            return null;
+        }
+        return targets[0];
     }
 
     checkDistance() {
-        let activity_range = this.activity.range.value;
-        if (activity_range == null) {
-            activity_range = 5;
+        if (!this.target) return false;
+
+        let activity_range = this.activity.range.value ?? 5;
+        const start = { x: this.token.center.x, y: this.token.center.y };
+        const end = { x: this.target.center.x, y: this.target.center.y };
+        const distance = canvas.grid.measureDistance(start, end);
+
+        if (distance <= activity_range) {
+            return true;
         }
-
-        const start = { x: this.token.x, y: this.token.y };
-
-        for (let i = 0; i < this.targets.length; i++) {
-            const target = this.targets[i];
-            const end = { x: target.x, y: target.y };
-
-            const result = canvas.grid.measurePath([start, end]);
-            const distance = result.distance;
-
-            if (distance <= activity_range) {
-                return true;
-            }
-        }
+        ui.notifications.info("Target is out of range.");
         return false;
     }
 
     rollAttack() {
-        const config = {
-            advantage: "none", // Set to "none" for a normal roll (instead of "advantage" or "disadvantage")
-            fastForward: true  // Force the roll to skip the dialog and execute immediately
-        };
+        if (!this.target) return Promise.resolve(false);
 
-        const dialog = {
-            useDialog: false  // Ensures that the dialog does not pop up
-        };
+        return this.activity.rollAttack({}, { configure: false }).then(rollResults => {
+            if (!rollResults || rollResults.length === 0) return false;
 
-        this.activity.rollAttack(config, dialog);
+            const attackRoll = rollResults[0].total;
+            const targetAC = this.target.actor.system.attributes.ac.value;
+            return attackRoll >= targetAC;
+        });
     }
 
+    rollDamage() {
+        this.activity.rollDamage({}, { configure: false });
+    }
 }
