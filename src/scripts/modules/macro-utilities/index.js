@@ -6,7 +6,7 @@ export function initialize() {
         console.log("Initializing macro-utilities module...");
         globalThis.fft = globalThis.fft || {};
         fft.getItemsInCompendiumFolder = functions.getItemsInCompendiumFolder;
-        fft.removeItemsByName = functions.removeItemsByName; // Corrected the assignment
+        fft.removeItemsByName = functions.removeItemsByName;
         fft.chooseItemsDialog = ui.chooseItemsDialog;
         fft.addItemsToActor = functions.addItemsToActor;
     } catch (error) {
