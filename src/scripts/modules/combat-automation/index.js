@@ -1,13 +1,13 @@
 let action = null;
 
 export function initialize() {
-    Hooks.on('dnd5e.preUseActivity', async (activity) => {
+    Hooks.on('dnd5e.preUseActivity', (activity) => {
         action = new Action(activity);
-        ui.notifications.info(action.checkDistance())
+        ui.notifications.info(action.checkDistance());
+        action.rollAttack();
         console.log(activity);
         return false;
     });
-
 }
 class Action {
     constructor(activity) {
@@ -30,7 +30,6 @@ class Action {
             const target = this.targets[i];
             const end = { x: target.x, y: target.y };
 
-            // Use measurePath instead of measureDistance
             const result = canvas.grid.measurePath([start, end]);
             const distance = result.distance;
 
@@ -39,6 +38,19 @@ class Action {
             }
         }
         return false;
+    }
+
+    rollAttack() {
+        const config = {
+            advantage: "none", // Set to "none" for a normal roll (instead of "advantage" or "disadvantage")
+            fastForward: true  // Force the roll to skip the dialog and execute immediately
+        };
+
+        const dialog = {
+            useDialog: false  // Ensures that the dialog does not pop up
+        };
+
+        this.activity.rollAttack(config, dialog);
     }
 
 }
