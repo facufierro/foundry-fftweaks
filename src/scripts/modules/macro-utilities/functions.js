@@ -21,12 +21,15 @@ export async function getCompendiumItems(compendiumId, options = {}) {
             return await compendium.getDocument(itemId) || null;
         }
 
-        // Filter by folder or tags if provided
+        // Filter by folder ID or tags if provided
         const items = await Promise.all(
             compendium.index.contents.map(async entry => {
                 const item = await compendium.getDocument(entry._id);
 
-                if (folderId && item.folder !== folderId) return null;
+                // Properly handle folder ID comparison
+                if (folderId && item.folder?.id !== folderId) return null;
+
+                // Optional tag filtering logic
                 if (tagsList) {
                     const itemTags = await getSourceTags(item);
                     if (!Array.isArray(itemTags) || !itemTags.some(tag => tagsList.includes(tag))) return null;
@@ -41,6 +44,7 @@ export async function getCompendiumItems(compendiumId, options = {}) {
         return [];
     }
 }
+
 
 /**
  * Extracts custom source tags from an item.
