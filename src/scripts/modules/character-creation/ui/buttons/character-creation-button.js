@@ -13,9 +13,3 @@ export function addCharacterCreationButton(html, actor) {
     const xpLabel = html.find('.xp-label');
     xpLabel.before(characterCreationButton);
 }
-
-export function initialize() {
-    Hooks.on("renderActorSheet", (app, html, data) => {
-        addCharacterCreationButton(html, app.actor);
-    });
-}
