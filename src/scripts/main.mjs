@@ -1,6 +1,3 @@
-import { Debug } from "./utilities/debug.js";
-window.Debug = Debug;
-
 import * as addonLevels from "./addons/levels/index.js";
 import * as addonMonksTokenbar from "./addons/monks-tokenbar/index.js";
 import * as addonSimpleCalendar from "./addons/simple-calendar/index.js";
@@ -10,7 +7,7 @@ import * as moduleMacroUtilitiies from "./modules/macro-utilities/index.js";
 import * as moduleCombatAutomation from "./modules/combat-automation/index.js";
 
 Hooks.once('ready', () => {
-    Debug.Log("Initializing FFTweaks...");
+    console.log("Initializing FFTweaks...");
     try {
         addonLevels.initialize();
         addonMonksTokenbar.initialize();
@@ -21,7 +18,7 @@ Hooks.once('ready', () => {
         moduleCombatAutomation.initialize();
 
     } catch (error) {
-        Debug.Error(error);
+        console.error(error);
     }
 
 });

@@ -1,7 +1,7 @@
 export function chooseItemsDialog(items, maxSelections = 1) {
     return new Promise(resolve => {
         const content = items.map((item, index) =>
-            `<div><input type="checkbox" name="item" value="${item.id}" id="item-${index}" />
+            `<div><input type="checkbox" name="item" value="${index}" id="item-${index}" />
             <label for="item-${index}">${item.name}</label></div>`
         ).join("");
 
@@ -12,10 +12,10 @@ export function chooseItemsDialog(items, maxSelections = 1) {
                 choose: {
                     label: "Choose",
                     callback: (html) => {
-                        const chosenIds = Array.from(html.find("input[name='item']:checked"))
-                            .map(checkbox => checkbox.value)
+                        const chosenItems = Array.from(html.find("input[name='item']:checked"))
+                            .map(checkbox => items[parseInt(checkbox.value)]) // Retrieve full item objects
                             .slice(0, maxSelections);
-                        resolve(chosenIds);
+                        resolve(chosenItems);
                     }
                 },
                 cancel: {

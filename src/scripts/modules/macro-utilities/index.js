@@ -5,12 +5,12 @@ export function initialize() {
     try {
         console.log("Initializing macro-utilities module...");
         globalThis.fft = globalThis.fft || {};
-        fft.getItemsInCompendiumFolder = functions.getItemsInCompendiumFolder;
-        fft.removeItemsByName = functions.removeItemsByName;
+        fft.removeItemsFromActor = functions.removeItemsFromActor;
+        fft.getCompendiumItems = functions.getCompendiumItems;
         fft.chooseItemsDialog = ui.chooseItemsDialog;
         fft.addItemsToActor = functions.addItemsToActor;
+        fft.getSourceTags = functions.getSourceTags;
     } catch (error) {
         console.error(error);
     }
 }
-
