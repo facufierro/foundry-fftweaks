@@ -1,15 +1,18 @@
 let activeDialog = null;
 
-export function chooseItemsDialog(items, maxSelections = 1) {
+export function chooseItemsDialog(items, maxSelections = 1, showIcon = false) {
     if (activeDialog) return activeDialog;
 
     activeDialog = new Promise(resolve => {
-        const content = items.map((item, index) =>
-            `<div style="margin-bottom: 8px; display: flex; align-items: center;">
-                <input type="checkbox" name="item" value="${index}" id="item-${index}" style="margin-right: 10px; transform: scale(1.2);" />
-                <label for="item-${index}" style="cursor: pointer; font-size: 1.1em;">${item.name}</label>
-            </div>`
-        ).join("");
+        const content = items.map((item, index) => {
+            const iconHtml = showIcon ? `<img src="${item.img}" alt="${item.name}" style="width: 24px; height: 24px; margin-right: 10px;"/>` : "";
+            return `
+                <div style="margin-bottom: 8px; display: flex; align-items: center;">
+                    <input type="checkbox" name="item" value="${index}" id="item-${index}" style="margin-right: 10px; transform: scale(1.2);" />
+                    ${iconHtml}
+                    <label for="item-${index}" style="cursor: pointer; font-size: 1.1em;">${item.name}</label>
+                </div>`;
+        }).join("");
 
         const dialog = new Dialog({
             title: "Choose Items",
