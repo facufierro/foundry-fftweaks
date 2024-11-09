@@ -1,5 +1,3 @@
-const actor = game.user.character || game.actors.getName("Alaric Thorgrimson");
-
 fft.getCompendiumItems("fftweaks.spells", { tagsList: ["Wizard"] })
     .then(items => fft.chooseItemsDialog(items.filter(item => item.system.level === 0), maxSelections = 2, showIcon = true, showTooltip = true))
     .then(chosenCantrips => fft.addItemsToActor(actor, chosenCantrips))
