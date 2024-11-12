@@ -2,6 +2,10 @@ import { createButton } from '../ui-manager.js';
 import { openAbilityPointBuyDialog } from '../dialogs/ability-point-buy.js';
 
 export function addCharacterCreationButton(html, actor) {
+    // Check if the character level is greater than 0, and if so, do not add the button
+    const characterLevel = actor.system?.details?.level || 0;
+    if (characterLevel > 0) return; // Exit if character level is above 0
+
     // Prevent duplicate button creation
     if (html.find('.character-creation-button').length > 0) return;
 

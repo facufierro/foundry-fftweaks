@@ -4,7 +4,7 @@ import * as addonSimpleCalendar from "./addons/simple-calendar/index.js";
 import * as moduleCharacterCreation from "./modules/character-creation/index.js";
 import * as moduleFolderAutocolor from "./modules/folder-autocolor/index.js";
 import * as moduleMacroUtilitiies from "./modules/macro-utilities/index.js";
-import * as moduleCombatAutomation from "./modules/combat-automation/index.js";
+// import * as moduleCombatAutomation from "./modules/combat-automation/index.js";
 
 Hooks.once('ready', () => {
     console.log("Initializing FFTweaks...");
@@ -15,7 +15,7 @@ Hooks.once('ready', () => {
         moduleCharacterCreation.initialize();
         moduleFolderAutocolor.initialize();
         moduleMacroUtilitiies.initialize();
-        moduleCombatAutomation.initialize();
+        // moduleCombatAutomation.initialize();
 
     } catch (error) {
         console.error(error);
