@@ -15,9 +15,8 @@
       }
     ]
   },
-  "esmodules": [
-    "src/scripts/main.mjs"
-  ],
+  "esmodules": [ "dist/main.js" ]
+  ,
   "styles": [
     "src/styles/style.css",
     "src/styles/argon-hud.css",

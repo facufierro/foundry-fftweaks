@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "None",
+        "lib": [ "ESNext", "DOM" ],
+        "moduleResolution": "node",
+        "strict": false,
+        "skipLibCheck": true,
+        "baseUrl": ".",
+        "paths": {
+            "@league-of-foundry-developers/foundry-vtt-types/*": [
+                "node_modules/@league-of-foundry-developers/foundry-vtt-types/*"
+            ],
+            "@league-of-foundry-developers/foundry-vtt-dnd5e-types/*": [
+                "node_modules/@league-of-foundry-developers/foundry-vtt-dnd5e-types/*"
+            ]
+        },
+        "outFile": "./dist/main.js",
+    },
+    "include": [ "src" ],
+    "exclude": [ "node_modules" ]
+}
