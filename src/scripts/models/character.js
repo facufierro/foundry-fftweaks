@@ -2,7 +2,13 @@
 export class Character {
     constructor(actorId) {
         this.actor = game.actors.get(actorId);
+        this.abilities = this.actor.system.abilities;
         this.conditions = this.getConditions();
+        console.log("Character initialized:", this.actor);
+    }
+
+    getAbilities() {
+        return this.abilities;
     }
 
     // Method to get active conditions applied to the actor
