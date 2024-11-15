@@ -4,5 +4,11 @@
         "icon": "fas fa-heart",
         "row": 1,
         "script": "FFT.Macros.healSelectedTokens"
+    },
+    "hurt": {
+        "name": "Hurt Tokens",
+        "icon": "fas fa-heart-crack",
+        "row": 1,
+        "script": "FFT.Macros.hurtSelectedTokens"
     }
 }

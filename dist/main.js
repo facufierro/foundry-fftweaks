@@ -66,6 +66,7 @@ var FFT;
             // Run a global function
             static runScript(script) {
                 return __awaiter(this, void 0, void 0, function* () {
+                    var _a, _b;
                     try {
                         // Locate the function in the global namespace
                         const func = script.split('.').reduce((obj, key) => obj === null || obj === void 0 ? void 0 : obj[key], window);
@@ -73,10 +74,12 @@ var FFT;
                             yield func();
                         }
                         else {
-                            FFT.Debug.Error(`Script "${script}" is not a valid global function.`);
+                            // Show a notification if the function is not found
+                            (_a = ui.notifications) === null || _a === void 0 ? void 0 : _a.warn(`Function "${script}" not implemented.`);
                         }
                     }
                     catch (error) {
+                        (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn(`Failed to execute function "${script}".`);
                         FFT.Debug.Error(`Failed to execute script: ${script}`, error);
                     }
                 });
@@ -145,6 +148,13 @@ window.FFT.Macros.healSelectedTokens = function () {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
         (_a = ui.notifications) === null || _a === void 0 ? void 0 : _a.info("Token healed to full HP!");
+    });
+};
+// Define your macro functions here
+window.FFT.Macros.hurtSelectedTokens = function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        (_a = ui.notifications) === null || _a === void 0 ? void 0 : _a.info("Token hurt to 0 HP!");
     });
 };
 var FFT;

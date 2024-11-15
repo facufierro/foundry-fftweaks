@@ -53,15 +53,19 @@ namespace FFT.Addons {
             try {
                 // Locate the function in the global namespace
                 const func = script.split('.').reduce((obj, key) => obj?.[key], window);
+
                 if (typeof func === "function") {
                     await func();
                 } else {
-                    Debug.Error(`Script "${script}" is not a valid global function.`);
+                    // Show a notification if the function is not found
+                    ui.notifications?.warn(`Function "${script}" not implemented.`);
                 }
             } catch (error) {
+                ui.notifications?.warn(`Failed to execute function "${script}".`);
                 Debug.Error(`Failed to execute script: ${script}`, error);
             }
         }
+
 
         // Create and append buttons to token bar
         private static async populateTokenbar() {
