@@ -3,7 +3,7 @@
 window.FFT = window.FFT || {};
 window.FFT.Addons = window.FFT.Addons || {};
 Hooks.once("ready", () => {
-    FFT.Addons.MonksTokenbar.initialize();
+    // FFT.Addons.MonksTokenbar.initialize();   
 });
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }

@@ -15,8 +15,8 @@ namespace FFT.Addons {
             const button = document.createElement('div');
             button.id = id;
             button.title = title;
-            button.classList.add('control-icon'); // Ensures styling matches other buttons
-            button.innerHTML = `<i class="${icon}"></i>`; // Set icon class (e.g., "fas fa-dice")
+            button.classList.add('control-icon');
+            button.innerHTML = `<i class="${icon}"></i>`;
             button.addEventListener('click', onClick);
             return button;
         }
