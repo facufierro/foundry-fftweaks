@@ -1,124 +1,92 @@
 namespace FFT.Addons {
-    // Define the structure of each button's data
     interface ButtonData {
         name: string;
         icon: string;
         row: number;
-        script: string;
+        script: string; // Name of a registered global function
     }
 
     export class MonksTokenbar {
+        // Initialize and observe token bar
+        static initialize() {
+            const setupTokenBar = () => {
+                const tokenBar = document.getElementById('tokenbar-controls');
+                if (tokenBar) {
+                    clearInterval(interval);
+                    this.populateTokenbar();
 
-        // Function to create an individual button with icon and click handler
-        static createButton(id: string, title: string, icon: string, onClick: (event: Event) => void): HTMLDivElement {
-            Debug.Log(`Creating button: ${title} with icon: ${icon}`);
-            const button = document.createElement('div');
-            button.id = id;
-            button.title = title;
-            button.classList.add('control-icon');
-            button.innerHTML = `<i class="${icon}"></i>`;
-            button.addEventListener('click', onClick);
-            return button;
+                    // Observe DOM for changes
+                    new MutationObserver(() => {
+                        if (!document.querySelector('[id^="custom-tokenbar-row"]')) this.populateTokenbar();
+                    }).observe(document.body, { childList: true, subtree: true });
+                }
+            };
+
+            const interval = setInterval(setupTokenBar, 100);
         }
 
-        // Function to create buttons from JSON data and organize them into rows
-        static async createButtons() {
-            Debug.Log("Attempting to fetch button data...");
+        // Fetch button data
+        private static async fetchButtonData(): Promise<Record<string, ButtonData>> {
             try {
                 const response = await fetch('modules/fftweaks/src/scripts/addons/monks-tokenbar/data/button-data.json');
-                if (!response.ok) {
-                    Debug.Error(`Failed to fetch button data: ${response.status} ${response.statusText}`);
-                    return;
-                }
-
-                const buttonData: Record<string, ButtonData> = await response.json();
-                Debug.Log("Button data fetched successfully:", buttonData);
-
-                const tokenBar = document.getElementById('tokenbar-controls');
-                if (!tokenBar) {
-                    Debug.Error("Token bar not found! Adjust initialization timing if needed.");
-                    return;
-                }
-                Debug.Log("Token bar found. Clearing existing custom rows...");
-
-                // Remove existing custom rows to avoid duplicates
-                document.querySelectorAll('[id^="custom-tokenbar-row"]').forEach(row => row.remove());
-
-                const rows: { [key: string]: HTMLDivElement } = {};
-
-                // Create and store buttons by row
-                for (const [id, button] of Object.entries(buttonData)) {
-                    Debug.Log(`Processing button: ${button.name} in row: ${button.row}`);
-                    // Create a new row if it doesn't exist
-                    if (!rows[button.row]) {
-                        rows[button.row] = document.createElement('div');
-                        rows[button.row].id = `custom-tokenbar-row-${button.row}`;
-                        rows[button.row].className = 'flexrow tokenbar-buttons';
-                        Debug.Log(`Created new row: ${button.row}`);
-                    }
-
-                    // Create the button using createButton function
-                    const newButton = MonksTokenbar.createButton(id, button.name, button.icon, (event) => {
-                        import(button.script).then(m => m.default?.(event));
-                    });
-
-                    // Append the button to its corresponding row
-                    rows[button.row].appendChild(newButton);
-                }
-
-                // Append only non-empty rows to the token bar
-                Object.values(rows).forEach(rowElement => {
-                    if (rowElement.children.length > 0) {
-                        tokenBar.appendChild(rowElement);
-                        Debug.Success(`Appended row to token bar: ${rowElement.id}`);
-                    }
-                });
-                Debug.Success("All rows and buttons appended to token bar.");
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                return await response.json();
             } catch (error) {
-                Debug.Error("Error fetching or processing button data:", error);
+                Debug.Error("Failed to fetch button data:", error);
+                return {};
             }
         }
 
-        // Function to add buttons and attach them to the token bar
-        static addButtons() {
+        // Create a button element
+        private static createButton(id: string, button: ButtonData): HTMLElement {
+            return FFT.UI.createButton({
+                id,
+                classes: ['control-icon'],
+                icon: button.icon,
+                tooltip: button.name,
+                onClick: () => this.runScript(button.script),  // Call the function via script name
+            });
+        }
+
+        // Run a global function
+        private static async runScript(script: string): Promise<void> {
+            try {
+                // Locate the function in the global namespace
+                const func = script.split('.').reduce((obj, key) => obj?.[key], window);
+                if (typeof func === "function") {
+                    await func();
+                } else {
+                    Debug.Error(`Script "${script}" is not a valid global function.`);
+                }
+            } catch (error) {
+                Debug.Error(`Failed to execute script: ${script}`, error);
+            }
+        }
+
+        // Create and append buttons to token bar
+        private static async populateTokenbar() {
+            const buttonData = await this.fetchButtonData();
             const tokenBar = document.getElementById('tokenbar-controls');
             if (!tokenBar) {
-                Debug.Error("Token bar not found in addButtons!");
+                Debug.Error("Token bar not found!");
                 return;
             }
 
-            Debug.Log("Adding buttons to token bar...");
-            // Ensure no existing 'custom-tokenbar-row' remains
+            // Clear previous custom rows
             document.querySelectorAll('[id^="custom-tokenbar-row"]').forEach(row => row.remove());
 
-            // Create buttons and attach them
-            MonksTokenbar.createButtons();
-        }
+            // Organize buttons into rows
+            const rows: Record<number, HTMLElement> = {};
+            for (const [id, button] of Object.entries(buttonData)) {
+                rows[button.row] = rows[button.row] || document.createElement('div');
+                rows[button.row].id = `custom-tokenbar-row-${button.row}`;
+                rows[button.row].className = 'flexrow tokenbar-buttons';
+                rows[button.row].appendChild(this.createButton(id, button));
+            }
 
-        // Initialization function to set up observers and add buttons on load
-        static initialize() {
-            Debug.Log("Initializing MonksTokenbar...");
-
-            // Check if tokenBar exists or wait for it
-            const checkInterval = setInterval(() => {
-                const tokenBar = document.getElementById('tokenbar-controls');
-                if (tokenBar) {
-                    clearInterval(checkInterval);
-                    MonksTokenbar.addButtons();
-
-                    // Set up MutationObserver if tokenBar is available
-                    const observer = new MutationObserver(() => {
-                        if (!document.querySelector('[id^="custom-tokenbar-row"]')) {
-                            Debug.Log("MutationObserver triggered. Re-adding buttons.");
-                            MonksTokenbar.addButtons();
-                        }
-                    });
-                    observer.observe(document.body, { childList: true, subtree: true });
-                    Debug.Log("MutationObserver set up.");
-                } else {
-                    Debug.Log("Waiting for token bar to become available...");
-                }
-            }, 100); // Adjust delay if needed
+            // Append rows to token bar
+            Object.values(rows).forEach(row => tokenBar.appendChild(row));
+            Debug.Success("Token bar updated with buttons.");
         }
     }
 }

@@ -1,20 +1,28 @@
-// src/debug.ts
 namespace FFT {
     export class UI {
-        static createButton({ classes = [], icon = '', tooltip = '', onClick = null }: {
+        static createButton({
+            id = '', // Optional ID
+            classes = [], // CSS classes
+            icon = '', // Icon class
+            tooltip = '', // Tooltip text
+            onClick = null, // Click handler
+        }: {
+            id?: string;
             classes?: string[];
             icon?: string;
             tooltip?: string;
             onClick?: (() => void) | null;
-        }): JQuery<HTMLElement> {
-            const button = $(`<button type="button" class="${classes.join(' ')}" data-tooltip="${tooltip}"><i class="${icon}"></i></button>`);
-            if (onClick) button.on('click', onClick);
+        }): HTMLDivElement {
+            const button = document.createElement('div');
+            if (id) button.id = id;
+            button.className = ['control-icon', ...classes].join(' ');
+            if (tooltip) button.title = tooltip;
+            button.innerHTML = `<i class="${icon}"></i>`;
+            if (onClick) button.addEventListener('click', onClick);
             return button;
-        }
-        static test() {
-            FFT.Debug.Warn("Test");
         }
     }
 }
+
 
 

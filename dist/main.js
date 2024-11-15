@@ -1,9 +1,12 @@
 /// <reference types="@league-of-foundry-developers/foundry-vtt-types" />
 /// <reference types="@league-of-foundry-developers/foundry-vtt-dnd5e-types" />
+// Initialize FFT.Macros first
 window.FFT = window.FFT || {};
 window.FFT.Addons = window.FFT.Addons || {};
+window.FFT.Macros = window.FFT.Macros || {};
+// Initialize MonksTokenbar after macros are set
 Hooks.once("ready", () => {
-    // FFT.Addons.MonksTokenbar.initialize();   
+    FFT.Addons.MonksTokenbar.initialize();
 });
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -19,105 +22,88 @@ var FFT;
     var Addons;
     (function (Addons) {
         class MonksTokenbar {
-            // Function to create an individual button with icon and click handler
-            static createButton(id, title, icon, onClick) {
-                FFT.Debug.Log(`Creating button: ${title} with icon: ${icon}`);
-                const button = document.createElement('div');
-                button.id = id;
-                button.title = title;
-                button.classList.add('control-icon'); // Ensures styling matches other buttons
-                button.innerHTML = `<i class="${icon}"></i>`; // Set icon class (e.g., "fas fa-dice")
-                button.addEventListener('click', onClick);
-                return button;
+            // Initialize and observe token bar
+            static initialize() {
+                const setupTokenBar = () => {
+                    const tokenBar = document.getElementById('tokenbar-controls');
+                    if (tokenBar) {
+                        clearInterval(interval);
+                        this.populateTokenbar();
+                        // Observe DOM for changes
+                        new MutationObserver(() => {
+                            if (!document.querySelector('[id^="custom-tokenbar-row"]'))
+                                this.populateTokenbar();
+                        }).observe(document.body, { childList: true, subtree: true });
+                    }
+                };
+                const interval = setInterval(setupTokenBar, 100);
             }
-            // Function to create buttons from JSON data and organize them into rows
-            static createButtons() {
+            // Fetch button data
+            static fetchButtonData() {
                 return __awaiter(this, void 0, void 0, function* () {
-                    FFT.Debug.Log("Attempting to fetch button data...");
                     try {
                         const response = yield fetch('modules/fftweaks/src/scripts/addons/monks-tokenbar/data/button-data.json');
-                        if (!response.ok) {
-                            FFT.Debug.Error(`Failed to fetch button data: ${response.status} ${response.statusText}`);
-                            return;
-                        }
-                        const buttonData = yield response.json();
-                        FFT.Debug.Log("Button data fetched successfully:", buttonData);
-                        const tokenBar = document.getElementById('tokenbar-controls');
-                        if (!tokenBar) {
-                            FFT.Debug.Error("Token bar not found! Adjust initialization timing if needed.");
-                            return;
-                        }
-                        FFT.Debug.Log("Token bar found. Clearing existing custom rows...");
-                        // Remove existing custom rows to avoid duplicates
-                        document.querySelectorAll('[id^="custom-tokenbar-row"]').forEach(row => row.remove());
-                        const rows = {};
-                        // Create and store buttons by row
-                        for (const [id, button] of Object.entries(buttonData)) {
-                            FFT.Debug.Log(`Processing button: ${button.name} in row: ${button.row}`);
-                            // Create a new row if it doesn't exist
-                            if (!rows[button.row]) {
-                                rows[button.row] = document.createElement('div');
-                                rows[button.row].id = `custom-tokenbar-row-${button.row}`;
-                                rows[button.row].className = 'flexrow tokenbar-buttons';
-                                FFT.Debug.Log(`Created new row: ${button.row}`);
-                            }
-                            // Create the button using createButton function
-                            const newButton = MonksTokenbar.createButton(id, button.name, button.icon, (event) => {
-                                Promise.resolve(`${button.script}`).then(s => require(s)).then(m => { var _a; return (_a = m.default) === null || _a === void 0 ? void 0 : _a.call(m, event); });
-                            });
-                            // Append the button to its corresponding row
-                            rows[button.row].appendChild(newButton);
-                        }
-                        // Append only non-empty rows to the token bar
-                        Object.values(rows).forEach(rowElement => {
-                            if (rowElement.children.length > 0) {
-                                tokenBar.appendChild(rowElement);
-                                FFT.Debug.Success(`Appended row to token bar: ${rowElement.id}`);
-                            }
-                        });
-                        FFT.Debug.Success("All rows and buttons appended to token bar.");
+                        if (!response.ok)
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        return yield response.json();
                     }
                     catch (error) {
-                        FFT.Debug.Error("Error fetching or processing button data:", error);
+                        FFT.Debug.Error("Failed to fetch button data:", error);
+                        return {};
                     }
                 });
             }
-            // Function to add buttons and attach them to the token bar
-            static addButtons() {
-                const tokenBar = document.getElementById('tokenbar-controls');
-                if (!tokenBar) {
-                    FFT.Debug.Error("Token bar not found in addButtons!");
-                    return;
-                }
-                FFT.Debug.Log("Adding buttons to token bar...");
-                // Ensure no existing 'custom-tokenbar-row' remains
-                document.querySelectorAll('[id^="custom-tokenbar-row"]').forEach(row => row.remove());
-                // Create buttons and attach them
-                MonksTokenbar.createButtons();
+            // Create a button element
+            static createButton(id, button) {
+                return FFT.UI.createButton({
+                    id,
+                    classes: ['control-icon'],
+                    icon: button.icon,
+                    tooltip: button.name,
+                    onClick: () => this.runScript(button.script), // Call the function via script name
+                });
             }
-            // Initialization function to set up observers and add buttons on load
-            static initialize() {
-                FFT.Debug.Log("Initializing MonksTokenbar...");
-                // Check if tokenBar exists or wait for it
-                const checkInterval = setInterval(() => {
+            // Run a global function
+            static runScript(script) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    try {
+                        // Locate the function in the global namespace
+                        const func = script.split('.').reduce((obj, key) => obj === null || obj === void 0 ? void 0 : obj[key], window);
+                        if (typeof func === "function") {
+                            yield func();
+                        }
+                        else {
+                            FFT.Debug.Error(`Script "${script}" is not a valid global function.`);
+                        }
+                    }
+                    catch (error) {
+                        FFT.Debug.Error(`Failed to execute script: ${script}`, error);
+                    }
+                });
+            }
+            // Create and append buttons to token bar
+            static populateTokenbar() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    const buttonData = yield this.fetchButtonData();
                     const tokenBar = document.getElementById('tokenbar-controls');
-                    if (tokenBar) {
-                        clearInterval(checkInterval);
-                        MonksTokenbar.addButtons();
-                        // Set up MutationObserver if tokenBar is available
-                        const observer = new MutationObserver(() => {
-                            if (!document.querySelector('[id^="custom-tokenbar-row"]')) {
-                                FFT.Debug.Log("MutationObserver triggered. Re-adding buttons.");
-                                MonksTokenbar.addButtons();
-                            }
-                        });
-                        observer.observe(document.body, { childList: true, subtree: true });
-                        FFT.Debug.Log("MutationObserver set up.");
+                    if (!tokenBar) {
+                        FFT.Debug.Error("Token bar not found!");
+                        return;
                     }
-                    else {
-                        FFT.Debug.Log("Waiting for token bar to become available...");
+                    // Clear previous custom rows
+                    document.querySelectorAll('[id^="custom-tokenbar-row"]').forEach(row => row.remove());
+                    // Organize buttons into rows
+                    const rows = {};
+                    for (const [id, button] of Object.entries(buttonData)) {
+                        rows[button.row] = rows[button.row] || document.createElement('div');
+                        rows[button.row].id = `custom-tokenbar-row-${button.row}`;
+                        rows[button.row].className = 'flexrow tokenbar-buttons';
+                        rows[button.row].appendChild(this.createButton(id, button));
                     }
-                }, 100); // Adjust delay if needed
+                    // Append rows to token bar
+                    Object.values(rows).forEach(row => tokenBar.appendChild(row));
+                    FFT.Debug.Success("Token bar updated with buttons.");
+                });
             }
         }
         Addons.MonksTokenbar = MonksTokenbar;
@@ -154,6 +140,13 @@ var FFT;
 //         }
 //     };
 // }
+// Define your macro functions here
+window.FFT.Macros.healSelectedTokens = function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        (_a = ui.notifications) === null || _a === void 0 ? void 0 : _a.info("Token healed to full HP!");
+    });
+};
 var FFT;
 (function (FFT) {
     class Character {
@@ -188,18 +181,25 @@ var FFT;
     }
     FFT.Debug = Debug;
 })(FFT || (FFT = {}));
-// src/debug.ts
 var FFT;
 (function (FFT) {
     class UI {
-        static createButton({ classes = [], icon = '', tooltip = '', onClick = null }) {
-            const button = $(`<button type="button" class="${classes.join(' ')}" data-tooltip="${tooltip}"><i class="${icon}"></i></button>`);
+        static createButton({ id = '', // Optional ID
+        classes = [], // CSS classes
+        icon = '', // Icon class
+        tooltip = '', // Tooltip text
+        onClick = null, // Click handler
+         }) {
+            const button = document.createElement('div');
+            if (id)
+                button.id = id;
+            button.className = ['control-icon', ...classes].join(' ');
+            if (tooltip)
+                button.title = tooltip;
+            button.innerHTML = `<i class="${icon}"></i>`;
             if (onClick)
-                button.on('click', onClick);
+                button.addEventListener('click', onClick);
             return button;
-        }
-        static test() {
-            FFT.Debug.Warn("Test");
         }
     }
     FFT.UI = UI;
