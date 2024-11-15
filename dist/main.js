@@ -22,23 +22,15 @@ var FFT;
     var Addons;
     (function (Addons) {
         class MonksTokenbar {
-            // Initialize and observe token bar
             static initialize() {
-                const setupTokenBar = () => {
+                const interval = setInterval(() => {
                     const tokenBar = document.getElementById('tokenbar-controls');
                     if (tokenBar) {
                         clearInterval(interval);
-                        this.populateTokenbar();
-                        // Observe DOM for changes
-                        new MutationObserver(() => {
-                            if (!document.querySelector('[id^="custom-tokenbar-row"]'))
-                                this.populateTokenbar();
-                        }).observe(document.body, { childList: true, subtree: true });
+                        setInterval(() => this.populateTokenbar(), 50);
                     }
-                };
-                const interval = setInterval(setupTokenBar, 100);
+                }, 100);
             }
-            // Fetch button data
             static fetchButtonData() {
                 return __awaiter(this, void 0, void 0, function* () {
                     try {
@@ -47,65 +39,47 @@ var FFT;
                             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                         return yield response.json();
                     }
-                    catch (error) {
-                        FFT.Debug.Error("Failed to fetch button data:", error);
+                    catch (_a) {
                         return {};
                     }
                 });
             }
-            // Create a button element
             static createButton(id, button) {
                 return FFT.UI.createButton({
                     id,
                     classes: ['control-icon'],
                     icon: button.icon,
                     tooltip: button.name,
-                    onClick: () => this.runScript(button.script), // Call the function via script name
+                    onClick: (event) => this.runScript(button.script, event),
                 });
             }
-            // Run a global function
-            static runScript(script) {
+            static runScript(script, event) {
                 return __awaiter(this, void 0, void 0, function* () {
-                    var _a, _b;
-                    try {
-                        // Locate the function in the global namespace
-                        const func = script.split('.').reduce((obj, key) => obj === null || obj === void 0 ? void 0 : obj[key], window);
-                        if (typeof func === "function") {
-                            yield func();
-                        }
-                        else {
-                            // Show a notification if the function is not found
-                            (_a = ui.notifications) === null || _a === void 0 ? void 0 : _a.warn(`Function "${script}" not implemented.`);
-                        }
-                    }
-                    catch (error) {
-                        (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn(`Failed to execute function "${script}".`);
-                        FFT.Debug.Error(`Failed to execute script: ${script}`, error);
-                    }
+                    const func = script.split('.').reduce((obj, key) => obj === null || obj === void 0 ? void 0 : obj[key], window);
+                    if (typeof func === "function")
+                        yield func(event);
                 });
             }
-            // Create and append buttons to token bar
             static populateTokenbar() {
                 return __awaiter(this, void 0, void 0, function* () {
                     const buttonData = yield this.fetchButtonData();
                     const tokenBar = document.getElementById('tokenbar-controls');
-                    if (!tokenBar) {
-                        FFT.Debug.Error("Token bar not found!");
+                    if (!tokenBar)
                         return;
-                    }
-                    // Clear previous custom rows
-                    document.querySelectorAll('[id^="custom-tokenbar-row"]').forEach(row => row.remove());
-                    // Organize buttons into rows
                     const rows = {};
                     for (const [id, button] of Object.entries(buttonData)) {
-                        rows[button.row] = rows[button.row] || document.createElement('div');
-                        rows[button.row].id = `custom-tokenbar-row-${button.row}`;
-                        rows[button.row].className = 'flexrow tokenbar-buttons';
-                        rows[button.row].appendChild(this.createButton(id, button));
+                        const rowId = `custom-tokenbar-row-${button.row}`;
+                        rows[button.row] = rows[button.row] || document.getElementById(rowId) || (() => {
+                            const row = document.createElement('div');
+                            row.id = rowId;
+                            row.className = 'flexrow tokenbar-buttons';
+                            tokenBar.appendChild(row);
+                            return row;
+                        })();
+                        if (!document.getElementById(id)) {
+                            rows[button.row].appendChild(this.createButton(id, button));
+                        }
                     }
-                    // Append rows to token bar
-                    Object.values(rows).forEach(row => tokenBar.appendChild(row));
-                    FFT.Debug.Success("Token bar updated with buttons.");
                 });
             }
         }
@@ -145,25 +119,20 @@ var FFT;
 // }
 window.FFT.Macros.healSelectedTokens = function (event) {
     var _a;
-    let healValue = 0;
-    // Check which modifier key is pressed
-    if (event.shiftKey) {
-        healValue = 10; // Heal by 10 if Shift is pressed
-    }
-    else if (event.ctrlKey) {
-        healValue = 5; // Heal by 5 if Ctrl is pressed
-    }
-    else if (event.altKey) {
-        healValue = 1; // Heal by 1 if Alt is pressed
-    }
-    else {
-        healValue = 0; // Heal to full HP if no modifier is pressed
-    }
-    // Apply healing to selected tokens
     (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled.forEach((token) => {
         const actor = token.actor;
+        let healValue = actor.system.attributes.hp.max; // Default: Heal to max HP
+        if (event.shiftKey) {
+            healValue = 10; // Heal by 10 if Shift is pressed
+        }
+        else if (event.ctrlKey) {
+            healValue = 5; // Heal by 5 if Ctrl is pressed
+        }
+        else if (event.altKey) {
+            healValue = 1; // Heal by 1 if Alt is pressed
+        }
         actor.update({
-            "system.attributes.hp.value": Math.min(actor.system.attributes.hp.value + healValue, actor.system.attributes.hp.max)
+            "system.attributes.hp.value": Math.min(actor.system.attributes.hp.value + healValue, actor.system.attributes.hp.max),
         });
     });
 };
@@ -218,12 +187,7 @@ var FFT;
 var FFT;
 (function (FFT) {
     class UI {
-        static createButton({ id = '', // Optional ID
-        classes = [], // CSS classes
-        icon = '', // Icon class
-        tooltip = '', // Tooltip text
-        onClick = null, // Click handler
-         }) {
+        static createButton({ id = '', classes = [], icon = '', tooltip = '', onClick = null, }) {
             const button = document.createElement('div');
             if (id)
                 button.id = id;
@@ -232,7 +196,7 @@ var FFT;
                 button.title = tooltip;
             button.innerHTML = `<i class="${icon}"></i>`;
             if (onClick)
-                button.addEventListener('click', onClick);
+                button.addEventListener('click', onClick); // Pass event automatically
             return button;
         }
     }
