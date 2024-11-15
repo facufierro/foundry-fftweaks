@@ -1,4 +1,10 @@
-// Define your macro functions here
 (window as any).FFT.Macros.hurtSelectedTokens = async function () {
-    ui.notifications?.info("Token hurt to 0 HP!");
+    canvas.tokens?.controlled.forEach((token) => {
+        const actor = (token.actor as any);
+        if (actor?.system?.attributes?.hp) {
+            actor.update({
+                "system.attributes.hp.value": 0
+            });
+        }
+    });
 };

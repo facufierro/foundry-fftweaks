@@ -143,18 +143,42 @@ var FFT;
 //         }
 //     };
 // }
-// Define your macro functions here
-window.FFT.Macros.healSelectedTokens = function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        var _a;
-        (_a = ui.notifications) === null || _a === void 0 ? void 0 : _a.info("Token healed to full HP!");
+window.FFT.Macros.healSelectedTokens = function (event) {
+    var _a;
+    let healValue = 0;
+    // Check which modifier key is pressed
+    if (event.shiftKey) {
+        healValue = 10; // Heal by 10 if Shift is pressed
+    }
+    else if (event.ctrlKey) {
+        healValue = 5; // Heal by 5 if Ctrl is pressed
+    }
+    else if (event.altKey) {
+        healValue = 1; // Heal by 1 if Alt is pressed
+    }
+    else {
+        healValue = 0; // Heal to full HP if no modifier is pressed
+    }
+    // Apply healing to selected tokens
+    (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled.forEach((token) => {
+        const actor = token.actor;
+        actor.update({
+            "system.attributes.hp.value": Math.min(actor.system.attributes.hp.value + healValue, actor.system.attributes.hp.max)
+        });
     });
 };
-// Define your macro functions here
 window.FFT.Macros.hurtSelectedTokens = function () {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
-        (_a = ui.notifications) === null || _a === void 0 ? void 0 : _a.info("Token hurt to 0 HP!");
+        (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled.forEach((token) => {
+            var _a, _b;
+            const actor = token.actor;
+            if ((_b = (_a = actor === null || actor === void 0 ? void 0 : actor.system) === null || _a === void 0 ? void 0 : _a.attributes) === null || _b === void 0 ? void 0 : _b.hp) {
+                actor.update({
+                    "system.attributes.hp.value": 0
+                });
+            }
+        });
     });
 };
 var FFT;
