@@ -107,12 +107,40 @@ var FFT;
                     });
                     buttons.slice(i, i + columns).forEach(([id, button]) => {
                         const { name, icon, script } = button;
-                        const newButton = this.createButton(id, name, icon, (event) => Promise.resolve(`${script}`).then(s => require(s)).then(m => { var _a; return (_a = m.default) === null || _a === void 0 ? void 0 : _a.call(m, event); }));
+                        // Resolve the script function
+                        const action = this.resolveFunction(script);
+                        if (!action) {
+                            console.error(`Function "${script}" not found.`);
+                            return;
+                        }
+                        const newButton = this.createButton(id, name, icon, action);
                         row.appendChild(newButton);
                     });
                     rows[i / columns] = row;
                 }
                 return rows;
+            }
+            static resolveFunction(scriptPath) {
+                try {
+                    const scriptParts = scriptPath.split('.');
+                    let func = window;
+                    for (const part of scriptParts) {
+                        func = func[part];
+                        if (!func)
+                            break;
+                    }
+                    if (typeof func === 'function') {
+                        return func;
+                    }
+                    else {
+                        console.error(`"${scriptPath}" is not a valid function.`);
+                        return null;
+                    }
+                }
+                catch (error) {
+                    console.error(`Error resolving function "${scriptPath}":`, error);
+                    return null;
+                }
             }
             static makeDraggable(element) {
                 let offsetX = 0, offsetY = 0, mouseX = 0, mouseY = 0;
@@ -191,18 +219,52 @@ window.FFT.Macros.healSelectedTokens = function (event) {
         });
     });
 };
-window.FFT.Macros.hurtSelectedTokens = function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        var _a;
-        (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled.forEach((token) => {
-            var _a, _b;
-            const actor = token.actor;
-            if ((_b = (_a = actor === null || actor === void 0 ? void 0 : actor.system) === null || _a === void 0 ? void 0 : _a.attributes) === null || _b === void 0 ? void 0 : _b.hp) {
-                actor.update({
-                    "system.attributes.hp.value": 0
-                });
-            }
+window.FFT.Macros.hurtSelectedTokens = function (event) {
+    var _a;
+    (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled.forEach((token) => {
+        const actor = token.actor;
+        let damageValue = actor.system.attributes.hp.max; // Default: Damage to 0 HP
+        if (event.shiftKey) {
+            damageValue = 10; // Damage by 10 if Shift is pressed
+        }
+        else if (event.ctrlKey) {
+            damageValue = 5; // Damage by 5 if Ctrl is pressed
+        }
+        else if (event.altKey) {
+            damageValue = 1; // Damage by 1 if Alt is pressed
+        }
+        actor.update({
+            "system.attributes.hp.value": Math.max(actor.system.attributes.hp.value - damageValue, 0), // Ensure HP doesn't go below 0
         });
+    });
+};
+window.FFT.Macros.restSelectedTokens = function (event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b, _c, _d;
+        const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
+        if (!selectedTokens || selectedTokens.length === 0) {
+            (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn("No tokens selected.");
+            return;
+        }
+        for (const token of selectedTokens) {
+            const actor = token.actor;
+            if (!actor)
+                continue;
+            if (event.shiftKey) {
+                // Shift key: Perform a Short Rest
+                if (actor.type === "character" || actor.type === "npc") {
+                    yield actor.longRest(); // Replace with shortRest when applicable
+                    (_c = ui.notifications) === null || _c === void 0 ? void 0 : _c.info(`${actor.name} has completed a Short Rest.`);
+                }
+            }
+            else {
+                // Default: Perform a Long Rest
+                if (actor.type === "character" || actor.type === "npc") {
+                    yield actor.longRest();
+                    (_d = ui.notifications) === null || _d === void 0 ? void 0 : _d.info(`${actor.name} has completed a Long Rest.`);
+                }
+            }
+        }
     });
 };
 var FFT;

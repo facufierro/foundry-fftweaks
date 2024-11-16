@@ -10,5 +10,12 @@
         "icon": "fas fa-heart-crack",
         "row": 1,
         "script": "FFT.Macros.hurtSelectedTokens"
+    },
+    "rest": {
+        "name": "Rest Tokens",
+        "icon": "fas fa-bed",
+        "row": 2,
+        "script": "FFT.Macros.restSelectedTokens"
     }
+
 }

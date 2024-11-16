@@ -3,7 +3,7 @@ namespace FFT.Addons {
         name: string;
         icon: string;
         row: number;
-        script: string;
+        script: string; // Function path as string
     }
 
     export class ActionBar {
@@ -104,12 +104,14 @@ namespace FFT.Addons {
                 buttons.slice(i, i + columns).forEach(([id, button]) => {
                     const { name, icon, script } = button;
 
-                    const newButton = this.createButton(
-                        id,
-                        name,
-                        icon,
-                        (event) => import(script).then(m => m.default?.(event))
-                    );
+                    // Resolve the script function
+                    const action = this.resolveFunction(script);
+                    if (!action) {
+                        console.error(`Function "${script}" not found.`);
+                        return;
+                    }
+
+                    const newButton = this.createButton(id, name, icon, action);
 
                     row.appendChild(newButton);
                 });
@@ -117,6 +119,26 @@ namespace FFT.Addons {
                 rows[i / columns] = row;
             }
             return rows;
+        }
+
+        static resolveFunction(scriptPath: string): ((event: Event) => void) | null {
+            try {
+                const scriptParts = scriptPath.split('.');
+                let func = window as any;
+                for (const part of scriptParts) {
+                    func = func[part];
+                    if (!func) break;
+                }
+                if (typeof func === 'function') {
+                    return func;
+                } else {
+                    console.error(`"${scriptPath}" is not a valid function.`);
+                    return null;
+                }
+            } catch (error) {
+                console.error(`Error resolving function "${scriptPath}":`, error);
+                return null;
+            }
         }
 
         static makeDraggable(element: HTMLElement) {
