@@ -8,91 +8,111 @@ window.FFT.Macros = window.FFT.Macros || {};
 Hooks.once("ready", () => {
     FFT.Addons.ActionBar.initialize();
 });
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var FFT;
 (function (FFT) {
     var Addons;
     (function (Addons) {
         class ActionBar {
             static initialize() {
-                const existingActionBar = document.getElementById('fft-actionbar');
-                if (existingActionBar)
-                    existingActionBar.remove();
-                const actionBar = document.createElement('div');
-                actionBar.id = 'fft-actionbar';
-                Object.assign(actionBar.style, {
-                    position: 'fixed',
-                    top: '150px',
-                    left: '150px',
-                    zIndex: '60',
-                    display: 'flex',
-                    flexDirection: 'column', // Stack rows vertically
-                    gap: '4px',
-                    padding: '0px',
-                    background: 'rgb(11 10 19 / 75%)',
-                    border: '1px solid #111',
-                    borderRadius: '0', // Set to 0 to remove rounded edges
-                    boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)'
+                return __awaiter(this, void 0, void 0, function* () {
+                    const existingActionBar = document.getElementById('fft-actionbar');
+                    if (existingActionBar)
+                        existingActionBar.remove();
+                    const actionBar = document.createElement('div');
+                    actionBar.id = 'fft-actionbar';
+                    Object.assign(actionBar.style, {
+                        position: 'fixed',
+                        top: '150px',
+                        left: '150px',
+                        zIndex: '60',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        padding: '0px',
+                        background: 'rgb(11 10 19 / 75%)',
+                        border: '1px solid #111',
+                        borderRadius: '0',
+                        boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)',
+                    });
+                    const buttonData = yield this.fetchButtonData();
+                    const rows = this.createRows(buttonData);
+                    Object.values(rows).forEach(row => actionBar.appendChild(row));
+                    document.body.appendChild(actionBar);
+                    this.makeDraggable(actionBar);
                 });
-                const buttons = [
-                    { iconClass: 'fa fa-running', tooltip: 'Move' },
-                    { iconClass: 'fa fa-street-view', tooltip: 'Interact' },
-                    { iconClass: 'fa fa-fist-raised', tooltip: 'Action' },
-                    { iconClass: 'fa fa-tools', tooltip: 'Tools' },
-                    { iconClass: 'fas fa-people-arrows', tooltip: 'Team' },
-                    { iconClass: 'fas fa-book-medical', tooltip: 'More' }
-                ];
-                // Split buttons into rows (e.g., 3 buttons per row)
-                const columns = 3;
-                const rows = Math.ceil(buttons.length / columns);
-                for (let i = 0; i < rows; i++) {
+            }
+            static fetchButtonData() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    const response = yield fetch('modules/fftweaks/src/scripts/addons/monks-tokenbar/data/button-data.json');
+                    return yield response.json();
+                });
+            }
+            static createButton(id, title, iconClass, onClick) {
+                const buttonElem = document.createElement('button');
+                buttonElem.id = id;
+                buttonElem.title = title;
+                Object.assign(buttonElem.style, {
+                    width: '28px',
+                    height: '28px',
+                    background: 'rgb(0 0 0 / 0%)', // Default background is transparent
+                    border: '1px solid transparent',
+                    borderRadius: '4px',
+                    color: '#c9c7b8',
+                    textAlign: 'center',
+                    margin: '0',
+                    cursor: 'pointer',
+                    padding: '0',
+                    boxSizing: 'border-box',
+                    boxShadow: 'none', // Default no shadow
+                    transition: 'box-shadow 0.2s ease', // Smooth transition for hover effect
+                });
+                const iconElem = document.createElement('i');
+                iconElem.className = iconClass;
+                Object.assign(iconElem.style, {
+                    color: '#c9c7b8',
+                    fontFamily: 'Font Awesome 6 Pro',
+                    lineHeight: '28px',
+                    marginRight: '0',
+                    transition: 'text-shadow 0.2s ease', // Smooth transition for hover effect
+                });
+                buttonElem.appendChild(iconElem);
+                buttonElem.addEventListener('mouseenter', () => {
+                    iconElem.style.textShadow = '0 0 10px #ff6400'; // Glow effect
+                });
+                buttonElem.addEventListener('mouseleave', () => {
+                    iconElem.style.textShadow = 'none'; // Remove glow effect
+                });
+                buttonElem.addEventListener('click', onClick);
+                return buttonElem;
+            }
+            static createRows(buttonData) {
+                const rows = {};
+                const columns = 3; // Buttons per row
+                const buttons = Object.entries(buttonData);
+                for (let i = 0; i < buttons.length; i += columns) {
                     const row = document.createElement('div');
                     row.className = 'fft-actionbar-buttons';
                     Object.assign(row.style, {
                         display: 'flex',
                         flexDirection: 'row', // Align buttons horizontally
                         gap: '4px',
-                        margin: '4px 0', // Add margin to each row (columns)
                     });
-                    buttons.slice(i * columns, i * columns + columns).forEach(button => {
-                        const buttonElem = document.createElement('button');
-                        buttonElem.title = button.tooltip;
-                        Object.assign(buttonElem.style, {
-                            width: '28px',
-                            height: '28px',
-                            background: 'rgb(0 0 0 / 0%)', // Default background is transparent
-                            border: '1px solid transparent',
-                            borderRadius: '4px',
-                            color: '#c9c7b8',
-                            textAlign: 'center',
-                            margin: '0',
-                            cursor: 'pointer',
-                            padding: '0',
-                            boxSizing: 'border-box',
-                            boxShadow: 'none', // Default no shadow
-                            transition: 'box-shadow 0.2s ease' // Smooth transition for hover effect
-                        });
-                        const iconElem = document.createElement('i');
-                        iconElem.className = button.iconClass;
-                        Object.assign(iconElem.style, {
-                            color: '#c9c7b8',
-                            fontFamily: 'Font Awesome 6 Pro',
-                            lineHeight: '28px',
-                            marginRight: '0',
-                            transition: 'text-shadow 0.2s ease' // Smooth transition for hover effect
-                        });
-                        buttonElem.appendChild(iconElem);
-                        buttonElem.addEventListener('mouseenter', () => {
-                            iconElem.style.textShadow = '0 0 10px #ff6400'; // Glow effect
-                        });
-                        buttonElem.addEventListener('mouseleave', () => {
-                            iconElem.style.textShadow = 'none'; // Remove glow effect
-                        });
-                        row.appendChild(buttonElem);
+                    buttons.slice(i, i + columns).forEach(([id, button]) => {
+                        const { name, icon, script } = button;
+                        const newButton = this.createButton(id, name, icon, (event) => Promise.resolve(`${script}`).then(s => require(s)).then(m => { var _a; return (_a = m.default) === null || _a === void 0 ? void 0 : _a.call(m, event); }));
+                        row.appendChild(newButton);
                     });
-                    actionBar.appendChild(row);
+                    rows[i / columns] = row;
                 }
-                document.body.appendChild(actionBar);
-                this.makeDraggable(actionBar);
+                return rows;
             }
             static makeDraggable(element) {
                 let offsetX = 0, offsetY = 0, mouseX = 0, mouseY = 0;
@@ -169,15 +189,6 @@ window.FFT.Macros.healSelectedTokens = function (event) {
         actor.update({
             "system.attributes.hp.value": Math.min(actor.system.attributes.hp.value + healValue, actor.system.attributes.hp.max),
         });
-    });
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 window.FFT.Macros.hurtSelectedTokens = function () {
