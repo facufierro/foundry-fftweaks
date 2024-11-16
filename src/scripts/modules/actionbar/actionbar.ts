@@ -3,7 +3,7 @@ namespace FFT.Addons {
         name: string;
         icon: string;
         row: number;
-        script: string; // Function path as string
+        script: string;
     }
 
     export class ActionBar {
@@ -51,7 +51,7 @@ namespace FFT.Addons {
         }
 
         static async fetchButtonData(): Promise<Record<string, ButtonData>> {
-            const response = await fetch('modules/fftweaks/src/scripts/addons/monks-tokenbar/data/button-data.json');
+            const response = await fetch('modules/fftweaks/src/scripts/modules/actionbar/data/button-data.json');
             return await response.json();
         }
 

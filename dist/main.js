@@ -8,6 +8,22 @@ window.FFT.Macros = window.FFT.Macros || {};
 Hooks.once("ready", () => {
     FFT.Addons.ActionBar.initialize();
 });
+var FFT;
+(function (FFT) {
+    class Character {
+        constructor(actorId) {
+            var _a;
+            const actor = (_a = game.actors) === null || _a === void 0 ? void 0 : _a.get(actorId);
+            if (!actor)
+                throw new Error(`Actor with ID ${actorId} not found.`);
+            this.actor = actor;
+            this.abilities = this.actor.system.abilities;
+            FFT.Debug.Success(`Initialized character: ${this.actor.name}`);
+            console.log(this.actor);
+        }
+    }
+    FFT.Character = Character;
+})(FFT || (FFT = {}));
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -63,7 +79,7 @@ var FFT;
             }
             static fetchButtonData() {
                 return __awaiter(this, void 0, void 0, function* () {
-                    const response = yield fetch('modules/fftweaks/src/scripts/addons/monks-tokenbar/data/button-data.json');
+                    const response = yield fetch('modules/fftweaks/src/scripts/modules/actionbar/data/button-data.json');
                     return yield response.json();
                 });
             }
@@ -287,22 +303,6 @@ window.FFT.Macros.restSelectedTokens = function (event) {
         }
     });
 };
-var FFT;
-(function (FFT) {
-    class Character {
-        constructor(actorId) {
-            var _a;
-            const actor = (_a = game.actors) === null || _a === void 0 ? void 0 : _a.get(actorId);
-            if (!actor)
-                throw new Error(`Actor with ID ${actorId} not found.`);
-            this.actor = actor;
-            this.abilities = this.actor.system.abilities;
-            FFT.Debug.Success(`Initialized character: ${this.actor.name}`);
-            console.log(this.actor);
-        }
-    }
-    FFT.Character = Character;
-})(FFT || (FFT = {}));
 var FFT;
 (function (FFT) {
     class Debug {
