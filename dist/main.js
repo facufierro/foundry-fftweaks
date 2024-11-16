@@ -265,14 +265,14 @@ window.FFT.Macros.restSelectedTokens = function (event) {
             if (event.shiftKey) {
                 // Shift key: Perform a Short Rest
                 if (actor.type === "character" || actor.type === "npc") {
-                    yield actor.longRest(); // Replace with shortRest when applicable
+                    yield actor.shortRest({ dialog: false }); // Short Rest without confirmation
                     (_c = ui.notifications) === null || _c === void 0 ? void 0 : _c.info(`${actor.name} has completed a Short Rest.`);
                 }
             }
             else {
                 // Default: Perform a Long Rest
                 if (actor.type === "character" || actor.type === "npc") {
-                    yield actor.longRest();
+                    yield actor.longRest({ dialog: false, newDay: false }); // Long Rest without confirmation and no day advancement
                     (_d = ui.notifications) === null || _d === void 0 ? void 0 : _d.info(`${actor.name} has completed a Long Rest.`);
                 }
             }
