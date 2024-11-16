@@ -213,8 +213,13 @@ var FFT;
 //     };
 // }
 window.FFT.Macros.healSelectedTokens = function (event) {
-    var _a;
-    (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled.forEach((token) => {
+    var _a, _b;
+    const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
+    if (!selectedTokens || selectedTokens.length === 0) {
+        (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn("No tokens selected.");
+        return;
+    }
+    for (const token of selectedTokens) {
         const actor = token.actor;
         let healValue = actor.system.attributes.hp.max; // Default: Heal to max HP
         if (event.shiftKey) {
@@ -229,11 +234,16 @@ window.FFT.Macros.healSelectedTokens = function (event) {
         actor.update({
             "system.attributes.hp.value": Math.min(actor.system.attributes.hp.value + healValue, actor.system.attributes.hp.max),
         });
-    });
+    }
 };
 window.FFT.Macros.hurtSelectedTokens = function (event) {
-    var _a;
-    (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled.forEach((token) => {
+    var _a, _b;
+    const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
+    if (!selectedTokens || selectedTokens.length === 0) {
+        (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn("No tokens selected.");
+        return;
+    }
+    for (const token of selectedTokens) {
         const actor = token.actor;
         let damageValue = actor.system.attributes.hp.max; // Default: Damage to 0 HP
         if (event.shiftKey) {
@@ -248,11 +258,11 @@ window.FFT.Macros.hurtSelectedTokens = function (event) {
         actor.update({
             "system.attributes.hp.value": Math.max(actor.system.attributes.hp.value - damageValue, 0), // Ensure HP doesn't go below 0
         });
-    });
+    }
 };
 window.FFT.Macros.restSelectedTokens = function (event) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b, _c, _d;
+        var _a, _b;
         const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
         if (!selectedTokens || selectedTokens.length === 0) {
             (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn("No tokens selected.");
@@ -265,15 +275,13 @@ window.FFT.Macros.restSelectedTokens = function (event) {
             if (event.shiftKey) {
                 // Shift key: Perform a Short Rest
                 if (actor.type === "character" || actor.type === "npc") {
-                    yield actor.shortRest({ dialog: false }); // Short Rest without confirmation
-                    (_c = ui.notifications) === null || _c === void 0 ? void 0 : _c.info(`${actor.name} has completed a Short Rest.`);
+                    yield actor.shortRest({ dialog: false });
                 }
             }
             else {
                 // Default: Perform a Long Rest
                 if (actor.type === "character" || actor.type === "npc") {
-                    yield actor.longRest({ dialog: false, newDay: false }); // Long Rest without confirmation and no day advancement
-                    (_d = ui.notifications) === null || _d === void 0 ? void 0 : _d.info(`${actor.name} has completed a Long Rest.`);
+                    yield actor.longRest({ dialog: false, newDay: false });
                 }
             }
         }

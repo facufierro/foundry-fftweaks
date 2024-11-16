@@ -12,14 +12,12 @@
         if (event.shiftKey) {
             // Shift key: Perform a Short Rest
             if (actor.type === "character" || actor.type === "npc") {
-                await actor.shortRest({ dialog: false }); // Short Rest without confirmation
-                ui.notifications?.info(`${actor.name} has completed a Short Rest.`);
+                await actor.shortRest({ dialog: false });
             }
         } else {
             // Default: Perform a Long Rest
             if (actor.type === "character" || actor.type === "npc") {
-                await actor.longRest({ dialog: false, newDay: false }); // Long Rest without confirmation and no day advancement
-                ui.notifications?.info(`${actor.name} has completed a Long Rest.`);
+                await actor.longRest({ dialog: false, newDay: false });
             }
         }
     }

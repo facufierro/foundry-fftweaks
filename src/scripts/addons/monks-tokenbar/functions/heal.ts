@@ -1,5 +1,10 @@
 (window as any).FFT.Macros.healSelectedTokens = function (event: MouseEvent) {
-    canvas.tokens?.controlled.forEach((token) => {
+    const selectedTokens = canvas.tokens?.controlled;
+    if (!selectedTokens || selectedTokens.length === 0) {
+        ui.notifications?.warn("No tokens selected.");
+        return;
+    }
+    for (const token of selectedTokens) {
         const actor = (token.actor as any);
 
         let healValue = actor.system.attributes.hp.max; // Default: Heal to max HP
@@ -14,5 +19,5 @@
         actor.update({
             "system.attributes.hp.value": Math.min(actor.system.attributes.hp.value + healValue, actor.system.attributes.hp.max),
         });
-    });
+    }
 };
