@@ -4,7 +4,7 @@ window.FFT = window.FFT || {};
 window.FFT.Addons = window.FFT.Addons || {};
 window.FFT.Functions = window.FFT.Functions || {};
 Hooks.once("ready", () => {
-    FFT.Addons.ActionBar.initialize();
+    FFT.Addons.FunctionBar.initialize();
 });
 // // scripts/monksTokenBarExtender/combat/combat.js
 // namespace FFT {
@@ -123,17 +123,33 @@ window.FFT.Functions.restSelectedTokens = function (event) {
 };
 var FFT;
 (function (FFT) {
+    class Character {
+        constructor(actorId) {
+            var _a;
+            const actor = (_a = game.actors) === null || _a === void 0 ? void 0 : _a.get(actorId);
+            if (!actor)
+                throw new Error(`Actor with ID ${actorId} not found.`);
+            this.actor = actor;
+            this.abilities = this.actor.system.abilities;
+            FFT.Debug.Success(`Initialized character: ${this.actor.name}`);
+            console.log(this.actor);
+        }
+    }
+    FFT.Character = Character;
+})(FFT || (FFT = {}));
+var FFT;
+(function (FFT) {
     var Addons;
     (function (Addons) {
-        class ActionBar {
+        class FunctionBar {
             static initialize() {
                 return __awaiter(this, void 0, void 0, function* () {
-                    const existingActionBar = document.getElementById('fft-actionbar');
-                    if (existingActionBar)
-                        existingActionBar.remove();
-                    const actionBar = document.createElement('div');
-                    actionBar.id = 'fft-actionbar';
-                    Object.assign(actionBar.style, {
+                    const existingFunctionBar = document.getElementById('fft-functionbar');
+                    if (existingFunctionBar)
+                        existingFunctionBar.remove();
+                    const functionBar = document.createElement('div');
+                    functionBar.id = 'fft-functionbar';
+                    Object.assign(functionBar.style, {
                         position: 'fixed',
                         top: '150px',
                         left: '150px',
@@ -148,7 +164,7 @@ var FFT;
                     });
                     // Create the move handle (plain bar without icon)
                     const moveHandle = document.createElement('div');
-                    moveHandle.id = 'fft-actionbar-handle';
+                    moveHandle.id = 'fft-functionbar-handle';
                     Object.assign(moveHandle.style, {
                         width: '100%',
                         height: '20px',
@@ -156,18 +172,18 @@ var FFT;
                         cursor: 'move',
                         borderBottom: '1px solid #111',
                     });
-                    actionBar.appendChild(moveHandle);
+                    functionBar.appendChild(moveHandle);
                     // Fetch and create buttons
                     const buttonData = yield this.fetchButtonData();
                     const rows = this.createRows(buttonData);
-                    Object.values(rows).forEach(row => actionBar.appendChild(row));
-                    document.body.appendChild(actionBar);
-                    this.makeDraggable(actionBar, moveHandle);
+                    Object.values(rows).forEach(row => functionBar.appendChild(row));
+                    document.body.appendChild(functionBar);
+                    this.makeDraggable(functionBar, moveHandle);
                 });
             }
             static fetchButtonData() {
                 return __awaiter(this, void 0, void 0, function* () {
-                    const response = yield fetch('modules/fftweaks/src/modules/actionbar/data/button-data.json');
+                    const response = yield fetch('modules/fftweaks/src/modules/function-bar/data/button-data.json');
                     return yield response.json();
                 });
             }
@@ -215,7 +231,7 @@ var FFT;
                 const buttons = Object.entries(buttonData);
                 for (let i = 0; i < buttons.length; i += columns) {
                     const row = document.createElement('div');
-                    row.className = 'fft-actionbar-buttons';
+                    row.className = 'fft-functionbar-buttons';
                     Object.assign(row.style, {
                         display: 'flex',
                         flexDirection: 'row', // Align buttons horizontally
@@ -224,12 +240,12 @@ var FFT;
                     buttons.slice(i, i + columns).forEach(([id, button]) => {
                         const { name, icon, script } = button;
                         // Resolve the script function
-                        const action = this.resolveFunction(script);
-                        if (!action) {
+                        const task = this.resolveFunction(script);
+                        if (!task) {
                             console.error(`Function "${script}" not found.`);
                             return;
                         }
-                        const newButton = this.createButton(id, name, icon, action);
+                        const newButton = this.createButton(id, name, icon, task);
                         row.appendChild(newButton);
                     });
                     rows[i / columns] = row;
@@ -282,24 +298,8 @@ var FFT;
                 handle.addEventListener('mousedown', onMouseDown);
             }
         }
-        Addons.ActionBar = ActionBar;
+        Addons.FunctionBar = FunctionBar;
     })(Addons = FFT.Addons || (FFT.Addons = {}));
-})(FFT || (FFT = {}));
-var FFT;
-(function (FFT) {
-    class Character {
-        constructor(actorId) {
-            var _a;
-            const actor = (_a = game.actors) === null || _a === void 0 ? void 0 : _a.get(actorId);
-            if (!actor)
-                throw new Error(`Actor with ID ${actorId} not found.`);
-            this.actor = actor;
-            this.abilities = this.actor.system.abilities;
-            FFT.Debug.Success(`Initialized character: ${this.actor.name}`);
-            console.log(this.actor);
-        }
-    }
-    FFT.Character = Character;
 })(FFT || (FFT = {}));
 var FFT;
 (function (FFT) {

@@ -6,5 +6,5 @@
 (window as any).FFT.Functions = (window as any).FFT.Functions || {};
 
 Hooks.once("ready", () => {
-    FFT.Addons.ActionBar.initialize();
+    FFT.Addons.FunctionBar.initialize();
 });

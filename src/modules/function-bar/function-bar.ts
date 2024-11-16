@@ -6,14 +6,14 @@ namespace FFT.Addons {
         script: string;
     }
 
-    export class ActionBar {
+    export class FunctionBar {
         static async initialize() {
-            const existingActionBar = document.getElementById('fft-actionbar');
-            if (existingActionBar) existingActionBar.remove();
+            const existingFunctionBar = document.getElementById('fft-functionbar');
+            if (existingFunctionBar) existingFunctionBar.remove();
 
-            const actionBar = document.createElement('div');
-            actionBar.id = 'fft-actionbar';
-            Object.assign(actionBar.style, {
+            const functionBar = document.createElement('div');
+            functionBar.id = 'fft-functionbar';
+            Object.assign(functionBar.style, {
                 position: 'fixed',
                 top: '150px',
                 left: '150px',
@@ -29,7 +29,7 @@ namespace FFT.Addons {
 
             // Create the move handle (plain bar without icon)
             const moveHandle = document.createElement('div');
-            moveHandle.id = 'fft-actionbar-handle';
+            moveHandle.id = 'fft-functionbar-handle';
             Object.assign(moveHandle.style, {
                 width: '100%',
                 height: '20px',
@@ -38,20 +38,20 @@ namespace FFT.Addons {
                 borderBottom: '1px solid #111',
             });
 
-            actionBar.appendChild(moveHandle);
+            functionBar.appendChild(moveHandle);
 
             // Fetch and create buttons
             const buttonData = await this.fetchButtonData();
             const rows = this.createRows(buttonData);
 
-            Object.values(rows).forEach(row => actionBar.appendChild(row));
+            Object.values(rows).forEach(row => functionBar.appendChild(row));
 
-            document.body.appendChild(actionBar);
-            this.makeDraggable(actionBar, moveHandle);
+            document.body.appendChild(functionBar);
+            this.makeDraggable(functionBar, moveHandle);
         }
 
         static async fetchButtonData(): Promise<Record<string, ButtonData>> {
-            const response = await fetch('modules/fftweaks/src/modules/actionbar/data/button-data.json');
+            const response = await fetch('modules/fftweaks/src/modules/function-bar/data/button-data.json');
             return await response.json();
         }
 
@@ -107,7 +107,7 @@ namespace FFT.Addons {
 
             for (let i = 0; i < buttons.length; i += columns) {
                 const row = document.createElement('div');
-                row.className = 'fft-actionbar-buttons';
+                row.className = 'fft-functionbar-buttons';
                 Object.assign(row.style, {
                     display: 'flex',
                     flexDirection: 'row', // Align buttons horizontally
@@ -118,13 +118,13 @@ namespace FFT.Addons {
                     const { name, icon, script } = button;
 
                     // Resolve the script function
-                    const action = this.resolveFunction(script);
-                    if (!action) {
+                    const task = this.resolveFunction(script);
+                    if (!task) {
                         console.error(`Function "${script}" not found.`);
                         return;
                     }
 
-                    const newButton = this.createButton(id, name, icon, action);
+                    const newButton = this.createButton(id, name, icon, task);
 
                     row.appendChild(newButton);
                 });
