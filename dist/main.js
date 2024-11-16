@@ -136,161 +136,9 @@ var FFT;
         class FunctionBar {
             static initialize() {
                 return __awaiter(this, void 0, void 0, function* () {
-                    const existingFunctionBar = document.getElementById('fft-functionbar');
-                    if (existingFunctionBar)
-                        existingFunctionBar.remove();
-                    const functionBar = document.createElement('div');
-                    functionBar.id = 'fft-functionbar';
-                    Object.assign(functionBar.style, {
-                        position: 'fixed',
-                        top: '150px',
-                        left: '150px',
-                        zIndex: '60',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        padding: '0px',
-                        background: 'rgb(11 10 19 / 75%)',
-                        border: '1px solid #111',
-                        borderRadius: '0',
-                        boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)',
-                    });
-                    // Create the move handle (plain bar without icon)
-                    const moveHandle = document.createElement('div');
-                    moveHandle.id = 'fft-functionbar-handle';
-                    Object.assign(moveHandle.style, {
-                        width: '100%',
-                        height: '20px',
-                        background: 'rgb(0 0 0 / 50%)',
-                        cursor: 'move',
-                        borderBottom: '1px solid #111',
-                    });
-                    functionBar.appendChild(moveHandle);
-                    // Fetch and create buttons
-                    const buttonData = yield this.fetchButtonData();
-                    const rows = this.createRows(buttonData);
-                    Object.values(rows).forEach(row => functionBar.appendChild(row));
-                    document.body.appendChild(functionBar);
-                    this.makeDraggable(functionBar, moveHandle);
+                    const buttonData = yield FFT.UI.fetchButtonData();
+                    FFT.UI.createFunctionBar(buttonData);
                 });
-            }
-            static fetchButtonData() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    const response = yield fetch('modules/fftweaks/src/modules/function-bar/data/button-data.json');
-                    if (!response.ok) {
-                        console.error("Failed to fetch button data:", response.statusText);
-                        return {};
-                    }
-                    return yield response.json();
-                });
-            }
-            static createButton(id, title, iconClass, onClick) {
-                const buttonElem = document.createElement('button');
-                buttonElem.id = id;
-                buttonElem.title = title;
-                Object.assign(buttonElem.style, {
-                    width: '28px',
-                    height: '28px',
-                    background: 'rgb(0 0 0 / 0%)', // Default background is transparent
-                    border: '1px solid transparent',
-                    borderRadius: '4px',
-                    color: '#c9c7b8',
-                    textAlign: 'center',
-                    margin: '0',
-                    cursor: 'pointer',
-                    padding: '0',
-                    boxSizing: 'border-box',
-                    boxShadow: 'none', // Default no shadow
-                    transition: 'box-shadow 0.2s ease', // Smooth transition for hover effect
-                });
-                const iconElem = document.createElement('i');
-                iconElem.className = iconClass;
-                Object.assign(iconElem.style, {
-                    color: '#c9c7b8',
-                    fontFamily: 'Font Awesome 6 Pro',
-                    lineHeight: '28px',
-                    marginRight: '0',
-                    transition: 'text-shadow 0.2s ease', // Smooth transition for hover effect
-                });
-                buttonElem.appendChild(iconElem);
-                buttonElem.addEventListener('mouseenter', () => {
-                    iconElem.style.textShadow = '0 0 10px #ff6400'; // Glow effect
-                });
-                buttonElem.addEventListener('mouseleave', () => {
-                    iconElem.style.textShadow = 'none'; // Remove glow effect
-                });
-                buttonElem.addEventListener('click', onClick);
-                return buttonElem;
-            }
-            static createRows(buttonData) {
-                const rows = {};
-                Object.entries(buttonData).forEach(([id, button]) => {
-                    const { name, icon, script, row } = button;
-                    // Ensure the row exists in the rows object
-                    if (!rows[row]) {
-                        rows[row] = document.createElement('div');
-                        rows[row].className = 'fft-functionbar-buttons';
-                        Object.assign(rows[row].style, {
-                            display: 'flex',
-                            flexDirection: 'row', // Align buttons horizontally
-                            gap: '4px',
-                        });
-                    }
-                    // Resolve the script function
-                    const task = this.resolveFunction(script);
-                    if (!task) {
-                        console.error(`Function "${script}" not found.`);
-                        return;
-                    }
-                    // Create the button and add it to the appropriate row
-                    const newButton = this.createButton(id, name, icon, task);
-                    rows[row].appendChild(newButton);
-                });
-                return rows;
-            }
-            static resolveFunction(scriptPath) {
-                try {
-                    const scriptParts = scriptPath.split('.');
-                    let func = window;
-                    for (const part of scriptParts) {
-                        func = func[part];
-                        if (!func)
-                            break;
-                    }
-                    if (typeof func === 'function') {
-                        return func;
-                    }
-                    else {
-                        console.error(`"${scriptPath}" is not a valid function.`);
-                        return null;
-                    }
-                }
-                catch (error) {
-                    console.error(`Error resolving function "${scriptPath}":`, error);
-                    return null;
-                }
-            }
-            static makeDraggable(element, handle) {
-                let offsetX = 0, offsetY = 0, mouseX = 0, mouseY = 0;
-                const onMouseDown = (event) => {
-                    mouseX = event.clientX;
-                    mouseY = event.clientY;
-                    document.addEventListener('mousemove', onMouseMove);
-                    document.addEventListener('mouseup', onMouseUp);
-                };
-                const onMouseMove = (event) => {
-                    offsetX = event.clientX - mouseX;
-                    offsetY = event.clientY - mouseY;
-                    mouseX = event.clientX;
-                    mouseY = event.clientY;
-                    const rect = element.getBoundingClientRect();
-                    element.style.left = rect.left + offsetX + 'px';
-                    element.style.top = rect.top + offsetY + 'px';
-                };
-                const onMouseUp = () => {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    document.removeEventListener('mouseup', onMouseUp);
-                };
-                handle.addEventListener('mousedown', onMouseDown);
             }
         }
         Addons.FunctionBar = FunctionBar;
@@ -317,17 +165,159 @@ var FFT;
 var FFT;
 (function (FFT) {
     class UI {
-        static createButton({ id = '', classes = [], icon = '', tooltip = '', onClick = null, }) {
-            const button = document.createElement('div');
-            if (id)
-                button.id = id;
-            button.className = ['control-icon', ...classes].join(' ');
-            if (tooltip)
-                button.title = tooltip;
-            button.innerHTML = `<i class="${icon}"></i>`;
-            if (onClick)
-                button.addEventListener('click', onClick); // Pass event automatically
-            return button;
+        // Fetch button data from JSON
+        static fetchButtonData() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const response = yield fetch('modules/fftweaks/src/modules/function-bar/data/button-data.json');
+                if (!response.ok) {
+                    console.error("Failed to fetch button data:", response.statusText);
+                    return {};
+                }
+                return yield response.json();
+            });
+        }
+        // Create the function bar with provided button data
+        static createFunctionBar(buttonData) {
+            // Remove existing function bar if it exists
+            const existingFunctionBar = document.getElementById('fft-functionbar');
+            if (existingFunctionBar)
+                existingFunctionBar.remove();
+            // Create the main container
+            const functionBar = document.createElement('div');
+            functionBar.id = 'fft-functionbar';
+            Object.assign(functionBar.style, {
+                position: 'fixed',
+                top: '150px',
+                left: '150px',
+                zIndex: '60',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '0px',
+                background: 'rgb(11 10 19 / 75%)',
+                border: '1px solid #111',
+                borderRadius: '0',
+                boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)',
+            });
+            // Create the move handle (plain bar without icon)
+            const moveHandle = document.createElement('div');
+            moveHandle.id = 'fft-functionbar-handle';
+            Object.assign(moveHandle.style, {
+                width: '100%',
+                height: '20px',
+                background: 'rgb(0 0 0 / 50%)',
+                cursor: 'move',
+                borderBottom: '1px solid #111',
+            });
+            functionBar.appendChild(moveHandle);
+            // Create and append buttons
+            const buttonRow = document.createElement('div');
+            Object.assign(buttonRow.style, {
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '4px',
+            });
+            Object.entries(buttonData).forEach(([id, button]) => {
+                const { name, icon, script } = button;
+                // Resolve the script function
+                const onClick = this.resolveFunction(script);
+                if (!onClick) {
+                    console.error(`Function "${script}" not found.`);
+                    return;
+                }
+                const buttonElem = this.createButton(id, name, icon, onClick);
+                buttonRow.appendChild(buttonElem);
+            });
+            functionBar.appendChild(buttonRow);
+            // Make the function bar draggable
+            this.makeDraggable(functionBar, moveHandle);
+            // Append to document body
+            document.body.appendChild(functionBar);
+        }
+        // Helper function to create a button
+        static createButton(id, title, icon, onClick) {
+            const buttonElem = document.createElement('button');
+            buttonElem.id = id;
+            buttonElem.title = title;
+            Object.assign(buttonElem.style, {
+                width: '28px',
+                height: '28px',
+                background: 'rgb(0 0 0 / 0%)', // Default background is transparent
+                border: '1px solid transparent',
+                borderRadius: '4px',
+                color: '#c9c7b8',
+                textAlign: 'center',
+                margin: '0',
+                cursor: 'pointer',
+                padding: '0',
+                boxSizing: 'border-box',
+                boxShadow: 'none', // Default no shadow
+                transition: 'box-shadow 0.2s ease', // Smooth transition for hover effect
+            });
+            const iconElem = document.createElement('i');
+            iconElem.className = icon;
+            Object.assign(iconElem.style, {
+                color: '#c9c7b8',
+                fontFamily: 'Font Awesome 6 Pro',
+                lineHeight: '28px',
+                marginRight: '0',
+                transition: 'text-shadow 0.2s ease', // Smooth transition for hover effect
+            });
+            buttonElem.appendChild(iconElem);
+            buttonElem.addEventListener('mouseenter', () => {
+                iconElem.style.textShadow = '0 0 10px #ff6400'; // Glow effect
+            });
+            buttonElem.addEventListener('mouseleave', () => {
+                iconElem.style.textShadow = 'none'; // Remove glow effect
+            });
+            buttonElem.addEventListener('click', onClick);
+            return buttonElem;
+        }
+        // Helper function to resolve a script function path
+        static resolveFunction(scriptPath) {
+            try {
+                const scriptParts = scriptPath.split('.');
+                let func = window;
+                for (const part of scriptParts) {
+                    func = func[part];
+                    if (!func)
+                        break;
+                }
+                if (typeof func === 'function') {
+                    return func;
+                }
+                else {
+                    console.error(`"${scriptPath}" is not a valid function.`);
+                    return null;
+                }
+            }
+            catch (error) {
+                console.error(`Error resolving function "${scriptPath}":`, error);
+                return null;
+            }
+        }
+        // Helper function to make the bar draggable
+        static makeDraggable(element, handle) {
+            let offsetX = 0, offsetY = 0, mouseX = 0, mouseY = 0;
+            const onMouseDown = (event) => {
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            };
+            const onMouseMove = (event) => {
+                offsetX = event.clientX - mouseX;
+                offsetY = event.clientY - mouseY;
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+                const rect = element.getBoundingClientRect();
+                element.style.left = rect.left + offsetX + 'px';
+                element.style.top = rect.top + offsetY + 'px';
+            };
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+            handle.addEventListener('mousedown', onMouseDown);
         }
     }
     FFT.UI = UI;
