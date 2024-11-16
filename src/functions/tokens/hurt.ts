@@ -1,4 +1,4 @@
-(window as any).FFT.Macros.hurtSelectedTokens = function (event: MouseEvent) {
+(window as any).FFT.Functions.hurtSelectedTokens = function (event: MouseEvent) {
     const selectedTokens = canvas.tokens?.controlled;
     if (!selectedTokens || selectedTokens.length === 0) {
         ui.notifications?.warn("No tokens selected.");

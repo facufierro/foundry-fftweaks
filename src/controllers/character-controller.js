@@ -1,6 +1,6 @@
 // path: src/scripts/models/character.js
 
-import { Character } from '../models/character.js';
+import { Character } from '../modules/characters/character.js';
 
 /**
  * CharacterController is responsible for initializing all player characters

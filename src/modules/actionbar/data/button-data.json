@@ -3,19 +3,19 @@
         "name": "Heal",
         "icon": "fas fa-heart",
         "row": 1,
-        "script": "FFT.Macros.healSelectedTokens"
+        "script": "FFT.Functions.healSelectedTokens"
     },
     "hurt": {
         "name": "Hurt",
         "icon": "fas fa-heart-crack",
         "row": 1,
-        "script": "FFT.Macros.hurtSelectedTokens"
+        "script": "FFT.Functions.hurtSelectedTokens"
     },
     "rest": {
         "name": "Rest",
         "icon": "fas fa-bed",
         "row": 2,
-        "script": "FFT.Macros.restSelectedTokens"
+        "script": "FFT.Functions.restSelectedTokens"
     }
 
 }

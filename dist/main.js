@@ -1,9 +1,9 @@
 /// <reference types="@league-of-foundry-developers/foundry-vtt-types" />
 /// <reference types="@league-of-foundry-developers/foundry-vtt-dnd5e-types" />
-// Initialize FFT.Macros first
+// Initialize FFT.Functions first
 window.FFT = window.FFT || {};
 window.FFT.Addons = window.FFT.Addons || {};
-window.FFT.Macros = window.FFT.Macros || {};
+window.FFT.Functions = window.FFT.Functions || {};
 // Initialize MonksTokenbar after macros are set
 Hooks.once("ready", () => {
     FFT.Addons.ActionBar.initialize();
@@ -39,7 +39,7 @@ Hooks.once("ready", () => {
 //         }
 //     };
 // }
-window.FFT.Macros.healSelectedTokens = function (event) {
+window.FFT.Functions.healSelectedTokens = function (event) {
     var _a, _b;
     const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
     if (!selectedTokens || selectedTokens.length === 0) {
@@ -63,7 +63,7 @@ window.FFT.Macros.healSelectedTokens = function (event) {
         });
     }
 };
-window.FFT.Macros.hurtSelectedTokens = function (event) {
+window.FFT.Functions.hurtSelectedTokens = function (event) {
     var _a, _b;
     const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
     if (!selectedTokens || selectedTokens.length === 0) {
@@ -96,7 +96,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-window.FFT.Macros.restSelectedTokens = function (event) {
+window.FFT.Functions.restSelectedTokens = function (event) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a, _b;
         const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
@@ -123,22 +123,6 @@ window.FFT.Macros.restSelectedTokens = function (event) {
         }
     });
 };
-var FFT;
-(function (FFT) {
-    class Character {
-        constructor(actorId) {
-            var _a;
-            const actor = (_a = game.actors) === null || _a === void 0 ? void 0 : _a.get(actorId);
-            if (!actor)
-                throw new Error(`Actor with ID ${actorId} not found.`);
-            this.actor = actor;
-            this.abilities = this.actor.system.abilities;
-            FFT.Debug.Success(`Initialized character: ${this.actor.name}`);
-            console.log(this.actor);
-        }
-    }
-    FFT.Character = Character;
-})(FFT || (FFT = {}));
 var FFT;
 (function (FFT) {
     var Addons;
@@ -302,6 +286,22 @@ var FFT;
         }
         Addons.ActionBar = ActionBar;
     })(Addons = FFT.Addons || (FFT.Addons = {}));
+})(FFT || (FFT = {}));
+var FFT;
+(function (FFT) {
+    class Character {
+        constructor(actorId) {
+            var _a;
+            const actor = (_a = game.actors) === null || _a === void 0 ? void 0 : _a.get(actorId);
+            if (!actor)
+                throw new Error(`Actor with ID ${actorId} not found.`);
+            this.actor = actor;
+            this.abilities = this.actor.system.abilities;
+            FFT.Debug.Success(`Initialized character: ${this.actor.name}`);
+            console.log(this.actor);
+        }
+    }
+    FFT.Character = Character;
 })(FFT || (FFT = {}));
 var FFT;
 (function (FFT) {
