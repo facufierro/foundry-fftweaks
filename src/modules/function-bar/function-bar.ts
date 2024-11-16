@@ -1,6 +1,11 @@
 namespace FFT.Addons {
     export class FunctionBar {
         static async initialize() {
+            // Check if the user is a DM
+            if (!game.user.isGM) {
+                return;
+            }
+
             const buttonData = await FFT.UI.fetchButtonData();
 
             // Transform button data into the required format

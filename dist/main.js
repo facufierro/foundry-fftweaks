@@ -136,6 +136,10 @@ var FFT;
         class FunctionBar {
             static initialize() {
                 return __awaiter(this, void 0, void 0, function* () {
+                    // Check if the user is a DM
+                    if (!game.user.isGM) {
+                        return;
+                    }
                     const buttonData = yield FFT.UI.fetchButtonData();
                     // Transform button data into the required format
                     const buttons = Object.entries(buttonData).map(([id, { name, icon, script }]) => ({
