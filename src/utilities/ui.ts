@@ -10,19 +10,27 @@ namespace FFT {
             return await response.json();
         }
 
-        // Create the function bar with provided button data
-        static createFunctionBar(buttonData: Record<string, { name: string; icon: string; script: string }>) {
-            // Remove existing function bar if it exists
-            const existingFunctionBar = document.getElementById('fft-functionbar');
-            if (existingFunctionBar) existingFunctionBar.remove();
+        // Create a customizable form with original styles and functionality
+        static createForm({
+            id = 'fft-functionbar',
+            position = { top: '150px', left: '150px' },
+            buttons = [],
+        }: {
+            id?: string;
+            position?: { top: string; left: string };
+            buttons: Array<{ id: string; title: string; icon: string; onClick: (event: Event) => void }>;
+        }): HTMLElement {
+            // Remove existing form if it exists
+            const existingForm = document.getElementById(id);
+            if (existingForm) existingForm.remove();
 
-            // Create the main container
-            const functionBar = document.createElement('div');
-            functionBar.id = 'fft-functionbar';
-            Object.assign(functionBar.style, {
+            // Create the main container with original styles
+            const form = document.createElement('div');
+            form.id = id;
+            Object.assign(form.style, {
                 position: 'fixed',
-                top: '150px',
-                left: '150px',
+                top: position.top,
+                left: position.left,
                 zIndex: '60',
                 display: 'flex',
                 flexDirection: 'column',
@@ -33,9 +41,9 @@ namespace FFT {
                 boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)',
             });
 
-            // Create the move handle (plain bar without icon)
+            // Create the move handle with original styles
             const moveHandle = document.createElement('div');
-            moveHandle.id = 'fft-functionbar-handle';
+            moveHandle.id = `${id}-handle`;
             Object.assign(moveHandle.style, {
                 width: '100%',
                 height: '20px',
@@ -44,40 +52,35 @@ namespace FFT {
                 borderBottom: '1px solid #111',
             });
 
-            functionBar.appendChild(moveHandle);
+            form.appendChild(moveHandle);
 
-            // Create and append buttons
+            // Create and append button container
             const buttonRow = document.createElement('div');
             Object.assign(buttonRow.style, {
                 display: 'flex',
                 flexDirection: 'row',
                 gap: '4px',
+                padding: '4px',
             });
 
-            Object.entries(buttonData).forEach(([id, button]) => {
-                const { name, icon, script } = button;
-
-                // Resolve the script function
-                const onClick = this.resolveFunction(script);
-                if (!onClick) {
-                    console.error(`Function "${script}" not found.`);
-                    return;
-                }
-
-                const buttonElem = this.createButton(id, name, icon, onClick);
-                buttonRow.appendChild(buttonElem);
+            // Create buttons and append them to the button row
+            buttons.forEach(({ id, title, icon, onClick }) => {
+                const button = this.createButton(id, title, icon, onClick);
+                buttonRow.appendChild(button);
             });
 
-            functionBar.appendChild(buttonRow);
+            form.appendChild(buttonRow);
 
-            // Make the function bar draggable
-            this.makeDraggable(functionBar, moveHandle);
+            // Make the form draggable
+            this.makeDraggable(form, moveHandle);
 
-            // Append to document body
-            document.body.appendChild(functionBar);
+            // Append to the document body
+            document.body.appendChild(form);
+
+            return form;
         }
 
-        // Helper function to create a button
+        // Helper function to create a button with original styles
         static createButton(id: string, title: string, icon: string, onClick: (event: Event) => void): HTMLElement {
             const buttonElem = document.createElement('button');
             buttonElem.id = id;
@@ -85,7 +88,7 @@ namespace FFT {
             Object.assign(buttonElem.style, {
                 width: '28px',
                 height: '28px',
-                background: 'rgb(0 0 0 / 0%)', // Default background is transparent
+                background: 'rgb(0 0 0 / 0%)',
                 border: '1px solid transparent',
                 borderRadius: '4px',
                 color: '#c9c7b8',
@@ -94,8 +97,8 @@ namespace FFT {
                 cursor: 'pointer',
                 padding: '0',
                 boxSizing: 'border-box',
-                boxShadow: 'none', // Default no shadow
-                transition: 'box-shadow 0.2s ease', // Smooth transition for hover effect
+                boxShadow: 'none',
+                transition: 'box-shadow 0.2s ease',
             });
 
             const iconElem = document.createElement('i');
@@ -105,7 +108,7 @@ namespace FFT {
                 fontFamily: 'Font Awesome 6 Pro',
                 lineHeight: '28px',
                 marginRight: '0',
-                transition: 'text-shadow 0.2s ease', // Smooth transition for hover effect
+                transition: 'text-shadow 0.2s ease',
             });
 
             buttonElem.appendChild(iconElem);
@@ -144,9 +147,12 @@ namespace FFT {
             }
         }
 
-        // Helper function to make the bar draggable
+        // Helper function to make the form draggable
         static makeDraggable(element: HTMLElement, handle: HTMLElement) {
-            let offsetX = 0, offsetY = 0, mouseX = 0, mouseY = 0;
+            let offsetX = 0,
+                offsetY = 0,
+                mouseX = 0,
+                mouseY = 0;
             const onMouseDown = (event: MouseEvent) => {
                 mouseX = event.clientX;
                 mouseY = event.clientY;
