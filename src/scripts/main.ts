@@ -10,5 +10,5 @@
 
 // Initialize MonksTokenbar after macros are set
 Hooks.once("ready", () => {
-    FFT.Addons.MonksTokenbar.initialize();
+    FFT.Addons.ActionBar.initialize();
 });
