@@ -1,10 +1,8 @@
 /// <reference types="@league-of-foundry-developers/foundry-vtt-types" />
 /// <reference types="@league-of-foundry-developers/foundry-vtt-dnd5e-types" />
-// Initialize FFT.Functions first
 window.FFT = window.FFT || {};
 window.FFT.Addons = window.FFT.Addons || {};
 window.FFT.Functions = window.FFT.Functions || {};
-// Initialize MonksTokenbar after macros are set
 Hooks.once("ready", () => {
     FFT.Addons.ActionBar.initialize();
 });
