@@ -27,14 +27,27 @@ namespace FFT.Addons {
                 boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)',
             });
 
-            const buttonData = await this.fetchButtonData();
+            // Create the move handle (plain bar without icon)
+            const moveHandle = document.createElement('div');
+            moveHandle.id = 'fft-actionbar-handle';
+            Object.assign(moveHandle.style, {
+                width: '100%',
+                height: '20px',
+                background: 'rgb(0 0 0 / 50%)',
+                cursor: 'move',
+                borderBottom: '1px solid #111',
+            });
 
+            actionBar.appendChild(moveHandle);
+
+            // Fetch and create buttons
+            const buttonData = await this.fetchButtonData();
             const rows = this.createRows(buttonData);
 
             Object.values(rows).forEach(row => actionBar.appendChild(row));
 
             document.body.appendChild(actionBar);
-            this.makeDraggable(actionBar);
+            this.makeDraggable(actionBar, moveHandle);
         }
 
         static async fetchButtonData(): Promise<Record<string, ButtonData>> {
@@ -141,7 +154,7 @@ namespace FFT.Addons {
             }
         }
 
-        static makeDraggable(element: HTMLElement) {
+        static makeDraggable(element: HTMLElement, handle: HTMLElement) {
             let offsetX = 0, offsetY = 0, mouseX = 0, mouseY = 0;
             const onMouseDown = (event: MouseEvent) => {
                 mouseX = event.clientX;
@@ -162,7 +175,7 @@ namespace FFT.Addons {
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
             };
-            element.addEventListener('mousedown', onMouseDown);
+            handle.addEventListener('mousedown', onMouseDown);
         }
     }
 }
