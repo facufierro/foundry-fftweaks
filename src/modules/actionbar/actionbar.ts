@@ -51,7 +51,7 @@ namespace FFT.Addons {
         }
 
         static async fetchButtonData(): Promise<Record<string, ButtonData>> {
-            const response = await fetch('modules/fftweaks/src/scripts/modules/actionbar/data/button-data.json');
+            const response = await fetch('modules/fftweaks/src/modules/actionbar/data/button-data.json');
             return await response.json();
         }
 

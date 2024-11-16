@@ -8,6 +8,121 @@ window.FFT.Macros = window.FFT.Macros || {};
 Hooks.once("ready", () => {
     FFT.Addons.ActionBar.initialize();
 });
+// // scripts/monksTokenBarExtender/combat/combat.js
+// namespace FFT {
+//     export const combat = async (event) => {
+//         const tokens = canvas.tokens.controlled;
+//         let combat = game.combat;
+//         if (!combat) {
+//             // Create a new combat encounter
+//             combat = await Combat.create({ scene: game.scenes.viewed.id });
+//         }
+//         for (let token of tokens) {
+//             // Check if the token is already in combat
+//             if (!combat.combatants.find(c => c.tokenId === token.id)) {
+//                 await combat.createEmbeddedDocuments("Combatant", [{ tokenId: token.id }]);
+//             }
+//             // Get the combatant associated with the token
+//             let combatant = combat.combatants.find(c => c.tokenId === token.id);
+//             // Check if the token is an enemy and hide the combatant if so
+//             if (token.document.disposition === -1) { // Disposition -1 is for hostile tokens
+//                 await combatant.update({ hidden: true });
+//             }
+//             // Roll initiative if the combatant doesn't have an initiative value
+//             if (combatant && combatant.initiative === null) {
+//                 await combatant.rollInitiative();
+//             }
+//         }
+//         // Make the combat encounter active if it isn't already
+//         if (!combat.active) {
+//             await combat.startCombat();
+//         }
+//     };
+// }
+window.FFT.Macros.healSelectedTokens = function (event) {
+    var _a, _b;
+    const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
+    if (!selectedTokens || selectedTokens.length === 0) {
+        (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn("No tokens selected.");
+        return;
+    }
+    for (const token of selectedTokens) {
+        const actor = token.actor;
+        let healValue = actor.system.attributes.hp.max; // Default: Heal to max HP
+        if (event.shiftKey) {
+            healValue = 10; // Heal by 10 if Shift is pressed
+        }
+        else if (event.ctrlKey) {
+            healValue = 5; // Heal by 5 if Ctrl is pressed
+        }
+        else if (event.altKey) {
+            healValue = 1; // Heal by 1 if Alt is pressed
+        }
+        actor.update({
+            "system.attributes.hp.value": Math.min(actor.system.attributes.hp.value + healValue, actor.system.attributes.hp.max),
+        });
+    }
+};
+window.FFT.Macros.hurtSelectedTokens = function (event) {
+    var _a, _b;
+    const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
+    if (!selectedTokens || selectedTokens.length === 0) {
+        (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn("No tokens selected.");
+        return;
+    }
+    for (const token of selectedTokens) {
+        const actor = token.actor;
+        let damageValue = actor.system.attributes.hp.max; // Default: Damage to 0 HP
+        if (event.shiftKey) {
+            damageValue = 10; // Damage by 10 if Shift is pressed
+        }
+        else if (event.ctrlKey) {
+            damageValue = 5; // Damage by 5 if Ctrl is pressed
+        }
+        else if (event.altKey) {
+            damageValue = 1; // Damage by 1 if Alt is pressed
+        }
+        actor.update({
+            "system.attributes.hp.value": Math.max(actor.system.attributes.hp.value - damageValue, 0), // Ensure HP doesn't go below 0
+        });
+    }
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+window.FFT.Macros.restSelectedTokens = function (event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
+        const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
+        if (!selectedTokens || selectedTokens.length === 0) {
+            (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn("No tokens selected.");
+            return;
+        }
+        for (const token of selectedTokens) {
+            const actor = token.actor;
+            if (!actor)
+                continue;
+            if (event.shiftKey) {
+                // Shift key: Perform a Short Rest
+                if (actor.type === "character" || actor.type === "npc") {
+                    yield actor.shortRest({ dialog: false });
+                }
+            }
+            else {
+                // Default: Perform a Long Rest
+                if (actor.type === "character" || actor.type === "npc") {
+                    yield actor.longRest({ dialog: false, newDay: false });
+                }
+            }
+        }
+    });
+};
 var FFT;
 (function (FFT) {
     class Character {
@@ -24,15 +139,6 @@ var FFT;
     }
     FFT.Character = Character;
 })(FFT || (FFT = {}));
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var FFT;
 (function (FFT) {
     var Addons;
@@ -79,7 +185,7 @@ var FFT;
             }
             static fetchButtonData() {
                 return __awaiter(this, void 0, void 0, function* () {
-                    const response = yield fetch('modules/fftweaks/src/scripts/modules/actionbar/data/button-data.json');
+                    const response = yield fetch('modules/fftweaks/src/modules/actionbar/data/button-data.json');
                     return yield response.json();
                 });
             }
@@ -197,112 +303,6 @@ var FFT;
         Addons.ActionBar = ActionBar;
     })(Addons = FFT.Addons || (FFT.Addons = {}));
 })(FFT || (FFT = {}));
-// // scripts/monksTokenBarExtender/combat/combat.js
-// namespace FFT {
-//     export const combat = async (event) => {
-//         const tokens = canvas.tokens.controlled;
-//         let combat = game.combat;
-//         if (!combat) {
-//             // Create a new combat encounter
-//             combat = await Combat.create({ scene: game.scenes.viewed.id });
-//         }
-//         for (let token of tokens) {
-//             // Check if the token is already in combat
-//             if (!combat.combatants.find(c => c.tokenId === token.id)) {
-//                 await combat.createEmbeddedDocuments("Combatant", [{ tokenId: token.id }]);
-//             }
-//             // Get the combatant associated with the token
-//             let combatant = combat.combatants.find(c => c.tokenId === token.id);
-//             // Check if the token is an enemy and hide the combatant if so
-//             if (token.document.disposition === -1) { // Disposition -1 is for hostile tokens
-//                 await combatant.update({ hidden: true });
-//             }
-//             // Roll initiative if the combatant doesn't have an initiative value
-//             if (combatant && combatant.initiative === null) {
-//                 await combatant.rollInitiative();
-//             }
-//         }
-//         // Make the combat encounter active if it isn't already
-//         if (!combat.active) {
-//             await combat.startCombat();
-//         }
-//     };
-// }
-window.FFT.Macros.healSelectedTokens = function (event) {
-    var _a, _b;
-    const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
-    if (!selectedTokens || selectedTokens.length === 0) {
-        (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn("No tokens selected.");
-        return;
-    }
-    for (const token of selectedTokens) {
-        const actor = token.actor;
-        let healValue = actor.system.attributes.hp.max; // Default: Heal to max HP
-        if (event.shiftKey) {
-            healValue = 10; // Heal by 10 if Shift is pressed
-        }
-        else if (event.ctrlKey) {
-            healValue = 5; // Heal by 5 if Ctrl is pressed
-        }
-        else if (event.altKey) {
-            healValue = 1; // Heal by 1 if Alt is pressed
-        }
-        actor.update({
-            "system.attributes.hp.value": Math.min(actor.system.attributes.hp.value + healValue, actor.system.attributes.hp.max),
-        });
-    }
-};
-window.FFT.Macros.hurtSelectedTokens = function (event) {
-    var _a, _b;
-    const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
-    if (!selectedTokens || selectedTokens.length === 0) {
-        (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn("No tokens selected.");
-        return;
-    }
-    for (const token of selectedTokens) {
-        const actor = token.actor;
-        let damageValue = actor.system.attributes.hp.max; // Default: Damage to 0 HP
-        if (event.shiftKey) {
-            damageValue = 10; // Damage by 10 if Shift is pressed
-        }
-        else if (event.ctrlKey) {
-            damageValue = 5; // Damage by 5 if Ctrl is pressed
-        }
-        else if (event.altKey) {
-            damageValue = 1; // Damage by 1 if Alt is pressed
-        }
-        actor.update({
-            "system.attributes.hp.value": Math.max(actor.system.attributes.hp.value - damageValue, 0), // Ensure HP doesn't go below 0
-        });
-    }
-};
-window.FFT.Macros.restSelectedTokens = function (event) {
-    return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
-        const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
-        if (!selectedTokens || selectedTokens.length === 0) {
-            (_b = ui.notifications) === null || _b === void 0 ? void 0 : _b.warn("No tokens selected.");
-            return;
-        }
-        for (const token of selectedTokens) {
-            const actor = token.actor;
-            if (!actor)
-                continue;
-            if (event.shiftKey) {
-                // Shift key: Perform a Short Rest
-                if (actor.type === "character" || actor.type === "npc") {
-                    yield actor.shortRest({ dialog: false });
-                }
-            }
-            else {
-                // Default: Perform a Long Rest
-                if (actor.type === "character" || actor.type === "npc") {
-                    yield actor.longRest({ dialog: false, newDay: false });
-                }
-            }
-        }
-    });
-};
 var FFT;
 (function (FFT) {
     class Debug {
