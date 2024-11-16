@@ -52,6 +52,10 @@ namespace FFT.Addons {
 
         static async fetchButtonData(): Promise<Record<string, ButtonData>> {
             const response = await fetch('modules/fftweaks/src/modules/function-bar/data/button-data.json');
+            if (!response.ok) {
+                console.error("Failed to fetch button data:", response.statusText);
+                return {};
+            }
             return await response.json();
         }
 
@@ -102,35 +106,33 @@ namespace FFT.Addons {
 
         static createRows(buttonData: Record<string, ButtonData>) {
             const rows: Record<number, HTMLElement> = {};
-            const columns = 3; // Buttons per row
-            const buttons = Object.entries(buttonData);
 
-            for (let i = 0; i < buttons.length; i += columns) {
-                const row = document.createElement('div');
-                row.className = 'fft-functionbar-buttons';
-                Object.assign(row.style, {
-                    display: 'flex',
-                    flexDirection: 'row', // Align buttons horizontally
-                    gap: '4px',
-                });
+            Object.entries(buttonData).forEach(([id, button]) => {
+                const { name, icon, script, row } = button;
 
-                buttons.slice(i, i + columns).forEach(([id, button]) => {
-                    const { name, icon, script } = button;
+                // Ensure the row exists in the rows object
+                if (!rows[row]) {
+                    rows[row] = document.createElement('div');
+                    rows[row].className = 'fft-functionbar-buttons';
+                    Object.assign(rows[row].style, {
+                        display: 'flex',
+                        flexDirection: 'row', // Align buttons horizontally
+                        gap: '4px',
+                    });
+                }
 
-                    // Resolve the script function
-                    const task = this.resolveFunction(script);
-                    if (!task) {
-                        console.error(`Function "${script}" not found.`);
-                        return;
-                    }
+                // Resolve the script function
+                const task = this.resolveFunction(script);
+                if (!task) {
+                    console.error(`Function "${script}" not found.`);
+                    return;
+                }
 
-                    const newButton = this.createButton(id, name, icon, task);
+                // Create the button and add it to the appropriate row
+                const newButton = this.createButton(id, name, icon, task);
+                rows[row].appendChild(newButton);
+            });
 
-                    row.appendChild(newButton);
-                });
-
-                rows[i / columns] = row;
-            }
             return rows;
         }
 

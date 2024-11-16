@@ -6,37 +6,38 @@ window.FFT.Functions = window.FFT.Functions || {};
 Hooks.once("ready", () => {
     FFT.Addons.FunctionBar.initialize();
 });
-// // scripts/monksTokenBarExtender/combat/combat.js
-// namespace FFT {
-//     export const combat = async (event) => {
-//         const tokens = canvas.tokens.controlled;
-//         let combat = game.combat;
-//         if (!combat) {
-//             // Create a new combat encounter
-//             combat = await Combat.create({ scene: game.scenes.viewed.id });
-//         }
-//         for (let token of tokens) {
-//             // Check if the token is already in combat
-//             if (!combat.combatants.find(c => c.tokenId === token.id)) {
-//                 await combat.createEmbeddedDocuments("Combatant", [{ tokenId: token.id }]);
-//             }
-//             // Get the combatant associated with the token
-//             let combatant = combat.combatants.find(c => c.tokenId === token.id);
-//             // Check if the token is an enemy and hide the combatant if so
-//             if (token.document.disposition === -1) { // Disposition -1 is for hostile tokens
-//                 await combatant.update({ hidden: true });
-//             }
-//             // Roll initiative if the combatant doesn't have an initiative value
-//             if (combatant && combatant.initiative === null) {
-//                 await combatant.rollInitiative();
-//             }
-//         }
-//         // Make the combat encounter active if it isn't already
-//         if (!combat.active) {
-//             await combat.startCombat();
-//         }
-//     };
-// }
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+window.FFT.Functions.toggleCombatState = function (event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
+        if (!selectedTokens || selectedTokens.length === 0)
+            return;
+        for (const token of selectedTokens) {
+            const tokenDocument = token.document; // Access the TokenDocument
+            if (!tokenDocument.combatant) {
+                // Add token to combat
+                yield tokenDocument.toggleCombatant();
+                // Hide the token in the combat tracker if it is hostile
+                if (tokenDocument.disposition === -1 && tokenDocument.combatant) {
+                    yield tokenDocument.combatant.update({ hidden: true });
+                }
+            }
+            else {
+                // Remove token from combat
+                yield tokenDocument.toggleCombatant();
+            }
+        }
+    });
+};
 window.FFT.Functions.healSelectedTokens = function (event) {
     var _a, _b;
     const selectedTokens = (_a = canvas.tokens) === null || _a === void 0 ? void 0 : _a.controlled;
@@ -84,15 +85,6 @@ window.FFT.Functions.hurtSelectedTokens = function (event) {
             "system.attributes.hp.value": Math.max(actor.system.attributes.hp.value - damageValue, 0), // Ensure HP doesn't go below 0
         });
     }
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
 };
 window.FFT.Functions.restSelectedTokens = function (event) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -184,6 +176,10 @@ var FFT;
             static fetchButtonData() {
                 return __awaiter(this, void 0, void 0, function* () {
                     const response = yield fetch('modules/fftweaks/src/modules/function-bar/data/button-data.json');
+                    if (!response.ok) {
+                        console.error("Failed to fetch button data:", response.statusText);
+                        return {};
+                    }
                     return yield response.json();
                 });
             }
@@ -227,29 +223,28 @@ var FFT;
             }
             static createRows(buttonData) {
                 const rows = {};
-                const columns = 3; // Buttons per row
-                const buttons = Object.entries(buttonData);
-                for (let i = 0; i < buttons.length; i += columns) {
-                    const row = document.createElement('div');
-                    row.className = 'fft-functionbar-buttons';
-                    Object.assign(row.style, {
-                        display: 'flex',
-                        flexDirection: 'row', // Align buttons horizontally
-                        gap: '4px',
-                    });
-                    buttons.slice(i, i + columns).forEach(([id, button]) => {
-                        const { name, icon, script } = button;
-                        // Resolve the script function
-                        const task = this.resolveFunction(script);
-                        if (!task) {
-                            console.error(`Function "${script}" not found.`);
-                            return;
-                        }
-                        const newButton = this.createButton(id, name, icon, task);
-                        row.appendChild(newButton);
-                    });
-                    rows[i / columns] = row;
-                }
+                Object.entries(buttonData).forEach(([id, button]) => {
+                    const { name, icon, script, row } = button;
+                    // Ensure the row exists in the rows object
+                    if (!rows[row]) {
+                        rows[row] = document.createElement('div');
+                        rows[row].className = 'fft-functionbar-buttons';
+                        Object.assign(rows[row].style, {
+                            display: 'flex',
+                            flexDirection: 'row', // Align buttons horizontally
+                            gap: '4px',
+                        });
+                    }
+                    // Resolve the script function
+                    const task = this.resolveFunction(script);
+                    if (!task) {
+                        console.error(`Function "${script}" not found.`);
+                        return;
+                    }
+                    // Create the button and add it to the appropriate row
+                    const newButton = this.createButton(id, name, icon, task);
+                    rows[row].appendChild(newButton);
+                });
                 return rows;
             }
             static resolveFunction(scriptPath) {

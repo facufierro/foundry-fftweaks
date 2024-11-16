@@ -16,6 +16,11 @@
         "icon": "fas fa-bed",
         "row": 2,
         "script": "FFT.Functions.restSelectedTokens"
+    },
+    "combat": {
+        "name": "Toggle combat",
+        "icon": "fas fa-swords",
+        "row": 2,
+        "script": "FFT.Functions.toggleCombatState"
     }
-
 }
