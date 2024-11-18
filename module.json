@@ -11,12 +11,13 @@
       {
         "id": "dnd5e",
         "type": "system",
-        "compatibility": { }
+        "compatibility": {}
       }
     ]
   },
-  "esmodules": [ "dist/main.js" ]
-  ,
+  "esmodules": [
+    "dist/main.js"
+  ],
   "styles": [
     "src/styles/style.css",
     "src/styles/argon-hud.css",
@@ -83,6 +84,39 @@
       "label": "Characters",
       "path": "packs/characters",
       "type": "Actor",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "classes",
+      "label": "Classes",
+      "path": "packs/classes",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
+    },
+    {
+      "name": "species",
+      "label": "Species",
+      "path": "packs/species",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
+    },
+    {
+      "name": "backgrounds",
+      "label": "Backgrounds",
+      "path": "packs/backgrounds",
+      "type": "Item",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
@@ -93,7 +127,7 @@
   "authors": [
     {
       "name": "fierrof",
-      "flags": { }
+      "flags": {}
     }
   ]
 }
