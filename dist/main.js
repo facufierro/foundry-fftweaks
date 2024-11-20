@@ -15,6 +15,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+window.FFT.Functions.craftingCheck = function (actor, toolID, checks, DC) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const max_failures = 3;
+        const gold = actor.system.currency.gp;
+        const downtimeHours = actor.system.currency.dd;
+        let failures = 0;
+        let successes = 0;
+        ui.notifications.info(`You have ${downtimeHours} downtime hours remaining.`);
+    });
+};
 window.FFT.Functions.toggleCombatState = function (event) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
