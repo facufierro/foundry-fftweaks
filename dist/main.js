@@ -15,14 +15,54 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-window.FFT.Functions.craftingCheck = function (actor, toolID, checks, DC) {
+window.FFT.Functions.craftingCheck = function (actor, toolID, checksNeeded, DC) {
     return __awaiter(this, void 0, void 0, function* () {
-        const max_failures = 3;
-        const gold = actor.system.currency.gp;
-        const downtimeHours = actor.system.currency.dd;
-        let failures = 0;
-        let successes = 0;
-        ui.notifications.info(`You have ${downtimeHours} downtime hours remaining.`);
+        // Ensure the necessary flags are initialized
+        actor.flags["custom-dnd5e"] = actor.flags["custom-dnd5e"] || {};
+        actor.flags["custom-dnd5e"]["crafting-progress"] = actor.flags["custom-dnd5e"]["crafting-progress"] || { value: 0, max: 0 };
+        actor.flags["custom-dnd5e"]["crafting-failures"] = actor.flags["custom-dnd5e"]["crafting-failures"] || { value: 0, max: 3 };
+        // Set the crafting progress max to the required checks
+        yield actor.update({ "flags.custom-dnd5e.crafting-progress.max": checksNeeded });
+        // Make the tool check roll
+        const result = yield actor.rollToolCheck(toolID);
+        if (result.total >= DC) {
+            // Successful check: Deduct downtime hours and increase progress
+            const downtimeHours = actor.getFlag("custom-dnd5e", "downtime-hours") || 0;
+            yield actor.update({
+                "flags.custom-dnd5e.downtime-hours": downtimeHours - 2,
+                "flags.custom-dnd5e.crafting-progress.value": actor.getFlag("custom-dnd5e", "crafting-progress.value") + 1,
+            });
+            // Check if crafting progress has reached the maximum
+            const craftingProgress = actor.getFlag("custom-dnd5e", "crafting-progress.value") || 0;
+            const craftingMax = actor.getFlag("custom-dnd5e", "crafting-progress.max") || 0;
+            if (craftingProgress >= craftingMax) {
+                yield actor.update({
+                    "flags.custom-dnd5e.crafting-progress.value": 0,
+                    "flags.custom-dnd5e.crafting-progress.max": 0,
+                    "flags.custom-dnd5e.crafting-failures.value": 0,
+                });
+                return { success: true, consume: true };
+            }
+        }
+        else {
+            // Failed check: Increase crafting failures
+            yield actor.update({
+                "flags.custom-dnd5e.crafting-failures.value": actor.getFlag("custom-dnd5e", "crafting-failures.value") + 1,
+            });
+            // Check if crafting failures have reached the maximum
+            const craftingFailures = actor.getFlag("custom-dnd5e", "crafting-failures.value") || 0;
+            const craftingFailuresMax = actor.getFlag("custom-dnd5e", "crafting-failures.max") || 3;
+            if (craftingFailures >= craftingFailuresMax) {
+                yield actor.update({
+                    "flags.custom-dnd5e.crafting-progress.value": 0,
+                    "flags.custom-dnd5e.crafting-progress.max": 0,
+                    "flags.custom-dnd5e.crafting-failures.value": 0,
+                });
+                return { success: false, consume: true };
+            }
+        }
+        // If no crafting completion or failure, return false for both success and consume
+        return { success: false, consume: false };
     });
 };
 window.FFT.Functions.toggleCombatState = function (event) {
