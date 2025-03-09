@@ -174,19 +174,26 @@ var FFT;
     (function (Modules) {
         class StartingEquipment {
             static initialize() {
-                // Detect when a background is added
                 Hooks.on("preCreateItem", (item, options, userId) => __awaiter(this, void 0, void 0, function* () {
-                    var _a, _b, _c;
+                    var _a, _b, _c, _d, _e, _f;
                     if (!game.user.isGM && userId !== game.user.id)
                         return;
-                    if (item.type !== "background")
+                    if (item.type !== "background" && item.type !== "class")
                         return;
                     const actor = item.parent;
                     if (!actor)
                         return;
-                    const equipmentKeys = ((_c = (_b = (_a = item.system) === null || _a === void 0 ? void 0 : _a.startingEquipment) === null || _b === void 0 ? void 0 : _b.map(e => e.key)) === null || _c === void 0 ? void 0 : _c.filter(Boolean)) || [];
+                    const sourceType = item.type === "background" ? "backgroundSource" : "classSource";
+                    const sourceName = item.type === "background" ? "Background" : "Class";
+                    let equipmentKeys = [];
+                    if (item.type === "background") {
+                        equipmentKeys = ((_c = (_b = (_a = item.system) === null || _a === void 0 ? void 0 : _a.startingEquipment) === null || _b === void 0 ? void 0 : _b.map(e => e.key)) === null || _c === void 0 ? void 0 : _c.filter(Boolean)) || [];
+                    }
+                    else if (item.type === "class") {
+                        equipmentKeys = ((_f = (_e = (_d = item.system) === null || _d === void 0 ? void 0 : _d.startingEquipment) === null || _e === void 0 ? void 0 : _e.map(e => e.key)) === null || _f === void 0 ? void 0 : _f.filter(Boolean)) || [];
+                    }
                     if (!equipmentKeys.length) {
-                        ui.notifications.warn(`${actor.name} selected a background, but no equipment was found.`);
+                        ui.notifications.warn(`${actor.name} selected a ${sourceName}, but no equipment was found.`);
                         return;
                     }
                     let equipmentList = "";
@@ -197,8 +204,8 @@ var FFT;
                         }
                     }
                     new Dialog({
-                        title: "Add Background Equipment",
-                        content: `<p>${actor.name} has selected a background. Do you want to add the following equipment?</p>
+                        title: `Add ${sourceName} Equipment`,
+                        content: `<p>${actor.name} has selected a ${sourceName}. Do you want to add the following equipment?</p>
                               <ul>${equipmentList}</ul>`,
                         buttons: {
                             yes: {
@@ -209,56 +216,61 @@ var FFT;
                                         if (!item)
                                             continue;
                                         let newItem = yield actor.createEmbeddedDocuments("Item", [item.toObject()]);
-                                        // Mark the item as background-given for tracking
                                         if (newItem.length) {
-                                            yield newItem[0].setFlag("dnd5e", "backgroundSource", item.uuid);
+                                            yield newItem[0].setFlag("dnd5e", sourceType, item.uuid);
                                         }
                                     }
-                                    ui.notifications.info("Background equipment added!");
+                                    ui.notifications.info(`${sourceName} equipment added!`);
                                 })
                             },
                             no: {
                                 label: "No",
                                 callback: () => {
-                                    ui.notifications.info("Background equipment not added.");
+                                    ui.notifications.info(`${sourceName} equipment not added.`);
                                 }
                             }
                         },
                         default: "yes"
                     }).render(true);
                 }));
-                // Detect when a background is removed
                 Hooks.on("preDeleteItem", (item, options, userId) => __awaiter(this, void 0, void 0, function* () {
-                    var _a, _b, _c;
+                    var _a, _b, _c, _d, _e, _f;
                     if (!game.user.isGM && userId !== game.user.id)
                         return;
-                    if (item.type !== "background")
+                    if (item.type !== "background" && item.type !== "class")
                         return;
                     const actor = item.parent;
                     if (!actor)
                         return;
-                    const equipmentKeys = ((_c = (_b = (_a = item.system) === null || _a === void 0 ? void 0 : _a.startingEquipment) === null || _b === void 0 ? void 0 : _b.map(e => e.key)) === null || _c === void 0 ? void 0 : _c.filter(Boolean)) || [];
+                    const sourceType = item.type === "background" ? "backgroundSource" : "classSource";
+                    const sourceName = item.type === "background" ? "Background" : "Class";
+                    let equipmentKeys = [];
+                    if (item.type === "background") {
+                        equipmentKeys = ((_c = (_b = (_a = item.system) === null || _a === void 0 ? void 0 : _a.startingEquipment) === null || _b === void 0 ? void 0 : _b.map(e => e.key)) === null || _c === void 0 ? void 0 : _c.filter(Boolean)) || [];
+                    }
+                    else if (item.type === "class") {
+                        equipmentKeys = ((_f = (_e = (_d = item.system) === null || _d === void 0 ? void 0 : _d.startingEquipment) === null || _e === void 0 ? void 0 : _e.map(e => e.key)) === null || _f === void 0 ? void 0 : _f.filter(Boolean)) || [];
+                    }
                     if (!equipmentKeys.length)
                         return;
-                    // Find and remove items that were given by the background
-                    const itemsToRemove = actor.items.filter(i => i.getFlag("dnd5e", "backgroundSource") && equipmentKeys.includes(i.getFlag("dnd5e", "backgroundSource")));
+                    const itemsToRemove = actor.items.filter(i => i.getFlag("dnd5e", sourceType) && equipmentKeys.includes(i.getFlag("dnd5e", sourceType)));
                     if (!itemsToRemove.length)
                         return;
                     new Dialog({
-                        title: "Remove Background Equipment",
-                        content: `<p>${actor.name} has removed a background. Do you want to remove the associated equipment?</p>`,
+                        title: `Remove ${sourceName} Equipment`,
+                        content: `<p>${actor.name} has removed a ${sourceName}. Do you want to remove the associated equipment?</p>`,
                         buttons: {
                             yes: {
                                 label: "Yes",
                                 callback: () => __awaiter(this, void 0, void 0, function* () {
                                     yield actor.deleteEmbeddedDocuments("Item", itemsToRemove.map(i => i.id));
-                                    ui.notifications.info("Background equipment removed!");
+                                    ui.notifications.info(`${sourceName} equipment removed!`);
                                 })
                             },
                             no: {
                                 label: "No",
                                 callback: () => {
-                                    ui.notifications.info("Background equipment was kept.");
+                                    ui.notifications.info(`${sourceName} equipment was kept.`);
                                 }
                             }
                         },

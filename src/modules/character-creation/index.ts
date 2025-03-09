@@ -1,17 +1,26 @@
 namespace FFT.Modules {
     export class StartingEquipment {
         static initialize() {
-            // Detect when a background is added
             Hooks.on("preCreateItem", async (item, options, userId) => {
                 if (!game.user.isGM && userId !== game.user.id) return;
-                if (item.type !== "background") return;
+                if (item.type !== "background" && item.type !== "class") return;
 
                 const actor = item.parent;
                 if (!actor) return;
 
-                const equipmentKeys = item.system?.startingEquipment?.map(e => e.key)?.filter(Boolean) || [];
+                const sourceType = item.type === "background" ? "backgroundSource" : "classSource";
+                const sourceName = item.type === "background" ? "Background" : "Class";
+
+                let equipmentKeys: string[] = [];
+
+                if (item.type === "background") {
+                    equipmentKeys = item.system?.startingEquipment?.map(e => e.key)?.filter(Boolean) || [];
+                } else if (item.type === "class") {
+                    equipmentKeys = item.system?.startingEquipment?.map(e => e.key)?.filter(Boolean) || [];
+                }
+
                 if (!equipmentKeys.length) {
-                    ui.notifications.warn(`${actor.name} selected a background, but no equipment was found.`);
+                    ui.notifications.warn(`${actor.name} selected a ${sourceName}, but no equipment was found.`);
                     return;
                 }
 
@@ -24,8 +33,8 @@ namespace FFT.Modules {
                 }
 
                 new Dialog({
-                    title: "Add Background Equipment",
-                    content: `<p>${actor.name} has selected a background. Do you want to add the following equipment?</p>
+                    title: `Add ${sourceName} Equipment`,
+                    content: `<p>${actor.name} has selected a ${sourceName}. Do you want to add the following equipment?</p>
                               <ul>${equipmentList}</ul>`,
                     buttons: {
                         yes: {
@@ -36,18 +45,17 @@ namespace FFT.Modules {
                                     if (!item) continue;
                                     let newItem = await actor.createEmbeddedDocuments("Item", [item.toObject()]);
 
-                                    // Mark the item as background-given for tracking
                                     if (newItem.length) {
-                                        await newItem[0].setFlag("dnd5e", "backgroundSource", item.uuid);
+                                        await newItem[0].setFlag("dnd5e", sourceType, item.uuid);
                                     }
                                 }
-                                ui.notifications.info("Background equipment added!");
+                                ui.notifications.info(`${sourceName} equipment added!`);
                             }
                         },
                         no: {
                             label: "No",
                             callback: () => {
-                                ui.notifications.info("Background equipment not added.");
+                                ui.notifications.info(`${sourceName} equipment not added.`);
                             }
                         }
                     },
@@ -55,36 +63,44 @@ namespace FFT.Modules {
                 }).render(true);
             });
 
-            // Detect when a background is removed
             Hooks.on("preDeleteItem", async (item, options, userId) => {
                 if (!game.user.isGM && userId !== game.user.id) return;
-                if (item.type !== "background") return;
+                if (item.type !== "background" && item.type !== "class") return;
 
                 const actor = item.parent;
                 if (!actor) return;
 
-                const equipmentKeys = item.system?.startingEquipment?.map(e => e.key)?.filter(Boolean) || [];
+                const sourceType = item.type === "background" ? "backgroundSource" : "classSource";
+                const sourceName = item.type === "background" ? "Background" : "Class";
+
+                let equipmentKeys: string[] = [];
+
+                if (item.type === "background") {
+                    equipmentKeys = item.system?.startingEquipment?.map(e => e.key)?.filter(Boolean) || [];
+                } else if (item.type === "class") {
+                    equipmentKeys = item.system?.startingEquipment?.map(e => e.key)?.filter(Boolean) || [];
+                }
+
                 if (!equipmentKeys.length) return;
 
-                // Find and remove items that were given by the background
-                const itemsToRemove = actor.items.filter(i => i.getFlag("dnd5e", "backgroundSource") && equipmentKeys.includes(i.getFlag("dnd5e", "backgroundSource")));
+                const itemsToRemove = actor.items.filter(i => i.getFlag("dnd5e", sourceType) && equipmentKeys.includes(i.getFlag("dnd5e", sourceType)));
                 if (!itemsToRemove.length) return;
 
                 new Dialog({
-                    title: "Remove Background Equipment",
-                    content: `<p>${actor.name} has removed a background. Do you want to remove the associated equipment?</p>`,
+                    title: `Remove ${sourceName} Equipment`,
+                    content: `<p>${actor.name} has removed a ${sourceName}. Do you want to remove the associated equipment?</p>`,
                     buttons: {
                         yes: {
                             label: "Yes",
                             callback: async () => {
                                 await actor.deleteEmbeddedDocuments("Item", itemsToRemove.map(i => i.id));
-                                ui.notifications.info("Background equipment removed!");
+                                ui.notifications.info(`${sourceName} equipment removed!`);
                             }
                         },
                         no: {
                             label: "No",
                             callback: () => {
-                                ui.notifications.info("Background equipment was kept.");
+                                ui.notifications.info(`${sourceName} equipment was kept.`);
                             }
                         }
                     },
