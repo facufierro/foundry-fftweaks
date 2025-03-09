@@ -1,8 +1,15 @@
-2025/02/01-14:11:23.809232 7fff88a2f0c0 Recovering log #637
-2025/02/01-14:11:23.812163 7fff88a2f0c0 Delete type=3 #636
-2025/02/01-14:11:23.812193 7fff88a2f0c0 Delete type=0 #637
-2025/02/01-14:25:53.964216 7ffd591670c0 Level-0 table #641: started
-2025/02/01-14:25:53.964231 7ffd591670c0 Level-0 table #641: 0 bytes OK
-2025/02/01-14:25:53.965513 7ffd591670c0 Delete type=0 #639
-2025/02/01-14:25:53.969296 7ffd591670c0 Manual compaction at level-0 from '!actors!i3451z1GMIV9aIaW' @ 72057594037927935 : 1 .. '!folders!fjBdJXDgb1VHRVJO' @ 0 : 0; will stop at (end)
-2025/02/01-14:25:53.969328 7ffd591670c0 Manual compaction at level-1 from '!actors!i3451z1GMIV9aIaW' @ 72057594037927935 : 1 .. '!folders!fjBdJXDgb1VHRVJO' @ 0 : 0; will stop at (end)
+2025/03/08-17:07:34.718704 7ffec7fff0c0 Recovering log #686
+2025/03/08-17:07:34.721629 7ffec7fff0c0 Delete type=3 #684
+2025/03/08-17:07:34.721649 7ffec7fff0c0 Delete type=0 #686
+2025/03/08-20:33:57.201942 7ffec52db0c0 Level-0 table #691: started
+2025/03/08-20:33:57.203085 7ffec52db0c0 Level-0 table #691: 3030 bytes OK
+2025/03/08-20:33:57.204345 7ffec52db0c0 Delete type=0 #689
+2025/03/08-20:33:57.207119 7ffec52db0c0 Manual compaction at level-0 from '!actors!i3451z1GMIV9aIaW' @ 72057594037927935 : 1 .. '!folders!fjBdJXDgb1VHRVJO' @ 0 : 0; will stop at (end)
+2025/03/08-20:33:57.207154 7ffec52db0c0 Manual compaction at level-1 from '!actors!i3451z1GMIV9aIaW' @ 72057594037927935 : 1 .. '!folders!fjBdJXDgb1VHRVJO' @ 0 : 0; will stop at '!actors!i3451z1GMIV9aIaW' @ 7 : 1
+2025/03/08-20:33:57.207158 7ffec52db0c0 Compacting 1@1 + 1@2 files
+2025/03/08-20:33:57.208369 7ffec52db0c0 Generated table #692@1: 6 keys, 6851 bytes
+2025/03/08-20:33:57.208381 7ffec52db0c0 Compacted 1@1 + 1@2 files => 6851 bytes
+2025/03/08-20:33:57.209613 7ffec52db0c0 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/03/08-20:33:57.209651 7ffec52db0c0 Delete type=2 #691
+2025/03/08-20:33:57.209699 7ffec52db0c0 Delete type=2 #475
+2025/03/08-20:33:57.211168 7ffec52db0c0 Manual compaction at level-1 from '!actors!i3451z1GMIV9aIaW' @ 7 : 1 .. '!folders!fjBdJXDgb1VHRVJO' @ 0 : 0; will stop at (end)
