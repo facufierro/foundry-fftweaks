@@ -450,9 +450,9 @@ var FFT;
                     if (!game.user.isGM)
                         return;
                     let actor = data.actor;
-                    let details = actor.system.details || {}; // ✅ Fix: Ensure details is treated as an object
+                    let details = actor.system.details || {}; // Fix: Ensure details is treated as an object
                     if (details.background)
-                        return; // ✅ Now TypeScript won't complain
+                        return; // Hide button if character has a background
                     let buttonContainer = html.find(".sheet-header-buttons");
                     if (!buttonContainer.length)
                         return;
@@ -467,21 +467,32 @@ var FFT;
                 });
             }
             static openDialog(actor) {
-                // ✅ Prevent opening multiple windows
                 if (this.activeDialog) {
-                    this.activeDialog.bringToTop();
+                    if (this.activeDialog.rendered) {
+                        this.activeDialog.bringToTop();
+                    }
                     return;
                 }
                 let abilities = {
                     str: 8, dex: 8, con: 8, int: 8, wis: 8, cha: 8
                 };
+                let abilityLabels = {
+                    str: "Strength",
+                    dex: "Dexterity",
+                    con: "Constitution",
+                    int: "Intelligence",
+                    wis: "Wisdom",
+                    cha: "Charisma"
+                };
                 let currentPoints = this.calculatePoints(abilities);
-                let abilityLabels = CONFIG["DND5E"].abilities;
                 let content = this.generateDialogContent(abilities, abilityLabels, currentPoints);
                 this.activeDialog = new Dialog({
                     title: "Point Buy System",
                     content: content,
-                    render: (html) => this.setupListeners(html, abilities),
+                    render: (html) => {
+                        this.setupListeners(html, abilities);
+                        html.find(".window-resizable-handle").remove(); // ✅ Remove resize handle
+                    },
                     buttons: {
                         confirm: {
                             label: "Apply",
@@ -489,10 +500,10 @@ var FFT;
                         },
                         cancel: {
                             label: "Cancel",
-                            callback: () => { this.activeDialog = null; } // ✅ Clears reference when closed
+                            callback: () => { this.activeDialog = null; }
                         }
                     },
-                    close: () => { this.activeDialog = null; } // ✅ Ensures cleanup when closing
+                    close: () => { this.activeDialog = null; }
                 });
                 this.activeDialog.render(true);
             }
@@ -509,12 +520,13 @@ var FFT;
             <div class="point-buy-container">
                 <p class="remaining-points">Remaining Points: <span id="remaining-points">${currentPoints}</span></p>
             `;
-                for (let [key, name] of Object.entries(abilityLabels)) {
+                for (let key of Object.keys(abilities)) {
+                    let name = abilityLabels[key];
                     content += `
                     <div class="ability-row">
                         <span class="ability-name">${name}</span>
                         <button class="btn-adjust" data-action="decrease" data-key="${key}">-</button>
-                        <span class="point-value" id="ability-${key}">8</span>
+                        <span class="point-value" id="ability-${key}">${abilities[key]}</span>
                         <button class="btn-adjust" data-action="increase" data-key="${key}">+</button>
                     </div>
                 `;
@@ -525,21 +537,30 @@ var FFT;
             static setupListeners(html, abilities) {
                 let remainingPoints = 27;
                 let costs = { 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9 };
-                html.find(".btn-adjust").on("click", function () {
+                html.find(".btn-adjust").on("click", function (event) {
                     let button = $(this);
                     let key = button.data("key");
                     let action = button.data("action");
                     let valueElement = html.find(`#ability-${key}`);
                     let currentValue = parseInt(valueElement.text());
-                    if (action === "increase" && currentValue < 15) {
-                        if (remainingPoints - (costs[currentValue + 1] - costs[currentValue]) >= 0) {
-                            remainingPoints -= (costs[currentValue + 1] - costs[currentValue]);
-                            valueElement.text(currentValue + 1);
+                    let newValue = currentValue;
+                    if (event.shiftKey) {
+                        newValue = (action === "increase") ? 15 : 8;
+                    }
+                    else {
+                        if (action === "increase" && currentValue < 15) {
+                            newValue++;
+                        }
+                        else if (action === "decrease" && currentValue > 8) {
+                            newValue--;
                         }
                     }
-                    else if (action === "decrease" && currentValue > 8) {
-                        remainingPoints += (costs[currentValue] - costs[currentValue - 1]);
-                        valueElement.text(currentValue - 1);
+                    let oldCost = costs[currentValue] || 0;
+                    let newCost = costs[newValue] || 0;
+                    let pointChange = newCost - oldCost;
+                    if (remainingPoints - pointChange >= 0) {
+                        valueElement.text(newValue);
+                        remainingPoints -= pointChange;
                     }
                     html.find("#remaining-points").text(remainingPoints);
                 });
@@ -570,10 +591,10 @@ var FFT;
                 }
                 actor.update(updates);
                 ui.notifications.info("Abilities updated successfully.");
-                this.activeDialog = null; // ✅ Close reference after applying changes
+                this.activeDialog = null;
             }
         }
-        PointBuy.activeDialog = null; // ✅ Prevents multiple windows
+        PointBuy.activeDialog = null; // Prevent multiple windows
         Modules.PointBuy = PointBuy;
     })(Modules = FFT.Modules || (FFT.Modules = {}));
 })(FFT || (FFT = {}));
