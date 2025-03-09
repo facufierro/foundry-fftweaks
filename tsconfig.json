@@ -15,7 +15,7 @@
                 "node_modules/@league-of-foundry-developers/foundry-vtt-dnd5e-types/*"
             ]
         },
-        "outFile": "./dist/main.js",
+        "outFile": "./dist/main.js"
     },
     "include": [ "src" ],
     "exclude": [ "node_modules" ]

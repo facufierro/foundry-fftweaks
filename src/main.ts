@@ -3,8 +3,10 @@
 
 (window as any).FFT = (window as any).FFT || {};
 (window as any).FFT.Addons = (window as any).FFT.Addons || {};
+(window as any).FFT.Modules = (window as any).FFT.Modules || {};
 (window as any).FFT.Functions = (window as any).FFT.Functions || {};
 
 Hooks.once("ready", () => {
-    FFT.Addons.FunctionBar.initialize();
+    FFT.Modules.FunctionBar.initialize();
+
 });

@@ -2,9 +2,10 @@
 /// <reference types="@league-of-foundry-developers/foundry-vtt-dnd5e-types" />
 window.FFT = window.FFT || {};
 window.FFT.Addons = window.FFT.Addons || {};
+window.FFT.Modules = window.FFT.Modules || {};
 window.FFT.Functions = window.FFT.Functions || {};
 Hooks.once("ready", () => {
-    FFT.Addons.FunctionBar.initialize();
+    FFT.Modules.FunctionBar.initialize();
 });
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -181,8 +182,8 @@ var FFT;
 })(FFT || (FFT = {}));
 var FFT;
 (function (FFT) {
-    var Addons;
-    (function (Addons) {
+    var Modules;
+    (function (Modules) {
         class FunctionBar {
             static initialize() {
                 return __awaiter(this, void 0, void 0, function* () {
@@ -207,26 +208,8 @@ var FFT;
                 });
             }
         }
-        Addons.FunctionBar = FunctionBar;
-    })(Addons = FFT.Addons || (FFT.Addons = {}));
-})(FFT || (FFT = {}));
-var FFT;
-(function (FFT) {
-    class Debug {
-        static Log(message, ...args) {
-            console.log(`%cFFTweaks | ${message}`, 'color: cyan; font-weight: bold;', ...args);
-        }
-        static Success(message, ...args) {
-            console.log(`%cFFTweaks | ${message}`, 'color: green; font-weight: bold;', ...args);
-        }
-        static Warn(message, ...args) {
-            console.warn(`%cFFTweaks | ${message}`, 'color: orange; font-weight: bold;', ...args);
-        }
-        static Error(message, ...args) {
-            console.error(`%cFFTweaks | ${message}`, 'color: red; font-weight: bold;', ...args);
-        }
-    }
-    FFT.Debug = Debug;
+        Modules.FunctionBar = FunctionBar;
+    })(Modules = FFT.Modules || (FFT.Modules = {}));
 })(FFT || (FFT = {}));
 var FFT;
 (function (FFT) {
@@ -383,4 +366,22 @@ var FFT;
         }
     }
     FFT.UI = UI;
+})(FFT || (FFT = {}));
+var FFT;
+(function (FFT) {
+    class Debug {
+        static Log(message, ...args) {
+            console.log(`%cFFTweaks | ${message}`, 'color: cyan; font-weight: bold;', ...args);
+        }
+        static Success(message, ...args) {
+            console.log(`%cFFTweaks | ${message}`, 'color: green; font-weight: bold;', ...args);
+        }
+        static Warn(message, ...args) {
+            console.warn(`%cFFTweaks | ${message}`, 'color: orange; font-weight: bold;', ...args);
+        }
+        static Error(message, ...args) {
+            console.error(`%cFFTweaks | ${message}`, 'color: red; font-weight: bold;', ...args);
+        }
+    }
+    FFT.Debug = Debug;
 })(FFT || (FFT = {}));

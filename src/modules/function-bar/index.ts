@@ -1,4 +1,4 @@
-namespace FFT.Addons {
+namespace FFT.Modules {
     export class FunctionBar {
         static async initialize() {
             // Check if the user is a DM
