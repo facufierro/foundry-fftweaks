@@ -54,7 +54,8 @@ namespace FFT.Modules {
                 content: content,
                 render: (html: JQuery<HTMLElement>) => {
                     this.setupListeners(html, abilities);
-                    html.find(".window-resizable-handle").remove(); // ✅ Remove resize handle
+                    html.closest(".app").addClass("no-resize"); // ✅ Prevent resizing via CSS
+                    html.closest(".window-app").find(".window-resizable-handle").remove(); // ✅ Remove resize handle
                 },
                 buttons: {
                     confirm: {
@@ -71,6 +72,7 @@ namespace FFT.Modules {
 
             this.activeDialog.render(true);
         }
+
 
         static generateDialogContent(abilities: Record<string, number>, abilityLabels: Record<string, string>, currentPoints: number): string {
             let content = `<style>

@@ -491,7 +491,8 @@ var FFT;
                     content: content,
                     render: (html) => {
                         this.setupListeners(html, abilities);
-                        html.find(".window-resizable-handle").remove(); // ✅ Remove resize handle
+                        html.closest(".app").addClass("no-resize"); // ✅ Prevent resizing via CSS
+                        html.closest(".window-app").find(".window-resizable-handle").remove(); // ✅ Remove resize handle
                     },
                     buttons: {
                         confirm: {
