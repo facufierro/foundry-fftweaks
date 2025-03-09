@@ -11,6 +11,7 @@ Hooks.once("ready", () => {
     FFT.Modules.FunctionBar.initialize();
     FFT.Modules.FolderAutoColor.initialize();
     FFT.Modules.PointBuy.initialize();
+    FFT.Modules.StartingEquipment.initialize();
 });
 
 
