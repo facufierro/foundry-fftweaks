@@ -1,5 +1,5 @@
 namespace FFT.Modules {
-    export class StartingEquipment {
+    export class EquipmentManager {
         static initialize() {
             Hooks.on("preCreateItem", async (item, options, userId) => {
                 if (!game.user.isGM && userId !== game.user.id) return;

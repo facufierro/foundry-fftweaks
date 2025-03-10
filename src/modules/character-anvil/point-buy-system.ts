@@ -1,5 +1,5 @@
 namespace FFT.Modules {
-    export class PointBuy {
+    export class PointBuySystem {
         private static activeDialog: Dialog | null = null; // Prevent multiple windows
 
         static initialize(): void {
@@ -15,16 +15,17 @@ namespace FFT.Modules {
                 if (!buttonContainer.length) return;
 
                 let button = $(`
-                    <button type="button" class="point-buy-button gold-button" 
-                        data-tooltip="Point Buy System" aria-label="Point Buy">
-                        <i class="fas fa-chart-bar"></i>
-                    </button>
-                `);
+            <button type="button" class="point-buy-button gold-button" 
+                data-tooltip="Point Buy System" aria-label="Point Buy">
+                <i class="fas fa-chart-bar"></i>
+            </button>
+        `);
 
-                button.on("click", () => PointBuy.openDialog(actor));
+                button.on("click", () => PointBuySystem.openDialog(actor));
                 buttonContainer.append(button);
             });
         }
+
 
         static openDialog(actor: Actor): void {
             if (this.activeDialog) {

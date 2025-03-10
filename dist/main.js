@@ -1,15 +1,15 @@
 /// <reference types="@league-of-foundry-developers/foundry-vtt-types" />
 /// <reference types="@league-of-foundry-developers/foundry-vtt-dnd5e-types" />
 window.FFT = window.FFT || {};
-window.FFT.Addons = window.FFT.Addons || {};
 window.FFT.Modules = window.FFT.Modules || {};
+window.FFT.Addons = window.FFT.Addons || {};
 window.FFT.Functions = window.FFT.Functions || {};
 // on ready
 Hooks.once("ready", () => {
     FFT.Modules.FunctionBar.initialize();
     FFT.Modules.FolderAutoColor.initialize();
-    FFT.Modules.PointBuy.initialize();
-    FFT.Modules.StartingEquipment.initialize();
+    FFT.Modules.EquipmentManager.initialize();
+    FFT.Modules.CharacterAnvil.initialize();
 });
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -172,7 +172,7 @@ var FFT;
 (function (FFT) {
     var Modules;
     (function (Modules) {
-        class StartingEquipment {
+        class EquipmentManager {
             static initialize() {
                 Hooks.on("preCreateItem", (item, options, userId) => __awaiter(this, void 0, void 0, function* () {
                     var _a, _b, _c, _d, _e, _f;
@@ -279,7 +279,179 @@ var FFT;
                 }));
             }
         }
-        Modules.StartingEquipment = StartingEquipment;
+        Modules.EquipmentManager = EquipmentManager;
+    })(Modules = FFT.Modules || (FFT.Modules = {}));
+})(FFT || (FFT = {}));
+var FFT;
+(function (FFT) {
+    var Modules;
+    (function (Modules) {
+        class CharacterAnvil {
+            static initialize() {
+                FFT.Modules.PointBuySystem.initialize();
+                FFT.Modules.EquipmentManager.initialize();
+            }
+        }
+        Modules.CharacterAnvil = CharacterAnvil;
+    })(Modules = FFT.Modules || (FFT.Modules = {}));
+})(FFT || (FFT = {}));
+var FFT;
+(function (FFT) {
+    var Modules;
+    (function (Modules) {
+        class PointBuySystem {
+            static initialize() {
+                Hooks.on("renderActorSheet5eCharacter", (_app, html, data) => {
+                    if (!game.user.isGM)
+                        return;
+                    let actor = data.actor;
+                    let details = actor.system.details || {}; // Fix: Ensure details is treated as an object
+                    if (details.background)
+                        return; // Hide button if character has a background
+                    let buttonContainer = html.find(".sheet-header-buttons");
+                    if (!buttonContainer.length)
+                        return;
+                    let button = $(`
+            <button type="button" class="point-buy-button gold-button" 
+                data-tooltip="Point Buy System" aria-label="Point Buy">
+                <i class="fas fa-chart-bar"></i>
+            </button>
+        `);
+                    button.on("click", () => PointBuySystem.openDialog(actor));
+                    buttonContainer.append(button);
+                });
+            }
+            static openDialog(actor) {
+                if (this.activeDialog) {
+                    if (this.activeDialog.rendered) {
+                        this.activeDialog.bringToTop();
+                    }
+                    return;
+                }
+                let abilities = {
+                    str: 8, dex: 8, con: 8, int: 8, wis: 8, cha: 8
+                };
+                let abilityLabels = {
+                    str: "Strength",
+                    dex: "Dexterity",
+                    con: "Constitution",
+                    int: "Intelligence",
+                    wis: "Wisdom",
+                    cha: "Charisma"
+                };
+                let currentPoints = this.calculatePoints(abilities);
+                let content = this.generateDialogContent(abilities, abilityLabels, currentPoints);
+                this.activeDialog = new Dialog({
+                    title: "Point Buy System",
+                    content: content,
+                    render: (html) => {
+                        this.setupListeners(html, abilities);
+                        html.closest(".app").addClass("no-resize"); // ✅ Prevent resizing via CSS
+                        html.closest(".window-app").find(".window-resizable-handle").remove(); // ✅ Remove resize handle
+                    },
+                    buttons: {
+                        confirm: {
+                            label: "Apply",
+                            callback: (html) => this.applyChanges(actor, $(html))
+                        },
+                        cancel: {
+                            label: "Cancel",
+                            callback: () => { this.activeDialog = null; }
+                        }
+                    },
+                    close: () => { this.activeDialog = null; }
+                });
+                this.activeDialog.render(true);
+            }
+            static generateDialogContent(abilities, abilityLabels, currentPoints) {
+                let content = `<style>
+                .point-buy-container { text-align: center; font-size: 1.1em; }
+                .ability-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+                .ability-name { width: 100px; text-align: left; }
+                .point-value { width: 40px; text-align: center; font-weight: bold; }
+                .btn-adjust { cursor: pointer; border: none; background: #444; color: white; font-size: 1.2em; width: 30px; height: 30px; border-radius: 5px; }
+                .btn-adjust:hover { background: #666; }
+                .remaining-points { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }
+            </style>
+            <div class="point-buy-container">
+                <p class="remaining-points">Remaining Points: <span id="remaining-points">${currentPoints}</span></p>
+            `;
+                for (let key of Object.keys(abilities)) {
+                    let name = abilityLabels[key];
+                    content += `
+                    <div class="ability-row">
+                        <span class="ability-name">${name}</span>
+                        <button class="btn-adjust" data-action="decrease" data-key="${key}">-</button>
+                        <span class="point-value" id="ability-${key}">${abilities[key]}</span>
+                        <button class="btn-adjust" data-action="increase" data-key="${key}">+</button>
+                    </div>
+                `;
+                }
+                content += `</div>`;
+                return content;
+            }
+            static setupListeners(html, abilities) {
+                let remainingPoints = 27;
+                let costs = { 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9 };
+                html.find(".btn-adjust").on("click", function (event) {
+                    let button = $(this);
+                    let key = button.data("key");
+                    let action = button.data("action");
+                    let valueElement = html.find(`#ability-${key}`);
+                    let currentValue = parseInt(valueElement.text());
+                    let newValue = currentValue;
+                    if (event.shiftKey) {
+                        newValue = (action === "increase") ? 15 : 8;
+                    }
+                    else {
+                        if (action === "increase" && currentValue < 15) {
+                            newValue++;
+                        }
+                        else if (action === "decrease" && currentValue > 8) {
+                            newValue--;
+                        }
+                    }
+                    let oldCost = costs[currentValue] || 0;
+                    let newCost = costs[newValue] || 0;
+                    let pointChange = newCost - oldCost;
+                    if (remainingPoints - pointChange >= 0) {
+                        valueElement.text(newValue);
+                        remainingPoints -= pointChange;
+                    }
+                    html.find("#remaining-points").text(remainingPoints);
+                });
+            }
+            static calculatePoints(abilities) {
+                let total = 27;
+                let costs = { 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9 };
+                for (let value of Object.values(abilities)) {
+                    total -= costs[value] || 0;
+                }
+                return total;
+            }
+            static applyChanges(actor, html) {
+                let updates = {};
+                let remainingPoints = 27;
+                let costs = { 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9 };
+                html.find(".ability-row").each((_index, element) => {
+                    let key = $(element).find(".btn-adjust").data("key");
+                    let newValue = parseInt($(element).find(".point-value").text());
+                    if (isNaN(newValue) || newValue < 8 || newValue > 15)
+                        return;
+                    remainingPoints -= costs[newValue] || 0;
+                    updates[`system.abilities.${key}.value`] = newValue;
+                });
+                if (remainingPoints < 0) {
+                    ui.notifications.error("Invalid point allocation. Please stay within the 27 points.");
+                    return;
+                }
+                actor.update(updates);
+                ui.notifications.info("Abilities updated successfully.");
+                this.activeDialog = null;
+            }
+        }
+        PointBuySystem.activeDialog = null; // Prevent multiple windows
+        Modules.PointBuySystem = PointBuySystem;
     })(Modules = FFT.Modules || (FFT.Modules = {}));
 })(FFT || (FFT = {}));
 var FFT;
@@ -551,165 +723,6 @@ var FFT;
         }
     }
     FFT.UI = UI;
-})(FFT || (FFT = {}));
-var FFT;
-(function (FFT) {
-    var Modules;
-    (function (Modules) {
-        class PointBuy {
-            static initialize() {
-                Hooks.on("renderActorSheet5eCharacter", (_app, html, data) => {
-                    if (!game.user.isGM)
-                        return;
-                    let actor = data.actor;
-                    let details = actor.system.details || {}; // Fix: Ensure details is treated as an object
-                    if (details.background)
-                        return; // Hide button if character has a background
-                    let buttonContainer = html.find(".sheet-header-buttons");
-                    if (!buttonContainer.length)
-                        return;
-                    let button = $(`
-                    <button type="button" class="point-buy-button gold-button" 
-                        data-tooltip="Point Buy System" aria-label="Point Buy">
-                        <i class="fas fa-chart-bar"></i>
-                    </button>
-                `);
-                    button.on("click", () => PointBuy.openDialog(actor));
-                    buttonContainer.append(button);
-                });
-            }
-            static openDialog(actor) {
-                if (this.activeDialog) {
-                    if (this.activeDialog.rendered) {
-                        this.activeDialog.bringToTop();
-                    }
-                    return;
-                }
-                let abilities = {
-                    str: 8, dex: 8, con: 8, int: 8, wis: 8, cha: 8
-                };
-                let abilityLabels = {
-                    str: "Strength",
-                    dex: "Dexterity",
-                    con: "Constitution",
-                    int: "Intelligence",
-                    wis: "Wisdom",
-                    cha: "Charisma"
-                };
-                let currentPoints = this.calculatePoints(abilities);
-                let content = this.generateDialogContent(abilities, abilityLabels, currentPoints);
-                this.activeDialog = new Dialog({
-                    title: "Point Buy System",
-                    content: content,
-                    render: (html) => {
-                        this.setupListeners(html, abilities);
-                        html.closest(".app").addClass("no-resize"); // ✅ Prevent resizing via CSS
-                        html.closest(".window-app").find(".window-resizable-handle").remove(); // ✅ Remove resize handle
-                    },
-                    buttons: {
-                        confirm: {
-                            label: "Apply",
-                            callback: (html) => this.applyChanges(actor, $(html))
-                        },
-                        cancel: {
-                            label: "Cancel",
-                            callback: () => { this.activeDialog = null; }
-                        }
-                    },
-                    close: () => { this.activeDialog = null; }
-                });
-                this.activeDialog.render(true);
-            }
-            static generateDialogContent(abilities, abilityLabels, currentPoints) {
-                let content = `<style>
-                .point-buy-container { text-align: center; font-size: 1.1em; }
-                .ability-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-                .ability-name { width: 100px; text-align: left; }
-                .point-value { width: 40px; text-align: center; font-weight: bold; }
-                .btn-adjust { cursor: pointer; border: none; background: #444; color: white; font-size: 1.2em; width: 30px; height: 30px; border-radius: 5px; }
-                .btn-adjust:hover { background: #666; }
-                .remaining-points { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }
-            </style>
-            <div class="point-buy-container">
-                <p class="remaining-points">Remaining Points: <span id="remaining-points">${currentPoints}</span></p>
-            `;
-                for (let key of Object.keys(abilities)) {
-                    let name = abilityLabels[key];
-                    content += `
-                    <div class="ability-row">
-                        <span class="ability-name">${name}</span>
-                        <button class="btn-adjust" data-action="decrease" data-key="${key}">-</button>
-                        <span class="point-value" id="ability-${key}">${abilities[key]}</span>
-                        <button class="btn-adjust" data-action="increase" data-key="${key}">+</button>
-                    </div>
-                `;
-                }
-                content += `</div>`;
-                return content;
-            }
-            static setupListeners(html, abilities) {
-                let remainingPoints = 27;
-                let costs = { 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9 };
-                html.find(".btn-adjust").on("click", function (event) {
-                    let button = $(this);
-                    let key = button.data("key");
-                    let action = button.data("action");
-                    let valueElement = html.find(`#ability-${key}`);
-                    let currentValue = parseInt(valueElement.text());
-                    let newValue = currentValue;
-                    if (event.shiftKey) {
-                        newValue = (action === "increase") ? 15 : 8;
-                    }
-                    else {
-                        if (action === "increase" && currentValue < 15) {
-                            newValue++;
-                        }
-                        else if (action === "decrease" && currentValue > 8) {
-                            newValue--;
-                        }
-                    }
-                    let oldCost = costs[currentValue] || 0;
-                    let newCost = costs[newValue] || 0;
-                    let pointChange = newCost - oldCost;
-                    if (remainingPoints - pointChange >= 0) {
-                        valueElement.text(newValue);
-                        remainingPoints -= pointChange;
-                    }
-                    html.find("#remaining-points").text(remainingPoints);
-                });
-            }
-            static calculatePoints(abilities) {
-                let total = 27;
-                let costs = { 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9 };
-                for (let value of Object.values(abilities)) {
-                    total -= costs[value] || 0;
-                }
-                return total;
-            }
-            static applyChanges(actor, html) {
-                let updates = {};
-                let remainingPoints = 27;
-                let costs = { 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9 };
-                html.find(".ability-row").each((_index, element) => {
-                    let key = $(element).find(".btn-adjust").data("key");
-                    let newValue = parseInt($(element).find(".point-value").text());
-                    if (isNaN(newValue) || newValue < 8 || newValue > 15)
-                        return;
-                    remainingPoints -= costs[newValue] || 0;
-                    updates[`system.abilities.${key}.value`] = newValue;
-                });
-                if (remainingPoints < 0) {
-                    ui.notifications.error("Invalid point allocation. Please stay within the 27 points.");
-                    return;
-                }
-                actor.update(updates);
-                ui.notifications.info("Abilities updated successfully.");
-                this.activeDialog = null;
-            }
-        }
-        PointBuy.activeDialog = null; // Prevent multiple windows
-        Modules.PointBuy = PointBuy;
-    })(Modules = FFT.Modules || (FFT.Modules = {}));
 })(FFT || (FFT = {}));
 var FFT;
 (function (FFT) {
