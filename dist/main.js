@@ -193,7 +193,6 @@ var FFT;
                 return __awaiter(this, void 0, void 0, function* () {
                     if (!this.isValidEvent(item, userId))
                         return;
-                    // Add 'await' when calling getEquipmentData
                     const data = yield this.getEquipmentData(item);
                     if (data === null || data === void 0 ? void 0 : data.equipmentKeys.length) {
                         this.showDialog(eventType, data);
@@ -208,16 +207,10 @@ var FFT;
                         return null;
                     const character = new FFT.Character(actor);
                     const equipmentKeys = ((_c = (_b = (_a = item.system) === null || _a === void 0 ? void 0 : _a.startingEquipment) === null || _b === void 0 ? void 0 : _b.map(e => e.key)) === null || _c === void 0 ? void 0 : _c.filter(Boolean)) || [];
-                    // Fetch item names dynamically from UUIDs, ensuring TypeScript recognizes them as Items
-                    const equipmentItems = yield Promise.all(equipmentKeys.map((id) => __awaiter(this, void 0, void 0, function* () {
-                        const foundItem = yield fromUuid(id); // Explicitly type as Item
+                    const equipmentNames = (yield Promise.all(equipmentKeys.map((id) => __awaiter(this, void 0, void 0, function* () {
+                        const foundItem = yield fromUuid(id);
                         return (foundItem === null || foundItem === void 0 ? void 0 : foundItem.name) || null;
-                    })));
-                    const equipmentNames = equipmentItems.filter(Boolean); // Remove null values
-                    console.log("Retrieved equipment data:", {
-                        equipmentKeys,
-                        equipmentNames
-                    });
+                    })))).filter(Boolean);
                     return {
                         character,
                         sourceType: item.type === "background" ? "backgroundSource" : "classSource",
@@ -229,16 +222,14 @@ var FFT;
             }
             static showDialog(eventType, data) {
                 return __awaiter(this, void 0, void 0, function* () {
-                    const { character, sourceName, sourceType, equipmentKeys, equipmentNames } = data;
-                    let itemList = "";
-                    if (eventType === "create") {
-                        itemList = equipmentNames.map(name => `<li>${name}</li>`).join("");
-                    }
-                    const title = eventType === "create" ? `Add ${sourceName} Equipment` : `Remove ${sourceName} Equipment`;
-                    const content = eventType === "create"
-                        ? `<p>${character.actor.name} has selected a ${sourceName}. Do you want to add the following equipment?</p><ul>${itemList}</ul>`
-                        : `<p>${character.actor.name} has removed a ${sourceName}. Do you want to remove the associated equipment?</p>`;
-                    new FF.CustomDialog(title, content, {
+                    const { character, sourceName, equipmentKeys, equipmentNames } = data;
+                    const itemList = eventType === "create" ? `<ul>${equipmentNames.map(name => `<li>${name}</li>`).join("")}</ul>` : "";
+                    const content = `
+                <p>${character.actor.name} has ${eventType === "create" ? "selected" : "removed"} a ${sourceName}. 
+                Do you want to ${eventType} the following equipment?</p>
+                ${itemList}
+            `;
+                    new FF.CustomDialog(`${eventType.charAt(0).toUpperCase() + eventType.slice(1)} ${sourceName} Equipment`, content, {
                         yes: {
                             label: "Yes",
                             callback: () => __awaiter(this, void 0, void 0, function* () {
