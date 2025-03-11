@@ -10,9 +10,5 @@
 Hooks.once("ready", () => {
     FFT.Modules.FunctionBar.initialize();
     FFT.Modules.FolderAutoColor.initialize();
-    FFT.Modules.EquipmentManager.initialize();
     FFT.Modules.CharacterAnvil.initialize();
 });
-
-
-

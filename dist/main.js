@@ -8,7 +8,6 @@ window.FFT.Functions = window.FFT.Functions || {};
 Hooks.once("ready", () => {
     FFT.Modules.FunctionBar.initialize();
     FFT.Modules.FolderAutoColor.initialize();
-    FFT.Modules.EquipmentManager.initialize();
     FFT.Modules.CharacterAnvil.initialize();
 });
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -172,127 +171,95 @@ var FFT;
 (function (FFT) {
     var Modules;
     (function (Modules) {
-        class EquipmentManager {
+        class CharacterAnvil {
             static initialize() {
-                Hooks.on("preCreateItem", (item, options, userId) => __awaiter(this, void 0, void 0, function* () {
-                    var _a, _b, _c, _d, _e, _f;
-                    if (!game.user.isGM && userId !== game.user.id)
-                        return;
-                    if (item.type !== "background" && item.type !== "class")
-                        return;
-                    const actor = item.parent;
-                    if (!actor)
-                        return;
-                    const sourceType = item.type === "background" ? "backgroundSource" : "classSource";
-                    const sourceName = item.type === "background" ? "Background" : "Class";
-                    let equipmentKeys = [];
-                    if (item.type === "background") {
-                        equipmentKeys = ((_c = (_b = (_a = item.system) === null || _a === void 0 ? void 0 : _a.startingEquipment) === null || _b === void 0 ? void 0 : _b.map(e => e.key)) === null || _c === void 0 ? void 0 : _c.filter(Boolean)) || [];
-                    }
-                    else if (item.type === "class") {
-                        equipmentKeys = ((_f = (_e = (_d = item.system) === null || _d === void 0 ? void 0 : _d.startingEquipment) === null || _e === void 0 ? void 0 : _e.map(e => e.key)) === null || _f === void 0 ? void 0 : _f.filter(Boolean)) || [];
-                    }
-                    if (!equipmentKeys.length) {
-                        ui.notifications.warn(`${actor.name} selected a ${sourceName}, but no equipment was found.`);
-                        return;
-                    }
-                    let equipmentList = "";
-                    for (const key of equipmentKeys) {
-                        const equipmentItem = yield fromUuid(key);
-                        if (equipmentItem === null || equipmentItem === void 0 ? void 0 : equipmentItem.name) {
-                            equipmentList += `<li>${equipmentItem.name}</li>`;
-                        }
-                    }
-                    new Dialog({
-                        title: `Add ${sourceName} Equipment`,
-                        content: `<p>${actor.name} has selected a ${sourceName}. Do you want to add the following equipment?</p>
-                              <ul>${equipmentList}</ul>`,
-                        buttons: {
-                            yes: {
-                                label: "Yes",
-                                callback: () => __awaiter(this, void 0, void 0, function* () {
-                                    for (const key of equipmentKeys) {
-                                        const item = yield fromUuid(key);
-                                        if (!item)
-                                            continue;
-                                        let newItem = yield actor.createEmbeddedDocuments("Item", [item.toObject()]);
-                                        if (newItem.length) {
-                                            yield newItem[0].setFlag("dnd5e", sourceType, item.uuid);
-                                        }
-                                    }
-                                    ui.notifications.info(`${sourceName} equipment added!`);
-                                })
-                            },
-                            no: {
-                                label: "No",
-                                callback: () => {
-                                    ui.notifications.info(`${sourceName} equipment not added.`);
-                                }
-                            }
-                        },
-                        default: "yes"
-                    }).render(true);
-                }));
-                Hooks.on("preDeleteItem", (item, options, userId) => __awaiter(this, void 0, void 0, function* () {
-                    var _a, _b, _c, _d, _e, _f;
-                    if (!game.user.isGM && userId !== game.user.id)
-                        return;
-                    if (item.type !== "background" && item.type !== "class")
-                        return;
-                    const actor = item.parent;
-                    if (!actor)
-                        return;
-                    const sourceType = item.type === "background" ? "backgroundSource" : "classSource";
-                    const sourceName = item.type === "background" ? "Background" : "Class";
-                    let equipmentKeys = [];
-                    if (item.type === "background") {
-                        equipmentKeys = ((_c = (_b = (_a = item.system) === null || _a === void 0 ? void 0 : _a.startingEquipment) === null || _b === void 0 ? void 0 : _b.map(e => e.key)) === null || _c === void 0 ? void 0 : _c.filter(Boolean)) || [];
-                    }
-                    else if (item.type === "class") {
-                        equipmentKeys = ((_f = (_e = (_d = item.system) === null || _d === void 0 ? void 0 : _d.startingEquipment) === null || _e === void 0 ? void 0 : _e.map(e => e.key)) === null || _f === void 0 ? void 0 : _f.filter(Boolean)) || [];
-                    }
-                    if (!equipmentKeys.length)
-                        return;
-                    const itemsToRemove = actor.items.filter(i => i.getFlag("dnd5e", sourceType) && equipmentKeys.includes(i.getFlag("dnd5e", sourceType)));
-                    if (!itemsToRemove.length)
-                        return;
-                    new Dialog({
-                        title: `Remove ${sourceName} Equipment`,
-                        content: `<p>${actor.name} has removed a ${sourceName}. Do you want to remove the associated equipment?</p>`,
-                        buttons: {
-                            yes: {
-                                label: "Yes",
-                                callback: () => __awaiter(this, void 0, void 0, function* () {
-                                    yield actor.deleteEmbeddedDocuments("Item", itemsToRemove.map(i => i.id));
-                                    ui.notifications.info(`${sourceName} equipment removed!`);
-                                })
-                            },
-                            no: {
-                                label: "No",
-                                callback: () => {
-                                    ui.notifications.info(`${sourceName} equipment was kept.`);
-                                }
-                            }
-                        },
-                        default: "yes"
-                    }).render(true);
-                }));
+                Hooks.on("preCreateItem", (item, options, userId) => FFT.Modules.EquipmentManager.handleItemEvent("create", item, options, userId));
+                Hooks.on("preDeleteItem", (item, options, userId) => FFT.Modules.EquipmentManager.handleItemEvent("remove", item, options, userId));
+                FFT.Modules.PointBuySystem.initialize();
             }
         }
-        Modules.EquipmentManager = EquipmentManager;
+        Modules.CharacterAnvil = CharacterAnvil;
     })(Modules = FFT.Modules || (FFT.Modules = {}));
 })(FFT || (FFT = {}));
 var FFT;
 (function (FFT) {
     var Modules;
     (function (Modules) {
-        class CharacterAnvil {
-            static initialize() {
-                FFT.Modules.PointBuySystem.initialize();
-                FFT.Modules.EquipmentManager.initialize();
+        class EquipmentManager {
+            static isValidEvent(item, userId) {
+                return game.user.isGM || userId === game.user.id && ["background", "class"].includes(item.type);
+            }
+            static handleItemEvent(eventType, item, options, userId) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    if (!this.isValidEvent(item, userId))
+                        return;
+                    // Add 'await' when calling getEquipmentData
+                    const data = yield this.getEquipmentData(item);
+                    if (data === null || data === void 0 ? void 0 : data.equipmentKeys.length) {
+                        this.showDialog(eventType, data);
+                    }
+                });
+            }
+            static getEquipmentData(item) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    var _a, _b, _c;
+                    const actor = item.parent;
+                    if (!actor)
+                        return null;
+                    const character = new FFT.Character(actor);
+                    const equipmentKeys = ((_c = (_b = (_a = item.system) === null || _a === void 0 ? void 0 : _a.startingEquipment) === null || _b === void 0 ? void 0 : _b.map(e => e.key)) === null || _c === void 0 ? void 0 : _c.filter(Boolean)) || [];
+                    // Fetch item names dynamically from UUIDs, ensuring TypeScript recognizes them as Items
+                    const equipmentItems = yield Promise.all(equipmentKeys.map((id) => __awaiter(this, void 0, void 0, function* () {
+                        const foundItem = yield fromUuid(id); // Explicitly type as Item
+                        return (foundItem === null || foundItem === void 0 ? void 0 : foundItem.name) || null;
+                    })));
+                    const equipmentNames = equipmentItems.filter(Boolean); // Remove null values
+                    console.log("Retrieved equipment data:", {
+                        equipmentKeys,
+                        equipmentNames
+                    });
+                    return {
+                        character,
+                        sourceType: item.type === "background" ? "backgroundSource" : "classSource",
+                        sourceName: item.type === "background" ? "Background" : "Class",
+                        equipmentKeys,
+                        equipmentNames
+                    };
+                });
+            }
+            static showDialog(eventType, data) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    const { character, sourceName, sourceType, equipmentKeys, equipmentNames } = data;
+                    let itemList = "";
+                    if (eventType === "create") {
+                        itemList = equipmentNames.map(name => `<li>${name}</li>`).join("");
+                    }
+                    const title = eventType === "create" ? `Add ${sourceName} Equipment` : `Remove ${sourceName} Equipment`;
+                    const content = eventType === "create"
+                        ? `<p>${character.actor.name} has selected a ${sourceName}. Do you want to add the following equipment?</p><ul>${itemList}</ul>`
+                        : `<p>${character.actor.name} has removed a ${sourceName}. Do you want to remove the associated equipment?</p>`;
+                    new FF.CustomDialog(title, content, {
+                        yes: {
+                            label: "Yes",
+                            callback: () => __awaiter(this, void 0, void 0, function* () {
+                                if (eventType === "create") {
+                                    yield character.addItemsByID(equipmentKeys);
+                                }
+                                else {
+                                    yield character.removeItemsByName(equipmentNames);
+                                }
+                                ui.notifications.info(`${sourceName} equipment ${eventType}d!`);
+                            })
+                        },
+                        no: {
+                            label: "No",
+                            callback: () => ui.notifications.info(`${sourceName} equipment was not ${eventType}d.`)
+                        }
+                    }, "yes").render();
+                });
             }
         }
-        Modules.CharacterAnvil = CharacterAnvil;
+        Modules.EquipmentManager = EquipmentManager;
     })(Modules = FFT.Modules || (FFT.Modules = {}));
 })(FFT || (FFT = {}));
 var FFT;
@@ -456,22 +423,6 @@ var FFT;
 })(FFT || (FFT = {}));
 var FFT;
 (function (FFT) {
-    class Character {
-        constructor(actorId) {
-            var _a;
-            const actor = (_a = game.actors) === null || _a === void 0 ? void 0 : _a.get(actorId);
-            if (!actor)
-                throw new Error(`Actor with ID ${actorId} not found.`);
-            this.actor = actor;
-            this.abilities = this.actor.system.abilities;
-            FFT.Debug.Success(`Initialized character: ${this.actor.name}`);
-            console.log(this.actor);
-        }
-    }
-    FFT.Character = Character;
-})(FFT || (FFT = {}));
-var FFT;
-(function (FFT) {
     var Modules;
     (function (Modules) {
         class FolderAutoColor {
@@ -567,6 +518,65 @@ var FFT;
         }
         Modules.FunctionBar = FunctionBar;
     })(Modules = FFT.Modules || (FFT.Modules = {}));
+})(FFT || (FFT = {}));
+var FFT;
+(function (FFT) {
+    class Debug {
+        static Log(message, ...args) {
+            console.log(`%cFFTweaks | ${message}`, 'color: cyan; font-weight: bold;', ...args);
+        }
+        static Success(message, ...args) {
+            console.log(`%cFFTweaks | ${message}`, 'color: green; font-weight: bold;', ...args);
+        }
+        static Warn(message, ...args) {
+            console.warn(`%cFFTweaks | ${message}`, 'color: orange; font-weight: bold;', ...args);
+        }
+        static Error(message, ...args) {
+            console.error(`%cFFTweaks | ${message}`, 'color: red; font-weight: bold;', ...args);
+        }
+    }
+    FFT.Debug = Debug;
+})(FFT || (FFT = {}));
+var FFT;
+(function (FFT) {
+    class Character {
+        constructor(actor) {
+            var _a, _b;
+            this.actor = actor;
+            this.background = (_a = actor.items.find(i => i.type === "background")) !== null && _a !== void 0 ? _a : null;
+            this.class = (_b = actor.items.find(i => i.type === "class")) !== null && _b !== void 0 ? _b : null;
+        }
+        addItemsByID(itemIds) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const items = (yield Promise.all(itemIds.map(id => fromUuid(id)))).filter(Boolean);
+                if (!items.length)
+                    return;
+                yield this.actor.createEmbeddedDocuments("Item", items.map(item => item.toObject()));
+            });
+        }
+        removeItemsByID(itemIds) {
+            return __awaiter(this, void 0, void 0, function* () {
+                yield this.actor.deleteEmbeddedDocuments("Item", itemIds);
+            });
+        }
+        removeItemsByName(itemNames) {
+            return __awaiter(this, void 0, void 0, function* () {
+                console.log("Attempting to remove items:", itemNames);
+                const itemsToRemove = this.actor.items.filter(item => itemNames.includes(item.name));
+                console.log("Found items to remove:", itemsToRemove.map(item => item.name));
+                if (!itemsToRemove.length)
+                    return;
+                yield this.actor.deleteEmbeddedDocuments("Item", itemsToRemove.map(item => item.id));
+            });
+        }
+    }
+    FFT.Character = Character;
+})(FFT || (FFT = {}));
+var FFT;
+(function (FFT) {
+    class Token {
+    }
+    FFT.Token = Token;
 })(FFT || (FFT = {}));
 var FFT;
 (function (FFT) {
@@ -724,21 +734,21 @@ var FFT;
     }
     FFT.UI = UI;
 })(FFT || (FFT = {}));
-var FFT;
-(function (FFT) {
-    class Debug {
-        static Log(message, ...args) {
-            console.log(`%cFFTweaks | ${message}`, 'color: cyan; font-weight: bold;', ...args);
+var FF;
+(function (FF) {
+    class CustomDialog {
+        constructor(title, content, buttons, defaultButton = "yes", options = {}) {
+            this.title = title;
+            this.content = content;
+            this.buttons = Object.fromEntries(Object.entries(buttons).map(([key, { label, callback }]) => [
+                key, { label, callback }
+            ]));
+            this.defaultButton = defaultButton;
+            this.options = options;
         }
-        static Success(message, ...args) {
-            console.log(`%cFFTweaks | ${message}`, 'color: green; font-weight: bold;', ...args);
-        }
-        static Warn(message, ...args) {
-            console.warn(`%cFFTweaks | ${message}`, 'color: orange; font-weight: bold;', ...args);
-        }
-        static Error(message, ...args) {
-            console.error(`%cFFTweaks | ${message}`, 'color: red; font-weight: bold;', ...args);
+        render() {
+            new Dialog(Object.assign({ title: this.title, content: this.content, buttons: this.buttons, default: this.defaultButton }, this.options)).render(true);
         }
     }
-    FFT.Debug = Debug;
-})(FFT || (FFT = {}));
+    FF.CustomDialog = CustomDialog;
+})(FF || (FF = {}));
