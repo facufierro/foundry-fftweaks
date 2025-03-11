@@ -187,16 +187,45 @@ var FFT;
     (function (Modules) {
         class EquipmentManager {
             static isValidEvent(item, userId) {
-                return game.user.isGM || userId === game.user.id && ["background", "class"].includes(item.type);
+                return game.user.isGM || (userId === game.user.id && ["background", "class"].includes(item.type));
             }
             static handleItemEvent(eventType, item, options, userId) {
                 return __awaiter(this, void 0, void 0, function* () {
                     if (!this.isValidEvent(item, userId))
                         return;
-                    const data = yield this.getEquipmentData(item);
-                    if (data === null || data === void 0 ? void 0 : data.equipmentKeys.length) {
-                        this.showDialog(eventType, data);
-                    }
+                    if (!["background", "class"].includes(item.type))
+                        return; // Ensure only backgrounds/classes trigger
+                    const actor = item.parent;
+                    if (!actor)
+                        return;
+                    const character = new FFT.Character(actor);
+                    const sourceType = item.type === "background" ? "backgroundSource" : "classSource";
+                    const sourceName = item.type === "background" ? "Background" : "Class";
+                    const content = `
+                <p>${character.actor.name} has ${eventType === "create" ? "selected" : "removed"} a ${sourceName}. 
+                Do you want to ${eventType} the associated equipment?</p>
+            `;
+                    new FF.CustomDialog(`${eventType.charAt(0).toUpperCase() + eventType.slice(1)} ${sourceName} Equipment`, content, {
+                        yes: {
+                            label: "Yes",
+                            callback: () => __awaiter(this, void 0, void 0, function* () {
+                                const data = yield EquipmentManager.getEquipmentData(item);
+                                if (!data || !data.equipmentKeys.length)
+                                    return;
+                                if (eventType === "create") {
+                                    yield character.addItemsByID(data.equipmentKeys);
+                                }
+                                else {
+                                    yield character.removeItemsByName(data.equipmentNames);
+                                }
+                                ui.notifications.info(`${sourceName} equipment ${eventType}d!`);
+                            })
+                        },
+                        no: {
+                            label: "No",
+                            callback: () => ui.notifications.info(`${sourceName} equipment was not ${eventType}d.`)
+                        }
+                    }, "yes").render();
                 });
             }
             static getEquipmentData(item) {
@@ -218,35 +247,6 @@ var FFT;
                         equipmentKeys,
                         equipmentNames
                     };
-                });
-            }
-            static showDialog(eventType, data) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    const { character, sourceName, equipmentKeys, equipmentNames } = data;
-                    const itemList = eventType === "create" ? `<ul>${equipmentNames.map(name => `<li>${name}</li>`).join("")}</ul>` : "";
-                    const content = `
-                <p>${character.actor.name} has ${eventType === "create" ? "selected" : "removed"} a ${sourceName}. 
-                Do you want to ${eventType} the following equipment?</p>
-                ${itemList}
-            `;
-                    new FF.CustomDialog(`${eventType.charAt(0).toUpperCase() + eventType.slice(1)} ${sourceName} Equipment`, content, {
-                        yes: {
-                            label: "Yes",
-                            callback: () => __awaiter(this, void 0, void 0, function* () {
-                                if (eventType === "create") {
-                                    yield character.addItemsByID(equipmentKeys);
-                                }
-                                else {
-                                    yield character.removeItemsByName(equipmentNames);
-                                }
-                                ui.notifications.info(`${sourceName} equipment ${eventType}d!`);
-                            })
-                        },
-                        no: {
-                            label: "No",
-                            callback: () => ui.notifications.info(`${sourceName} equipment was not ${eventType}d.`)
-                        }
-                    }, "yes").render();
                 });
             }
         }
