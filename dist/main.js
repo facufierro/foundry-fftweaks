@@ -173,15 +173,22 @@ var FFT;
     (function (Modules) {
         class CharacterAnvil {
             static initialize() {
-                Hooks.on("preCreateItem", (item, options, userId) => {
+                Hooks.on("createItem", (item, options, userId) => __awaiter(this, void 0, void 0, function* () {
                     if (item.type === "class") {
                         FFT.Modules.EquipmentManager.showDialog("create", "class", item, userId);
-                        FFT.Modules.SpellSelector.showDialog("add", "Fireball", userId);
+                        const spellListId = "fltmd5kijx3pTREA.GEc89WbpwBlsqP2z";
+                        const spells = yield FFT.Modules.SpellSelector.getSpellData(spellListId);
+                        if (Object.keys(spells).length > 0) {
+                            FFT.Modules.SpellSelector.showDialog(spells, game.user.id); // ✅ Pass spell dictionary
+                        }
+                        else {
+                            console.warn("No spells found, skipping dialog.");
+                        }
                     }
                     if (item.type === "background") {
                         FFT.Modules.EquipmentManager.showDialog("create", "background", item, userId);
                     }
-                });
+                }));
                 Hooks.on("preDeleteItem", (item, options, userId) => {
                     if (item.type === "class") {
                         FFT.Modules.EquipmentManager.showDialog("remove", "class", item, userId);
@@ -433,23 +440,78 @@ var FFT;
             static isValidEvent(userId) {
                 return game.user.isGM || userId === game.user.id;
             }
-            static showDialog(eventType, spellName, userId) {
+            static showDialog(spells, userId) {
                 return __awaiter(this, void 0, void 0, function* () {
                     if (!this.isValidEvent(userId))
                         return;
+                    if (Object.keys(spells).length === 0)
+                        return;
+                    // Generate checkboxes for each spell name, keeping IDs hidden
+                    const spellOptions = Object.entries(spells).map(([spellName, spellId]) => `
+                <div>
+                    <input type="checkbox" class="spell-checkbox" data-spell-id="${spellId}">
+                    <label>${spellName}</label>
+                </div>
+            `).join("");
                     const content = `
-                <p>Do you want to ${eventType} the spell "${spellName}"?</p>
+                <p>Select spells to add:</p>
+                <div class="spell-list" style="max-height: 400px; overflow-y: auto;">
+                    ${spellOptions}
+                </div>
             `;
-                    new FF.CustomDialog(`${eventType.charAt(0).toUpperCase() + eventType.slice(1)} Spell`, content, {
+                    new FF.CustomDialog("Add Spells", content, {
                         yes: {
-                            label: "Yes",
-                            callback: () => ui.notifications.info(`Spell "${spellName}" ${eventType}ed.`)
+                            label: "Add",
+                            callback: (html) => __awaiter(this, void 0, void 0, function* () {
+                                const selectedSpells = Array.from(html[0].querySelectorAll(".spell-checkbox:checked")).map(el => el.dataset.spellId || "");
+                                if (selectedSpells.length === 0) {
+                                    ui.notifications.warn("No spells selected.");
+                                    return;
+                                }
+                                console.log("Selected Spell IDs:", selectedSpells);
+                                ui.notifications.info(`${selectedSpells.length} spell(s) selected.`);
+                            })
                         },
                         no: {
-                            label: "No",
-                            callback: () => ui.notifications.info(`Spell "${spellName}" was not ${eventType}ed.`)
+                            label: "Cancel",
+                            callback: () => ui.notifications.info(`Spell selection canceled.`)
                         }
                     }, "yes").render();
+                });
+            }
+            static getSpellData(spellListId) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    var _a, _b;
+                    console.log("Received spellListId:", spellListId);
+                    const [journalId, pageId] = spellListId.split(".");
+                    console.log("Extracted Journal ID:", journalId);
+                    console.log("Extracted Page ID:", pageId);
+                    const journal = game.journal.get(journalId);
+                    if (!journal)
+                        return {};
+                    const page = journal.pages.get(pageId);
+                    if (!page)
+                        return {};
+                    console.log("Journal Page Found:", page.name);
+                    console.log("Page System Data:", page.system);
+                    // Convert the spell list (Set or Array) into an array
+                    const spellIds = ((_a = page.system) === null || _a === void 0 ? void 0 : _a.spells) instanceof Set
+                        ? Array.from(page.system.spells)
+                        : Array.isArray((_b = page.system) === null || _b === void 0 ? void 0 : _b.spells)
+                            ? page.system.spells
+                            : [];
+                    console.log("Extracted Spell IDs:", spellIds);
+                    if (spellIds.length === 0) {
+                        console.warn(`No spells found in Journal Page: ${page.name}`);
+                        return {};
+                    }
+                    // Convert to dictionary { spellName: spellId }
+                    const spellDict = Object.fromEntries(yield Promise.all(spellIds.map((id) => __awaiter(this, void 0, void 0, function* () {
+                        const spell = yield fromUuid(id);
+                        return spell instanceof Item ? [spell.name, id] : null;
+                    }))).then(spells => spells.filter(Boolean)));
+                    console.log("Final Spell Dictionary:", spellDict);
+                    return spellDict;
                 });
             }
         }
