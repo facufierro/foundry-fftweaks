@@ -177,9 +177,14 @@ var FFT;
                     if (item.type === "class") {
                         FFT.Modules.EquipmentManager.showDialog("create", "class", item, userId);
                         const spellListId = "fltmd5kijx3pTREA.GEc89WbpwBlsqP2z";
-                        const spells = yield FFT.Modules.SpellSelector.getSpellData(spellListId);
+                        const { spells, title, category } = yield FFT.Modules.SpellSelector.getSpellData(spellListId);
+                        const actor = item.parent; // ✅ Get the character that owns the item
+                        if (!actor || !(actor instanceof Actor)) {
+                            console.warn("No valid actor found for this item.");
+                            return;
+                        }
                         if (Object.keys(spells).length > 0) {
-                            FFT.Modules.SpellSelector.showDialog(spells, game.user.id); // ✅ Pass spell dictionary
+                            FFT.Modules.SpellSelector.showDialog(spells, title, category, actor, game.user.id);
                         }
                         else {
                             console.warn("No spells found, skipping dialog.");
@@ -440,26 +445,98 @@ var FFT;
             static isValidEvent(userId) {
                 return game.user.isGM || userId === game.user.id;
             }
-            static showDialog(spells, userId) {
+            static getSpellData(spellListId) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    var _a, _b, _c, _d;
+                    console.log("Received spellListId:", spellListId);
+                    const [journalId, pageId] = spellListId.split(".");
+                    console.log("Extracted Journal ID:", journalId);
+                    console.log("Extracted Page ID:", pageId);
+                    const journal = game.journal.get(journalId);
+                    if (!journal)
+                        return { spells: {}, title: "Unknown", category: "Spells" };
+                    const page = journal.pages.get(pageId);
+                    if (!page)
+                        return { spells: {}, title: "Unknown", category: "Spells" };
+                    console.log("Journal Page Found:", page.name);
+                    console.log("Page System Data:", page.system);
+                    const spellIds = ((_a = page.system) === null || _a === void 0 ? void 0 : _a.spells) instanceof Set
+                        ? Array.from(page.system.spells)
+                        : Array.isArray((_b = page.system) === null || _b === void 0 ? void 0 : _b.spells)
+                            ? page.system.spells
+                            : [];
+                    console.log("Extracted Spell IDs:", spellIds);
+                    if (spellIds.length === 0) {
+                        console.warn(`No spells found in Journal Page: ${page.name}`);
+                        return {
+                            spells: {},
+                            title: page.name,
+                            category: String(((_c = page.system) === null || _c === void 0 ? void 0 : _c.grouping) || "Spells")
+                        };
+                    }
+                    // Convert to dictionary { spellName: { id, level } }
+                    const spellDict = Object.fromEntries(yield Promise.all(spellIds.map((id) => __awaiter(this, void 0, void 0, function* () {
+                        const spell = yield fromUuid(id);
+                        return spell instanceof Item ? [spell.name, { id: id, level: spell.system.level || 0 }] : null;
+                    }))).then(spells => spells.filter(Boolean)));
+                    console.log("Final Spell Dictionary:", spellDict);
+                    return {
+                        spells: spellDict,
+                        title: page.name,
+                        category: String(((_d = page.system) === null || _d === void 0 ? void 0 : _d.grouping) || "Spells")
+                    };
+                });
+            }
+            static showDialog(spells, title, category, actor, // ✅ Actor is now passed in
+            userId) {
                 return __awaiter(this, void 0, void 0, function* () {
                     if (!this.isValidEvent(userId))
                         return;
                     if (Object.keys(spells).length === 0)
                         return;
-                    // Generate checkboxes for each spell name, keeping IDs hidden
-                    const spellOptions = Object.entries(spells).map(([spellName, spellId]) => `
-                <div>
-                    <input type="checkbox" class="spell-checkbox" data-spell-id="${spellId}">
-                    <label>${spellName}</label>
-                </div>
-            `).join("");
+                    if (!actor) {
+                        ui.notifications.error("No character sheet found.");
+                        return;
+                    }
+                    const existingSpells = this.getExistingSpells(actor); // ✅ Use the actor to check existing spells
+                    // Group spells by level
+                    const spellsByLevel = {};
+                    for (const [spellName, spellData] of Object.entries(spells)) {
+                        const level = spellData.level;
+                        if (!spellsByLevel[level])
+                            spellsByLevel[level] = [];
+                        spellsByLevel[level].push({
+                            name: spellName,
+                            id: spellData.id,
+                            owned: existingSpells.has(spellName) // ✅ Check if the character already owns this spell
+                        });
+                    }
+                    // Sort levels numerically
+                    const sortedLevels = Object.keys(spellsByLevel)
+                        .map(Number)
+                        .sort((a, b) => a - b);
+                    // Build spell selection UI with level separators
+                    const spellOptions = sortedLevels.map(level => {
+                        const levelLabel = level === 0 ? "Cantrips" : `Level ${level}`;
+                        const spellList = spellsByLevel[level]
+                            .map(spell => `
+                        <div>
+                            <input type="checkbox" class="spell-checkbox" data-spell-id="${spell.id}" ${spell.owned ? "disabled" : ""}>
+                            <label style="${spell.owned ? "color: gray;" : ""}">${spell.name}</label>
+                        </div>
+                    `).join("");
+                        return `
+                    <h3>${levelLabel}</h3>
+                    ${spellList}
+                `;
+                    }).join("");
                     const content = `
-                <p>Select spells to add:</p>
+                <p><strong>${category}</strong></p>  <!-- ✅ Display spell category -->
                 <div class="spell-list" style="max-height: 400px; overflow-y: auto;">
                     ${spellOptions}
                 </div>
             `;
-                    new FF.CustomDialog("Add Spells", content, {
+                    new FF.CustomDialog(title, content, {
                         yes: {
                             label: "Add",
                             callback: (html) => __awaiter(this, void 0, void 0, function* () {
@@ -479,40 +556,13 @@ var FFT;
                     }, "yes").render();
                 });
             }
-            static getSpellData(spellListId) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    var _a, _b;
-                    console.log("Received spellListId:", spellListId);
-                    const [journalId, pageId] = spellListId.split(".");
-                    console.log("Extracted Journal ID:", journalId);
-                    console.log("Extracted Page ID:", pageId);
-                    const journal = game.journal.get(journalId);
-                    if (!journal)
-                        return {};
-                    const page = journal.pages.get(pageId);
-                    if (!page)
-                        return {};
-                    console.log("Journal Page Found:", page.name);
-                    console.log("Page System Data:", page.system);
-                    // Convert the spell list (Set or Array) into an array
-                    const spellIds = ((_a = page.system) === null || _a === void 0 ? void 0 : _a.spells) instanceof Set
-                        ? Array.from(page.system.spells)
-                        : Array.isArray((_b = page.system) === null || _b === void 0 ? void 0 : _b.spells)
-                            ? page.system.spells
-                            : [];
-                    console.log("Extracted Spell IDs:", spellIds);
-                    if (spellIds.length === 0) {
-                        console.warn(`No spells found in Journal Page: ${page.name}`);
-                        return {};
-                    }
-                    // Convert to dictionary { spellName: spellId }
-                    const spellDict = Object.fromEntries(yield Promise.all(spellIds.map((id) => __awaiter(this, void 0, void 0, function* () {
-                        const spell = yield fromUuid(id);
-                        return spell instanceof Item ? [spell.name, id] : null;
-                    }))).then(spells => spells.filter(Boolean)));
-                    console.log("Final Spell Dictionary:", spellDict);
-                    return spellDict;
-                });
+            static getExistingSpells(actor) {
+                if (!actor)
+                    return new Set();
+                // Get all spell names from the actor's items
+                const spellNames = new Set(actor.items.filter(item => item.type === "spell").map(spell => spell.name));
+                console.log("Existing Spells on Character:", spellNames);
+                return spellNames;
             }
         }
         Modules.SpellSelector = SpellSelector;

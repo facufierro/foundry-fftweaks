@@ -6,14 +6,21 @@ namespace FFT.Modules {
                     FFT.Modules.EquipmentManager.showDialog("create", "class", item, userId);
 
                     const spellListId = "fltmd5kijx3pTREA.GEc89WbpwBlsqP2z";
-                    const spells = await FFT.Modules.SpellSelector.getSpellData(spellListId);
+                    const { spells, title, category } = await FFT.Modules.SpellSelector.getSpellData(spellListId);
+
+                    const actor = item.parent; // ✅ Get the character that owns the item
+                    if (!actor || !(actor instanceof Actor)) {
+                        console.warn("No valid actor found for this item.");
+                        return;
+                    }
 
                     if (Object.keys(spells).length > 0) {
-                        FFT.Modules.SpellSelector.showDialog(spells, game.user.id); // ✅ Pass spell dictionary
+                        FFT.Modules.SpellSelector.showDialog(spells, title, category, actor, game.user.id);
                     } else {
                         console.warn("No spells found, skipping dialog.");
                     }
                 }
+
                 if (item.type === "background") {
                     FFT.Modules.EquipmentManager.showDialog("create", "background", item, userId);
                 }
