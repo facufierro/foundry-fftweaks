@@ -1,26 +1,24 @@
 namespace FFT.Modules {
     export class EquipmentManager {
-        static isValidEvent(item, userId) {
-            return game.user.isGM || (userId === game.user.id && ["background", "class"].includes(item.type));
+        static isValidEvent(userId) {
+            return game.user.isGM || userId === game.user.id;
         }
 
-        static async handleItemEvent(eventType: "create" | "remove", item, options, userId) {
-            if (!this.isValidEvent(item, userId)) return;
-            if (!["background", "class"].includes(item.type)) return; // Ensure only backgrounds/classes trigger
+        static async showDialog(eventType: "create" | "remove", itemType: string, item, userId) {
+            if (!this.isValidEvent(userId)) return;
+            if (!item || item.type !== itemType) return;
 
             const actor = item.parent;
             if (!actor) return;
             const character = new FFT.Character(actor);
-            const sourceType = item.type === "background" ? "backgroundSource" : "classSource";
-            const sourceName = item.type === "background" ? "Background" : "Class";
 
             const content = `
-                <p>${character.actor.name} has ${eventType === "create" ? "selected" : "removed"} a ${sourceName}. 
-                Do you want to ${eventType} the associated equipment?</p>
+                <p>${character.actor.name} has ${eventType === "create" ? "selected" : "removed"} a ${itemType}.</p>
+                <p>Do you want to ${eventType} its associated items?</p>
             `;
 
             new FF.CustomDialog(
-                `${eventType.charAt(0).toUpperCase() + eventType.slice(1)} ${sourceName} Equipment`,
+                `${eventType.charAt(0).toUpperCase() + eventType.slice(1)} ${itemType} Items`,
                 content,
                 {
                     yes: {
@@ -34,12 +32,13 @@ namespace FFT.Modules {
                             } else {
                                 await character.removeItemsByName(data.equipmentNames);
                             }
-                            ui.notifications.info(`${sourceName} equipment ${eventType}d!`);
+
+                            ui.notifications.info(`${itemType} items ${eventType}d!`);
                         }
                     },
                     no: {
                         label: "No",
-                        callback: () => ui.notifications.info(`${sourceName} equipment was not ${eventType}d.`)
+                        callback: () => ui.notifications.info(`${itemType} items were not ${eventType}d.`)
                     }
                 },
                 "yes"
@@ -50,8 +49,8 @@ namespace FFT.Modules {
             const actor = item.parent;
             if (!actor) return null;
             const character = new FFT.Character(actor);
-            const equipmentKeys = item.system?.startingEquipment?.map(e => e.key)?.filter(Boolean) || [];
 
+            const equipmentKeys = item.system?.startingEquipment?.map(e => e.key)?.filter(Boolean) || [];
             const equipmentNames = (await Promise.all(
                 equipmentKeys.map(async (id) => {
                     const foundItem = await fromUuid(id) as Item | null;
@@ -61,8 +60,8 @@ namespace FFT.Modules {
 
             return {
                 character,
-                sourceType: item.type === "background" ? "backgroundSource" : "classSource",
-                sourceName: item.type === "background" ? "Background" : "Class",
+                sourceType: item.type,
+                sourceName: item.type.charAt(0).toUpperCase() + item.type.slice(1),
                 equipmentKeys,
                 equipmentNames
             };

@@ -173,8 +173,23 @@ var FFT;
     (function (Modules) {
         class CharacterAnvil {
             static initialize() {
-                Hooks.on("preCreateItem", (item, options, userId) => FFT.Modules.EquipmentManager.handleItemEvent("create", item, options, userId));
-                Hooks.on("preDeleteItem", (item, options, userId) => FFT.Modules.EquipmentManager.handleItemEvent("remove", item, options, userId));
+                Hooks.on("preCreateItem", (item, options, userId) => {
+                    if (item.type === "class") {
+                        FFT.Modules.EquipmentManager.showDialog("create", "class", item, userId);
+                        FFT.Modules.SpellSelector.showDialog("add", "Fireball", userId);
+                    }
+                    if (item.type === "background") {
+                        FFT.Modules.EquipmentManager.showDialog("create", "background", item, userId);
+                    }
+                });
+                Hooks.on("preDeleteItem", (item, options, userId) => {
+                    if (item.type === "class") {
+                        FFT.Modules.EquipmentManager.showDialog("remove", "class", item, userId);
+                    }
+                    if (item.type === "background") {
+                        FFT.Modules.EquipmentManager.showDialog("remove", "background", item, userId);
+                    }
+                });
                 FFT.Modules.PointBuySystem.initialize();
             }
         }
@@ -186,26 +201,24 @@ var FFT;
     var Modules;
     (function (Modules) {
         class EquipmentManager {
-            static isValidEvent(item, userId) {
-                return game.user.isGM || (userId === game.user.id && ["background", "class"].includes(item.type));
+            static isValidEvent(userId) {
+                return game.user.isGM || userId === game.user.id;
             }
-            static handleItemEvent(eventType, item, options, userId) {
+            static showDialog(eventType, itemType, item, userId) {
                 return __awaiter(this, void 0, void 0, function* () {
-                    if (!this.isValidEvent(item, userId))
+                    if (!this.isValidEvent(userId))
                         return;
-                    if (!["background", "class"].includes(item.type))
-                        return; // Ensure only backgrounds/classes trigger
+                    if (!item || item.type !== itemType)
+                        return;
                     const actor = item.parent;
                     if (!actor)
                         return;
                     const character = new FFT.Character(actor);
-                    const sourceType = item.type === "background" ? "backgroundSource" : "classSource";
-                    const sourceName = item.type === "background" ? "Background" : "Class";
                     const content = `
-                <p>${character.actor.name} has ${eventType === "create" ? "selected" : "removed"} a ${sourceName}. 
-                Do you want to ${eventType} the associated equipment?</p>
+                <p>${character.actor.name} has ${eventType === "create" ? "selected" : "removed"} a ${itemType}.</p>
+                <p>Do you want to ${eventType} its associated items?</p>
             `;
-                    new FF.CustomDialog(`${eventType.charAt(0).toUpperCase() + eventType.slice(1)} ${sourceName} Equipment`, content, {
+                    new FF.CustomDialog(`${eventType.charAt(0).toUpperCase() + eventType.slice(1)} ${itemType} Items`, content, {
                         yes: {
                             label: "Yes",
                             callback: () => __awaiter(this, void 0, void 0, function* () {
@@ -218,12 +231,12 @@ var FFT;
                                 else {
                                     yield character.removeItemsByName(data.equipmentNames);
                                 }
-                                ui.notifications.info(`${sourceName} equipment ${eventType}d!`);
+                                ui.notifications.info(`${itemType} items ${eventType}d!`);
                             })
                         },
                         no: {
                             label: "No",
-                            callback: () => ui.notifications.info(`${sourceName} equipment was not ${eventType}d.`)
+                            callback: () => ui.notifications.info(`${itemType} items were not ${eventType}d.`)
                         }
                     }, "yes").render();
                 });
@@ -242,8 +255,8 @@ var FFT;
                     })))).filter(Boolean);
                     return {
                         character,
-                        sourceType: item.type === "background" ? "backgroundSource" : "classSource",
-                        sourceName: item.type === "background" ? "Background" : "Class",
+                        sourceType: item.type,
+                        sourceName: item.type.charAt(0).toUpperCase() + item.type.slice(1),
                         equipmentKeys,
                         equipmentNames
                     };
@@ -410,6 +423,37 @@ var FFT;
         }
         PointBuySystem.activeDialog = null; // Prevent multiple windows
         Modules.PointBuySystem = PointBuySystem;
+    })(Modules = FFT.Modules || (FFT.Modules = {}));
+})(FFT || (FFT = {}));
+var FFT;
+(function (FFT) {
+    var Modules;
+    (function (Modules) {
+        class SpellSelector {
+            static isValidEvent(userId) {
+                return game.user.isGM || userId === game.user.id;
+            }
+            static showDialog(eventType, spellName, userId) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    if (!this.isValidEvent(userId))
+                        return;
+                    const content = `
+                <p>Do you want to ${eventType} the spell "${spellName}"?</p>
+            `;
+                    new FF.CustomDialog(`${eventType.charAt(0).toUpperCase() + eventType.slice(1)} Spell`, content, {
+                        yes: {
+                            label: "Yes",
+                            callback: () => ui.notifications.info(`Spell "${spellName}" ${eventType}ed.`)
+                        },
+                        no: {
+                            label: "No",
+                            callback: () => ui.notifications.info(`Spell "${spellName}" was not ${eventType}ed.`)
+                        }
+                    }, "yes").render();
+                });
+            }
+        }
+        Modules.SpellSelector = SpellSelector;
     })(Modules = FFT.Modules || (FFT.Modules = {}));
 })(FFT || (FFT = {}));
 var FFT;
