@@ -1,23 +1,19 @@
 namespace FFT {
     export class CharacterAnvil {
-        static character: Character;
-
         static initialize() {
-            Hooks.on("renderActorSheet", function (app: ActorSheet, html: JQuery, data: any) {
-                CharacterAnvil.character = new Character(app.actor);
-            });
-
-
             Hooks.on("createItem", async (item: Item5e, options, userId) => {
+                let character = new Character(item.parent);
                 if (item.type === "class" || item.type === "background") {
-                    EquipmentManager.showDialog("createItem", CharacterAnvil.character, item);
-                    Debug.Log(CharacterAnvil.character.actor.name);
+                    EquipmentManager.showDialog("createItem", character, item);
+                    SpellSelector.showDialog(character);
                 }
             });
+
+
             Hooks.on("preDeleteItem", (item, options, userId) => {
+                let character = new Character(item.parent);
                 if (item.type === "class" || item.type === "background") {
-                    EquipmentManager.showDialog("preDeleteItem", CharacterAnvil.character, item);
-                    Debug.Log(CharacterAnvil.character.actor.name);
+                    EquipmentManager.showDialog("preDeleteItem", character, item);
                 }
             });
         }

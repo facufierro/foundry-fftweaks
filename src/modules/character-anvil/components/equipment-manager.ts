@@ -4,7 +4,7 @@ namespace FFT {
         static async showDialog(event: String, character: Character, item: Item5e) {
             if (item.type === "class" || item.type === "background") {
                 new CustomDialog(
-                    `Items`,
+                    `Equipment Manager`,
                     `<p>${character.actor.name} has added/removed a ${item.type}.</p>
                     <p>Do you want to add/remove its associated items?</p>`,
                     {

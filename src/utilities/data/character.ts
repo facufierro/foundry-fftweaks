@@ -7,7 +7,7 @@ namespace FFT {
 
         constructor(public actor: Actor5e) {
             this.background = actor.items.find(i => String(i.type) === "background") ?? null;
-            this.class = actor.items.find(i => String(i.type) === "class") ?? null;
+            this.class = actor.items.find(i => i.type === "class") ?? null;
             this.spells = actor.items.filter(i => String(i.type) === "spell") ?? [];
 
             this.inventory = {
