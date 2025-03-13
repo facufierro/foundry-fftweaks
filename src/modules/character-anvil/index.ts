@@ -8,13 +8,18 @@ namespace FFT {
             });
 
 
-            Hooks.on("preCreateItem", async (item: Item5e, options, userId) => {
+            Hooks.on("createItem", async (item: Item5e, options, userId) => {
                 if (item.type === "class" || item.type === "background") {
-                    EquipmentManager.showDialog("preCreateItem", CharacterAnvil.character, item);
+                    EquipmentManager.showDialog("createItem", CharacterAnvil.character, item);
                     Debug.Log(CharacterAnvil.character.actor.name);
                 }
             });
-
+            Hooks.on("preDeleteItem", (item, options, userId) => {
+                if (item.type === "class" || item.type === "background") {
+                    EquipmentManager.showDialog("preDeleteItem", CharacterAnvil.character, item);
+                    Debug.Log(CharacterAnvil.character.actor.name);
+                }
+            });
         }
     }
 }
