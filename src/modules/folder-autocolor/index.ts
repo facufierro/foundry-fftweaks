@@ -1,4 +1,4 @@
-namespace FFT.Modules {
+namespace FFT {
     export class FolderAutoColor {
         static initialize(): void {
             FolderAutoColor.updateFolderColors();

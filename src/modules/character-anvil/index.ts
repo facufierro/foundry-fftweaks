@@ -1,41 +1,59 @@
-namespace FFT.Modules {
+namespace FFT {
     export class CharacterAnvil {
+        static character: Character;
+
         static initialize() {
-            Hooks.on("createItem", async (item, options, userId) => {
-                if (item.type === "class") {
-                    FFT.Modules.EquipmentManager.showDialog("create", "class", item, userId);
+            Hooks.on("renderActorSheet", function (app: ActorSheet, html: JQuery, data: any) {
+                CharacterAnvil.character = new Character(app.actor);
+            });
 
-                    const spellListId = "fltmd5kijx3pTREA.GEc89WbpwBlsqP2z";
-                    const { spells, title, category } = await FFT.Modules.SpellSelector.getSpellData(spellListId);
 
-                    const actor = item.parent; // ✅ Get the character that owns the item
-                    if (!actor || !(actor instanceof Actor)) {
-                        console.warn("No valid actor found for this item.");
-                        return;
-                    }
-
-                    if (Object.keys(spells).length > 0) {
-                        FFT.Modules.SpellSelector.showDialog(spells, title, category, actor, game.user.id);
-                    } else {
-                        console.warn("No spells found, skipping dialog.");
-                    }
-                }
-
-                if (item.type === "background") {
-                    FFT.Modules.EquipmentManager.showDialog("create", "background", item, userId);
+            Hooks.on("preCreateItem", async (item: Item5e, options, userId) => {
+                if (item.type === "class" || item.type === "background") {
+                    EquipmentManager.showDialog("preCreateItem", CharacterAnvil.character, item);
+                    Debug.Log(CharacterAnvil.character.actor.name);
                 }
             });
 
-            Hooks.on("preDeleteItem", (item, options, userId) => {
-                if (item.type === "class") {
-                    FFT.Modules.EquipmentManager.showDialog("remove", "class", item, userId);
-                }
-                if (item.type === "background") {
-                    FFT.Modules.EquipmentManager.showDialog("remove", "background", item, userId);
-                }
-            });
-
-            FFT.Modules.PointBuySystem.initialize();
         }
     }
 }
+
+// if (item.type === "class") {
+//     FFT.Modules.EquipmentManager.showDialog("create", item.type, item, userId);
+
+// const spellListId = "fltmd5kijx3pTREA.GEc89WbpwBlsqP2z";
+// const { spells, title, category } = await FFT.Modules.SpellSelector.getSpellData(spellListId);
+
+// const actor = item.parent;
+// if (!actor || !(actor instanceof Actor)) {
+//     console.warn("No valid actor found for this item.");
+//     return;
+// }
+
+// const classAdvancement = true;
+// if (Object.keys(spells).length > 0) {
+//     FFT.Modules.SpellSelector.showDialog(spells, title, category, actor, game.user.id, classAdvancement);
+// } else {
+//     console.warn("No spells found, skipping dialog.");
+// }
+// }
+
+// if (item.type === "background") {
+//     FFT.Modules.EquipmentManager.showDialog("create", "background", item, userId);
+// }
+//         });
+
+//         Hooks.on("preDeleteItem", (item, options, userId) => {
+//             switch (item.type) {
+//                 case "class":
+//                     FFT.Modules.EquipmentManager.showDialog("remove", item.type, item, userId);
+//                     break;
+//                 case "background":
+//                     FFT.Modules.EquipmentManager.showDialog("remove", item.type, item, userId);
+//                     break;
+//                 default:
+//                     break;
+//             }
+
+//         FFT.Modules.PointBuySystem.initialize();

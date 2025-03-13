@@ -1,4 +1,4 @@
-namespace FF {
+namespace FFT {
     export class CustomDialog {
         private title: string;
         private content: string;

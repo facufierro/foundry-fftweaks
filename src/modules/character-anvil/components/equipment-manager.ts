@@ -1,70 +1,42 @@
-namespace FFT.Modules {
+namespace FFT {
     export class EquipmentManager {
-        static isValidEvent(userId) {
-            return game.user.isGM || userId === game.user.id;
-        }
 
-        static async showDialog(eventType: "create" | "remove", itemType: string, item, userId) {
-            if (!this.isValidEvent(userId)) return;
-            if (!item || item.type !== itemType) return;
-
-            const actor = item.parent;
-            if (!actor) return;
-            const character = new FFT.Character(actor);
-
-            const content = `
-                <p>${character.actor.name} has ${eventType === "create" ? "selected" : "removed"} a ${itemType}.</p>
-                <p>Do you want to ${eventType} its associated items?</p>
-            `;
-
-            new FF.CustomDialog(
-                `${eventType.charAt(0).toUpperCase() + eventType.slice(1)} ${itemType} Items`,
-                content,
-                {
-                    yes: {
-                        label: "Yes",
-                        callback: async () => {
-                            const data = await EquipmentManager.getEquipmentData(item);
-                            if (!data || !data.equipmentKeys.length) return;
-
-                            if (eventType === "create") {
-                                await character.addItemsByID(data.equipmentKeys);
-                            } else {
-                                await character.removeItemsByName(data.equipmentNames);
+        static async showDialog(event: String, character: Character, item: Item5e) {
+            if (item.type === "class" || item.type === "background") {
+                new CustomDialog(
+                    `Items`,
+                    `<p>${character.actor.name} has added/removed a ${item.type}.</p>
+                    <p>Do you want to add/remove its associated items?</p>`,
+                    {
+                        yes: {
+                            label: "Yes",
+                            callback: async () => {
+                                const data = await EquipmentManager.getEquipmentData(character, item);
+                                if (event.toLowerCase().includes("create")) {
+                                    await character.addItemsByID(data.startingEquipmentIDs);
+                                } else {
+                                    await character.removeItemsByName(data.startingEquipmentNames);
+                                }
                             }
+                        },
+                        no: {
+                            label: "No",
+                            callback: () => {
 
-                            ui.notifications.info(`${itemType} items ${eventType}d!`);
+                            }
                         }
                     },
-                    no: {
-                        label: "No",
-                        callback: () => ui.notifications.info(`${itemType} items were not ${eventType}d.`)
-                    }
-                },
-                "yes"
-            ).render();
+                    "yes"
+                ).render();
+            }
         }
 
-        static async getEquipmentData(item) {
-            const actor = item.parent;
-            if (!actor) return null;
-            const character = new FFT.Character(actor);
+        static async getEquipmentData(character: Character, item: Item5e) {
+            if (!character || !item) return null;
+            const startingEquipmentIDs: string[] = (item?.system?.startingEquipment as { key: string }[] | undefined)?.map(e => e.key) ?? [];
+            const startingEquipmentNames: string[] = await Promise.all((item?.system?.startingEquipment as { key: string }[] | undefined)?.map(e => fromUuid(e.key).then((i: any) => i?.name ?? "Unknown")) ?? []);
 
-            const equipmentKeys = item.system?.startingEquipment?.map(e => e.key)?.filter(Boolean) || [];
-            const equipmentNames = (await Promise.all(
-                equipmentKeys.map(async (id) => {
-                    const foundItem = await fromUuid(id) as Item | null;
-                    return foundItem?.name || null;
-                })
-            )).filter(Boolean);
-
-            return {
-                character,
-                sourceType: item.type,
-                sourceName: item.type.charAt(0).toUpperCase() + item.type.slice(1),
-                equipmentKeys,
-                equipmentNames
-            };
+            return { startingEquipmentIDs, startingEquipmentNames };
         }
     }
 }

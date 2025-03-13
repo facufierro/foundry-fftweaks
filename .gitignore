@@ -1,4 +1,9 @@
-/node_modules
-/_env
-/dist
+# Ignore node_modules
+node_modules/
+
+# Ignore environment files
 .env
+_env/
+
+# Ignore build output
+dist/

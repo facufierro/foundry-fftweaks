@@ -1,158 +1,146 @@
-namespace FFT.Modules {
-    export class SpellSelector {
-        static isValidEvent(userId: string): boolean {
-            return game.user.isGM || userId === game.user.id;
-        }
+// namespace FFT {
+//     export class SpellSelector {
+//         static isValidEvent(userId: string): boolean {
+//             return game.user.isGM || userId === game.user.id;
+//         }
 
-        static async getSpellData(spellListId: string): Promise<{ spells: Record<string, { id: string, level: number }>, title: string, category: string }> {
-            console.log("Received spellListId:", spellListId);
+//         static async getSpellData(spellListId: string): Promise<{ spells: Record<string, { id: string, level: number }> }> {
+//             const [journalId, pageId] = spellListId.split(".");
+//             const journal = game.journal.get(journalId);
+//             const page = journal.pages.get(pageId);
 
-            const [journalId, pageId] = spellListId.split(".");
-            console.log("Extracted Journal ID:", journalId);
-            console.log("Extracted Page ID:", pageId);
+//             const spellIds: string[] = page.system?.spells instanceof Set
+//                 ? Array.from(page.system.spells)
+//                 : Array.isArray(page.system?.spells)
+//                     ? page.system.spells
+//                     : [];
+//             const spellList: Record<string, { id: string, level: number }> = Object.fromEntries(
+//                 await Promise.all(spellIds.map(async id => {
+//                     const spell = await fromUuid(id);
+//                     return spell instanceof Item ? [spell.name, { id: id, level: spell.system.level || 0 }] : null;
+//                 })).then(spells => spells.filter(Boolean))
+//             );
 
-            const journal = game.journal.get(journalId);
-            if (!journal) return { spells: {}, title: "Unknown", category: "Spells" };
+//             console.log("Final Spell Dictionary:", spellList);
+//             return {
+//                 spells: spellList,
+//             };
+//         }
 
-            const page = journal.pages.get(pageId);
-            if (!page) return { spells: {}, title: "Unknown", category: "Spells" };
+//         static async showDialog(
+//             spells: Record<string, { id: string, level: number }>,
+//             actor: Actor,
+//             userId: string,
+//             classAdvancement: boolean = false
+//         ): Promise<void> {
+//             if (!this.isValidEvent(userId)) return;
+//             if (Object.keys(spells).length === 0) return;
+//             if (!actor) {
+//                 ui.notifications.error("No character sheet found.");
+//                 return;
+//             }
 
-            console.log("Journal Page Found:", page.name);
-            console.log("Page System Data:", page.system);
+//             const existingSpells = this.getExistingSpells(actor); // ✅ Use the actor to check existing spells
 
-            const spellIds: string[] = page.system?.spells instanceof Set
-                ? Array.from(page.system.spells)
-                : Array.isArray(page.system?.spells)
-                    ? page.system.spells
-                    : [];
+//             // ✅ Determine the max spell level based on class advancement
+//             let maxSpellLevel = 9; // Default: Full caster (Wizard, Cleric, Sorcerer)
+//             if (classAdvancement) {
+//                 const classItem = actor.items.find(i => i.type === "class");
+//                 if (classItem) {
+//                     const classProgression = classItem.system.spellProgression; // This may vary based on your system's structure
+//                     if (classProgression === "half") maxSpellLevel = 5; // Half-casters (Paladin, Ranger)
+//                     if (classProgression === "third") maxSpellLevel = 4; // Third-casters (Arcane Trickster, Eldritch Knight)
+//                 }
+//             }
 
-            console.log("Extracted Spell IDs:", spellIds);
+//             console.log(`Filtering Spells. Max Level: ${maxSpellLevel} (Class Advancement: ${classAdvancement})`);
 
-            if (spellIds.length === 0) {
-                console.warn(`No spells found in Journal Page: ${page.name}`);
-                return {
-                    spells: {},
-                    title: page.name,
-                    category: String(page.system?.grouping || "Spells")
-                };
-            }
+//             // Group spells by level (only up to maxSpellLevel if filtering)
+//             const spellsByLevel: Record<number, { name: string, id: string, owned: boolean }[]> = {};
 
-            // Convert to dictionary { spellName: { id, level } }
-            const spellDict: Record<string, { id: string, level: number }> = Object.fromEntries(
-                await Promise.all(spellIds.map(async id => {
-                    const spell = await fromUuid(id);
-                    return spell instanceof Item ? [spell.name, { id: id, level: spell.system.level || 0 }] : null;
-                })).then(spells => spells.filter(Boolean))
-            );
+//             for (const [spellName, spellData] of Object.entries(spells)) {
+//                 const level = spellData.level;
+//                 if (classAdvancement && level > maxSpellLevel) continue; // ✅ Only show spells up to the caster's max level
 
-            console.log("Final Spell Dictionary:", spellDict);
-            return {
-                spells: spellDict,
-                title: page.name,
-                category: String(page.system?.grouping || "Spells")
-            };
-        }
+//                 if (!spellsByLevel[level]) spellsByLevel[level] = [];
 
-        static async showDialog(
-            spells: Record<string, { id: string, level: number }>,
-            title: string,
-            category: string,
-            actor: Actor, // ✅ Actor is now passed in
-            userId: string
-        ): Promise<void> {
-            if (!this.isValidEvent(userId)) return;
-            if (Object.keys(spells).length === 0) return;
-            if (!actor) {
-                ui.notifications.error("No character sheet found.");
-                return;
-            }
+//                 spellsByLevel[level].push({
+//                     name: spellName,
+//                     id: spellData.id,
+//                     owned: existingSpells.has(spellName) // ✅ Check if the character already owns this spell
+//                 });
+//             }
 
-            const existingSpells = this.getExistingSpells(actor); // ✅ Use the actor to check existing spells
+//             // Sort levels numerically
+//             const sortedLevels = Object.keys(spellsByLevel)
+//                 .map(Number)
+//                 .sort((a, b) => a - b);
 
-            // Group spells by level
-            const spellsByLevel: Record<number, { name: string, id: string, owned: boolean }[]> = {};
+//             // Build spell selection UI with level separators
+//             const spellOptions = sortedLevels.map(level => {
+//                 const levelLabel = level === 0 ? "Cantrips" : `Level ${level}`;
+//                 const spellList = spellsByLevel[level]
+//                     .map(spell => `
+//                         <div>
+//                             <input type="checkbox" class="spell-checkbox" data-spell-id="${spell.id}" ${spell.owned ? "disabled" : ""}>
+//                             <label style="${spell.owned ? "color: gray;" : ""}">${spell.name}</label>
+//                         </div>
+//                     `).join("");
 
-            for (const [spellName, spellData] of Object.entries(spells)) {
-                const level = spellData.level;
-                if (!spellsByLevel[level]) spellsByLevel[level] = [];
+//                 return `
+//                     <h3>${levelLabel}</h3>
+//                     ${spellList}
+//                 `;
+//             }).join("");
 
-                spellsByLevel[level].push({
-                    name: spellName,
-                    id: spellData.id,
-                    owned: existingSpells.has(spellName) // ✅ Check if the character already owns this spell
-                });
-            }
+//             const content = `
+//                 <p><strong>${category}</strong></p>
+//                 <div class="spell-list" style="max-height: 400px; overflow-y: auto;">
+//                     ${spellOptions}
+//                 </div>
+//             `;
 
-            // Sort levels numerically
-            const sortedLevels = Object.keys(spellsByLevel)
-                .map(Number)
-                .sort((a, b) => a - b);
+//             new FF.CustomDialog(
+//                 "Select Spells",
+//                 content,
+//                 {
+//                     yes: {
+//                         label: "Add",
+//                         callback: async (html: JQuery<HTMLElement>) => {
+//                             const selectedSpells = Array.from(
+//                                 html[0].querySelectorAll<HTMLInputElement>(".spell-checkbox:checked")
+//                             ).map(el => el.dataset.spellId || "");
 
-            // Build spell selection UI with level separators
-            const spellOptions = sortedLevels.map(level => {
-                const levelLabel = level === 0 ? "Cantrips" : `Level ${level}`;
-                const spellList = spellsByLevel[level]
-                    .map(spell => `
-                        <div>
-                            <input type="checkbox" class="spell-checkbox" data-spell-id="${spell.id}" ${spell.owned ? "disabled" : ""}>
-                            <label style="${spell.owned ? "color: gray;" : ""}">${spell.name}</label>
-                        </div>
-                    `).join("");
+//                             if (selectedSpells.length === 0) {
+//                                 ui.notifications.warn("No spells selected.");
+//                                 return;
+//                             }
 
-                return `
-                    <h3>${levelLabel}</h3>
-                    ${spellList}
-                `;
-            }).join("");
-
-            const content = `
-                <p><strong>${category}</strong></p>  <!-- ✅ Display spell category -->
-                <div class="spell-list" style="max-height: 400px; overflow-y: auto;">
-                    ${spellOptions}
-                </div>
-            `;
-
-            new FF.CustomDialog(
-                title,
-                content,
-                {
-                    yes: {
-                        label: "Add",
-                        callback: async (html: JQuery<HTMLElement>) => {
-                            const selectedSpells = Array.from(
-                                html[0].querySelectorAll<HTMLInputElement>(".spell-checkbox:checked")
-                            ).map(el => el.dataset.spellId || "");
-
-                            if (selectedSpells.length === 0) {
-                                ui.notifications.warn("No spells selected.");
-                                return;
-                            }
-
-                            console.log("Selected Spell IDs:", selectedSpells);
-                            ui.notifications.info(`${selectedSpells.length} spell(s) selected.`);
-                        }
-                    },
-                    no: {
-                        label: "Cancel",
-                        callback: () => ui.notifications.info(`Spell selection canceled.`)
-                    }
-                },
-                "yes"
-            ).render();
-        }
+//                             console.log("Selected Spell IDs:", selectedSpells);
+//                             ui.notifications.info(`${selectedSpells.length} spell(s) selected.`);
+//                         }
+//                     },
+//                     no: {
+//                         label: "Cancel",
+//                         callback: () => ui.notifications.info(`Spell selection canceled.`)
+//                     }
+//                 },
+//                 "yes"
+//             ).render();
+//         }
 
 
-        static getExistingSpells(actor: Actor): Set<string> {
-            if (!actor) return new Set();
+//         static getExistingSpells(actor: Actor): Set<string> {
+//             if (!actor) return new Set();
 
-            // Get all spell names from the actor's items
-            const spellNames = new Set(
-                actor.items.filter(item => item.type === "spell").map(spell => spell.name)
-            );
+//             // Get all spell names from the actor's items
+//             const spellNames = new Set(
+//                 actor.items.filter(item => item.type === "spell").map(spell => spell.name)
+//             );
 
-            console.log("Existing Spells on Character:", spellNames);
-            return spellNames;
-        }
+//             console.log("Existing Spells on Character:", spellNames);
+//             return spellNames;
+//         }
 
-    }
-}
+//     }
+// }
