@@ -49,11 +49,19 @@ namespace FFT {
 
         async removeItemsByName(itemNames: string[]): Promise<void> {
             try {
-                const itemsToRemove = this.actor.items.filter(item => itemNames.includes(item.name));
-                if (!itemsToRemove.length) return;
-                await this.actor.deleteEmbeddedDocuments("Item", itemsToRemove.map(item => item.id));
-            }
-            catch (error) {
+                let itemsToRemove: string[] = [];
+
+                for (const name of itemNames) {
+                    const item = this.actor.items.find(item => item.name === name);
+                    if (item) {
+                        itemsToRemove.push(item.id);
+                    }
+                }
+
+                if (itemsToRemove.length === 0) return;
+
+                await this.actor.deleteEmbeddedDocuments("Item", itemsToRemove);
+            } catch (error) {
                 Debug.Error(error);
             }
         }
