@@ -3,8 +3,9 @@ namespace FFT {
         static initialize() {
             Hooks.on("createItem", async (item: Item5e, options, userId) => {
                 let character = new Character(item.parent);
-                if (item.type === "background") {
+                if (item.type === "class" || item.type === "background") {
                     EquipmentManager.showDialog("createItem", character, item);
+                    SpellSelector.showDialog(character);
                 }
             });
             Hooks.on("preDeleteItem", (item, options, userId) => {
