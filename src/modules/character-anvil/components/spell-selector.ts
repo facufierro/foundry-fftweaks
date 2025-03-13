@@ -1,23 +1,42 @@
 namespace FFT {
     export class SpellSelector {
-        static async showDialog(character: Character) {
+        static showDialog(character: Character) {
             new CustomDialog(
                 `Spell Selector`,
                 `<p>${character.class?.name || "Unknown"} Spell List.</p>`, // Safe access
                 {
                     yes: {
-                        label: "Yes",
-                        callback: async () => {
+                        label: "Add",
+                        callback: () => {
                         }
                     },
                     no: {
-                        label: "No",
+                        label: "Cancel",
                         callback: () => {
                         }
                     }
                 },
                 "yes"
             ).render();
+            SpellSelector.getSpellList(character);
+        }
+        static getSpellList(character: Character) {
+            const journalID = "JournalEntry.fltmd5kijx3pTREA";
+            const journal = game.journal.get(journalID);
+            Debug.Log(journal);
+            const spellList: String[] = [];
+
+            // if the character.spells list has items in
+
+
+
+
+            return spellList;
+        }
+        static checkKnownSpells(character: Character) {
+            const knownSpellList: Item5e[] = [];
+
+            return knownSpellList;
         }
     }
 }

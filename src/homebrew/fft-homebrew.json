@@ -1,0 +1,161 @@
+{
+    "_meta": {
+        "sources": [
+            {
+                "json": "fft-homebrew",
+                "abbreviation": "FFT",
+                "full": "FFTweaks Homebrew",
+                "authors": [
+                    "fierrof"
+                ],
+                "convertedBy": [
+                    "fierrof"
+                ],
+                "version": "1.0.0",
+                "color": "ffffff"
+            }
+        ],
+        "dateAdded": 1709124114,
+        "dateLastModified": 1709124114
+    },
+    "subclass": [
+        {
+            "name": "Runesmith",
+            "source": "fft-homebrew",
+            "className": "Artificer",
+            "classSource": "XUA2025EberronUpdates",
+            "shortName": "Runesmith",
+            "casterProgression": "1/2",
+            "spellcastingAbility": "int",
+            "additionalSpells": [
+                {
+                    "prepared": {
+                        "3": [
+                            "magic missile",
+                            "shield"
+                        ],
+                        "5": [
+                            "misty step",
+                            "knock"
+                        ],
+                        "9": [
+                            "counterspell",
+                            "glyph of warding"
+                        ],
+                        "13": [
+                            "banishment",
+                            "greater invisibility"
+                        ],
+                        "17": [
+                            "hold monster",
+                            "telekinesis"
+                        ]
+                    }
+                }
+            ],
+            "subclassFeatures": [
+                "Runesmith|Artificer|XUA2025EberronUpdates|Runesmith|fft-homebrew|3|fft-homebrew",
+                "Battle Runes|Artificer|XUA2025EberronUpdates|Runesmith|fft-homebrew|3|fft-homebrew",
+                "Forged for War|Artificer|XUA2025EberronUpdates|Runesmith|fft-homebrew|3|fft-homebrew",
+                "Rune Carving|Artificer|XUA2025EberronUpdates|Runesmith|fft-homebrew|3|fft-homebrew"
+            ]
+        }
+    ],
+    "subclassFeature": [
+        {
+            "name": "Runesmith",
+            "source": "fft-homebrew",
+            "className": "Artificer",
+            "classSource": "XUA2025EberronUpdates",
+            "subclassShortName": "Runesmith",
+            "subclassSource": "fft-homebrew",
+            "level": 3,
+            "entries": [
+                "A Runesmith is an Artificer that has narrowed their focus to working a specific language of magic - powerful Runes that can channel long lasting power. These Runes come in many shapes and forms, the lore behind from many sources.",
+                "A Runesmith can be a warrior, his runes splashed with gleaming power across his armor, or a scholar lending their power to their companions or even a strange tattooed mystic, their runes tattooed across their very body.",
+                "Runesmiths are not inherently good or evil, though their rigorous attention to detail and patience tend to make them more inclined to a Lawful perspective."
+            ]
+        },
+        {
+            "name": "Battle Runes",
+            "source": "fft-homebrew",
+            "className": "Artificer",
+            "classSource": "XUA2025EberronUpdates",
+            "subclassShortName": "Runesmith",
+            "subclassSource": "fft-homebrew",
+            "level": 3,
+            "entries": [
+                "You inscribe a weapon with mystical runes of power, binding steel and spell into one. When wielding it, you can use your Intelligence modifier instead of Strength or Dexterity for attack and damage rolls. Additionally, a weapon inscribed with your runes serves as a spellcasting focus."
+            ]
+        },
+        {
+            "name": "Forged for War",
+            "source": "fft-homebrew",
+            "className": "Artificer",
+            "classSource": "XUA2025EberronUpdates",
+            "subclassShortName": "Runesmith",
+            "subclassSource": "fft-homebrew",
+            "level": 3,
+            "entries": [
+                "You gain proficiency with Martial weapons and Heavy armor.",
+                "In addition, when you craft nonmagical or magic weapon or armor, the amount of time required to craft it is halved."
+            ]
+        },
+        {
+            "name": "Rune Carving",
+            "source": "fft-homebrew",
+            "className": "Artificer",
+            "classSource": "XUA2025EberronUpdates",
+            "subclassShortName": "Runesmith",
+            "subclassSource": "fft-homebrew",
+            "level": 3,
+            "entries": [
+                "Your exploration of ancient dwarven arcana grants you the ability to carve runes, mystical symbols that store and unleash magic.",
+                "Inscribing a Rune. You can carve one rune onto a weapon, piece of armor, or another object larger than 2 inches during a Long Rest. The rune holds a single spell. The spell must be one you know and of a level you can cast.",
+                "Using the Rune. Once inscribed, the rune can be activated as part of the action required to cast the stored spell without expending a spell slot, unleashing its power. The rune can only be activated once, after which its power fades and must be recharged. You can have a number of active runes equal to your proficiency bonus at one time.",
+                "Recharging Runes. Whenever you finish a Short Rest, you can recharge runes of your choice equal to no more than half your Artificer level (round up), if you have Smith's Tools in hand."
+            ]
+        }
+    ],
+    "background": [
+        {
+            "name": "Clan Crafter",
+            "source": "fft-homebrew",
+            "skillProficiencies": [
+                {
+                    "history": true,
+                    "religion": true
+                }
+            ],
+            "toolProficiencies": [
+                {
+                    "choose": {
+                        "from": [
+                            "alchemist's supplies",
+                            "brewer's supplies",
+                            "calligrapher's supplies",
+                            "carpenter's tools",
+                            "cartographer's tools",
+                            "cobbler's tools",
+                            "cook's utensils",
+                            "glassblower's tools",
+                            "jeweler's tools",
+                            "leatherworker's tools",
+                            "mason's tools",
+                            "painter's supplies",
+                            "potter's tools",
+                            "smith's tools",
+                            "tinker's tools",
+                            "weaver's tools",
+                            "woodcarver's tools"
+                        ],
+                        "count": 1
+                    }
+                }
+            ],
+            "entries": [
+                "<div>\n    <div class=\"rd__b  rd__b--1\">\n        <div class=\"rd__b  rd__b--2\">\n            <div class=\"rd__b  rd__b--3\">\n                <p>The Stout Folk are well known for their artisanship and the worth of their handiworks, and you have been trained in that ancient tradition. For years you labored under a dwarf master of the craft, enduring long hours and dismissive, sour-tempered treatment in order to gain the fine skills you possess today.</p>\n            </div>\n        </div>\n    </div>\n    <hr>\n</div>\n<div>\n    <p class=\"rd__p-list-item\"><span style=\"font-family: 'Roboto Condensed', sans-serif\"><strong style=\"box-sizing:border-box;user-select:text;scrollbar-width:thin;scrollbar-color:var(--color-scrollbar) var(--color-scrollbar-track);color:rgb(207, 210, 218);font-family:'Roboto Condensed', sans-serif;font-size:13px;font-style:normal;font-variant-ligatures:normal;font-variant-caps:normal;letter-spacing:normal;orphans:2;text-align:start;text-indent:0px;text-transform:none;widows:2;word-spacing:0px;-webkit-text-stroke-width:0px;white-space:normal;background-color:rgb(13, 11, 11);text-decoration-thickness:initial;text-decoration-style:initial;text-decoration-color:initial\">Ability Scores: </strong></span>Add +1 to three abilities or +2 to one and +1 to one</p>\n    <p><strong>Feat: </strong>Pick an Origin Feat</p>\n    <p><strong>Skill Proficiencies: </strong>History and Religion</p>\n    <p><strong>Tool Proficiencies: </strong>One type of <span class=\"bold\">artisan's tools</span></p>\n    <p><strong>Equipment: </strong>A set of <span class=\"bold\">artisan's tools</span> with which you are proficient, A Chisel , Traveler's Clothes, 15 GP</p>\n</div>"
+            ]
+        }
+    ]
+}
