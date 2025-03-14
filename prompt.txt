@@ -1,0 +1,29 @@
+Create a Foundry VTT dialog titled "Spell Selector" with the following structured layout and behavior:
+
+Overall Layout & Styling
+
+The dialog should be centered on the screen and sized at 75% of the window’s width and 80% of its height.
+the dialog must contain a table with some fixed rows that are not scrollable. Filter row, Table row, and Button row.
+
+Filter row (Top)
+Contains a text input field (with a placeholder "Find spell...") for filtering spells by name.
+Contains a dropdown (select input) populated dynamically with class names extracted from a Spell Journal compendium.
+A dropdown pupulated dynamically with spell ranks from cantrip to 9th level.
+This section should be fixed at the top of the dialog and remain visible when scrolling and be of the size of the first row.
+
+Table row (Middle)
+the secnd row of the tale after the filter row, contains the headers of the columns.
+from this row onwars the table should have 4 columns.
+Checkbox Column: A narrow column containing checkboxes for spell selection. As wide as the checkboxes themselves.
+Name Column: Displays the spell's name; text should be left-aligned. this is the column that can be widened to fill the dialog’s width.
+Level Column: Displays the spell's level, showing "Cantrip" if the level is 0. The size of this coulumn should be fixed 50px.
+Range Column: Displays the spell's range. The size of this coulumn should be fixed 50px.
+
+Button row (Bottom)
+This row will have a single button with the text "Accept". the size of the button 100px wide height same size as all other rows
+
+Functionality & Behavior
+
+When the user types into the "Name" input or changes the "Class" dropdown, the table updates dynamically to filter the spell list accordingly.
+Spell data is loaded asynchronously from a Spell Journal compendium and a spells compendium pack (using functions like fromUuid()), with proper handling when no spells are found.
+The checkbox in the first column allows for selection of individual spells.

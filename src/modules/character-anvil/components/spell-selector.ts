@@ -1,151 +1,269 @@
 namespace FFT {
     export class SpellSelector {
         static async showSpellDialog() {
-            console.log("[FFTweaks] showSpellDialog() called");
+            // Load class names from the Spell Journal
             const journal = await this.getSpellJournal();
             if (!journal) return;
-
-            // Retrieve pages as an array from the embedded collection
-            const pages = (journal as JournalEntry).pages.contents;
-            console.log("[FFTweaks] Journal Pages:", pages);
-            if (!pages || pages.length === 0) {
-                ui.notifications.warn("No pages found in the journal.");
+            const pages = (journal as JournalEntry).pages.contents || [];
+            if (!pages.length) {
+                ui.notifications.warn("No pages found in the Spell Journal.");
                 return;
             }
-
-            // Build the class dropdown from all page names
             const classNames = pages.map((p: any) => p.name);
-            console.log("[FFTweaks] Class Names:", classNames);
+
+            // Default filter values
             let selectedClass = classNames[0] || "";
             let selectedRank = "All";
+            let nameFilter = "";
 
-            const content = `<form>
-          <div class="form-group">
-            <label>Class</label>
-            <select id="spell-class">
-              ${classNames.map((c: string) => `<option value="${c}">${c}</option>`).join("")}
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Rank</label>
-            <select id="spell-rank">
-              <option value="All">All</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Spells</label>
-            <div id="spell-list">Select a class to view spells</div>
-          </div>
-        </form>`;
+            // Rank options from Cantrip(0) to 9th
+            const rankOptions = `
+          <option value="All">All</option>
+          <option value="0">Cantrip</option>
+          <option value="1">1st</option>
+          <option value="2">2nd</option>
+          <option value="3">3rd</option>
+          <option value="4">4th</option>
+          <option value="5">5th</option>
+          <option value="6">6th</option>
+          <option value="7">7th</option>
+          <option value="8">8th</option>
+          <option value="9">9th</option>
+        `;
+            // Class options
+            const classOptions = classNames
+                .map((c) => `<option value="${c}">${c}</option>`)
+                .join("");
 
-            new Dialog({
+            // Build the HTML content
+            const content = `
+          <div class="fft-dialog">
+            <style>
+              /* Container to fill the entire dialog */
+              .fft-dialog .fft-container {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+              }
+  
+              /* Filter row at the top, no background color */
+              .fft-dialog .filter-row {
+                flex: 0 0 40px;
+                display: flex;
+                align-items: center;
+                padding: 0 8px;
+                box-sizing: border-box;
+              }
+              .fft-dialog .filter-row label {
+                white-space: nowrap;
+              }
+              .fft-dialog .filter-row input,
+              .fft-dialog .filter-row select {
+                height: 24px;
+                margin-left: 4px;
+                margin-right: 8px;
+              }
+  
+              /* Scrollable data container in the middle */
+              .fft-dialog .data-container {
+                flex: 1;
+                overflow: auto;
+              }
+  
+              /* Table for the spell data (no header row) */
+              .fft-dialog .data-table {
+                width: 100%;
+                border-collapse: collapse;
+                table-layout: fixed;
+              }
+  
+              /* Column widths:
+                 1) 50px (checkbox)
+                 2) auto (name)
+                 3) 100px (level)
+                 4) 100px (range)
+              */
+              .fft-dialog .data-table col:nth-child(1) { width: 50px; }
+              .fft-dialog .data-table col:nth-child(2) { width: auto; }
+              .fft-dialog .data-table col:nth-child(3) { width: 100px; }
+              .fft-dialog .data-table col:nth-child(4) { width: 100px; }
+  
+              .fft-dialog .data-table td {
+                border: 1px solid #444;
+                text-align: center;
+                padding: 2px 4px;
+              }
+              .fft-dialog .spell-name-cell {
+                text-align: left !important;
+                padding-left: 4px;
+              }
+  
+              /* Button row at the bottom */
+              .fft-dialog .button-row {
+                flex: 0 0 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #222;
+              }
+              .fft-dialog #accept-btn {
+                width: 100px;
+                height: 28px;
+              }
+            </style>
+  
+            <div class="fft-container">
+              <!-- Filter Row -->
+              <div class="filter-row">
+                <label for="spell-name-filter">Name:</label>
+                <input type="text" id="spell-name-filter" placeholder="Find spell..." />
+                <label for="spell-class">Class:</label>
+                <select id="spell-class">${classOptions}</select>
+                <label for="spell-rank">Rank:</label>
+                <select id="spell-rank">${rankOptions}</select>
+              </div>
+  
+              <!-- Scrollable data container -->
+              <div class="data-container">
+                <table class="data-table">
+                  <colgroup>
+                    <col />
+                    <col />
+                    <col />
+                    <col />
+                  </colgroup>
+                  <tbody id="spell-list">
+                    <tr><td colspan="4">Select a class to view spells</td></tr>
+                  </tbody>
+                </table>
+              </div>
+  
+              <!-- Button Row -->
+              <div class="button-row">
+                <button id="accept-btn" type="button">Accept</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+            // Create the Foundry dialog
+            const dialog = new Dialog({
                 title: "Spell Selector",
                 content,
-                buttons: { close: { label: "Close" } },
+                buttons: {},
                 render: async (html) => {
-                    console.log("[FFTweaks] Dialog rendered");
-                    const classDropdown = html[0].querySelector("#spell-class") as HTMLSelectElement;
-                    const rankDropdown = html[0].querySelector("#spell-rank") as HTMLSelectElement;
-                    const spellListDiv = html[0].querySelector("#spell-list") as HTMLDivElement;
+                    // Grabbing references
+                    const nameInput = html[0].querySelector("#spell-name-filter") as HTMLInputElement;
+                    const classSelect = html[0].querySelector("#spell-class") as HTMLSelectElement;
+                    const rankSelect = html[0].querySelector("#spell-rank") as HTMLSelectElement;
+                    const spellList = html[0].querySelector("#spell-list") as HTMLTableSectionElement;
+                    const acceptBtn = html[0].querySelector("#accept-btn") as HTMLButtonElement;
+
+                    // Filter changes
+                    nameInput.addEventListener("input", updateSpellList);
+                    classSelect.addEventListener("change", updateSpellList);
+                    rankSelect.addEventListener("change", updateSpellList);
+
+                    // Close dialog on Accept
+                    acceptBtn.addEventListener("click", () => dialog.close());
+
+                    // Initial load
+                    await updateSpellList();
 
                     async function updateSpellList() {
-                        selectedClass = classDropdown.value;
-                        console.log(`[FFTweaks] Selected class: ${selectedClass}`);
-                        const spellIds = await FFT.SpellSelector.getClassSpells(selectedClass);
-                        console.log(`[FFTweaks] Spell IDs for ${selectedClass}:`, spellIds);
+                        nameFilter = nameInput.value.toLowerCase().trim();
+                        selectedClass = classSelect.value;
+                        selectedRank = rankSelect.value;
 
-                        // Load spells compendium index so fromUuid works properly
+                        // Get spells for the chosen class
+                        const spellIds = await SpellSelector.getClassSpells(selectedClass);
+
+                        // Ensure the spells compendium is indexed
                         const spellsPack = game.packs.get("fftweaks.spells");
-                        if (spellsPack) {
-                            await spellsPack.getIndex();
-                            console.log("[FFTweaks] Spells compendium index loaded.");
-                        } else {
-                            console.error("[FFTweaks] Spells compendium not found.");
-                        }
+                        if (spellsPack) await spellsPack.getIndex();
 
                         if (!spellIds.length) {
-                            console.log("[FFTweaks] No spell IDs found for selected class.");
-                            spellListDiv.innerHTML = `<p>No spells found.</p>`;
+                            spellList.innerHTML = `<tr><td colspan="4">No spells found.</td></tr>`;
                             return;
                         }
 
-                        // Fetch each spell's details via fromUuid()
-                        const spellDetails = await Promise.all(
-                            spellIds.map(async (spellId: string) => {
-                                try {
-                                    console.log("[FFTweaks] Loading spell with ID:", spellId);
-                                    const spell = await fromUuid(spellId) as any;
-                                    if (!spell) {
-                                        console.warn("[FFTweaks] Spell not found for ID:", spellId);
-                                        return null;
-                                    }
-                                    console.log("[FFTweaks] Loaded spell:", spell);
-                                    return { name: spell.name, level: Number(spell.system?.level) || 0 };
-                                } catch (err) {
-                                    console.error("[FFTweaks] Error loading spell:", spellId, err);
-                                    return null;
-                                }
+                        // Load each spell
+                        const spells = await Promise.all(
+                            spellIds.map(async (id) => {
+                                const item = await fromUuid(id) as any;
+                                if (!item) return null;
+                                const name = item.name;
+                                const level = item.system?.level ?? 0;
+                                const range = getRangeString(item);
+                                return { name, level, range };
                             })
                         );
-                        const validSpells = spellDetails.filter(s => s) as Array<{ name: string; level: number }>;
-                        console.log("[FFTweaks] Valid Spells:", validSpells);
 
-                        // Build unique levels for the rank dropdown
-                        const uniqueLevels = [...new Set(validSpells.map(s => s.level))].sort((a, b) => a - b);
-                        console.log("[FFTweaks] Unique Spell Levels:", uniqueLevels);
-                        rankDropdown.innerHTML = `<option value="All">All</option>`;
-                        uniqueLevels.forEach(level => {
-                            rankDropdown.innerHTML += `<option value="${level}">Level ${level}</option>`;
-                        });
-
-                        function renderSpells() {
-                            let filtered = validSpells;
-                            if (selectedRank !== "All") {
-                                filtered = filtered.filter(s => s.level === parseInt(selectedRank));
-                            }
-                            console.log("[FFTweaks] Rendering spells:", filtered);
-                            spellListDiv.innerHTML = filtered.length
-                                ? filtered.map(s => `<p>Level ${s.level}: ${s.name}</p>`).join("")
-                                : `<p>No spells found.</p>`;
+                        const validSpells = spells.filter(s => s);
+                        // Filter by name
+                        let filtered = validSpells.filter(sp => sp.name.toLowerCase().includes(nameFilter));
+                        // Filter by rank if not "All"
+                        if (selectedRank !== "All") {
+                            const numericRank = parseInt(selectedRank);
+                            filtered = filtered.filter(sp => sp.level === numericRank);
                         }
-                        renderSpells();
-                        rankDropdown.onchange = () => {
-                            selectedRank = rankDropdown.value;
-                            console.log("[FFTweaks] Selected Rank:", selectedRank);
-                            renderSpells();
-                        };
+
+                        if (!filtered.length) {
+                            spellList.innerHTML = `<tr><td colspan="4">No spells found.</td></tr>`;
+                            return;
+                        }
+
+                        // Render final rows
+                        spellList.innerHTML = filtered.map(sp => `
+                <tr>
+                  <td><input type="checkbox" /></td>
+                  <td class="spell-name-cell">${sp.name}</td>
+                  <td>${sp.level === 0 ? "Cantrip" : sp.level}</td>
+                  <td>${sp.range}</td>
+                </tr>
+              `).join("");
                     }
-                    classDropdown.onchange = updateSpellList;
-                    await updateSpellList();
+
+                    function getRangeString(item: any): string {
+                        const rng = item.system?.range;
+                        if (!rng) return "";
+                        if (rng.value && rng.units) return `${rng.value} ${rng.units}`;
+                        return rng.long ?? rng.value ?? "";
+                    }
                 }
-            }).render(true);
+            });
+
+            // Render & center the dialog at 75% width, 80% height
+            dialog.render(true);
+            Hooks.once("renderDialog", () => {
+                const w = window.innerWidth * 0.75;
+                const h = window.innerHeight * 0.8;
+                const left = (window.innerWidth - w) / 2;
+                const top = (window.innerHeight - h) / 2;
+                dialog.setPosition({ width: w, height: h, left, top });
+            });
         }
 
+        /** Load the Spell Journal from the "fftweaks.journals" compendium */
         static async getSpellJournal(): Promise<JournalEntry | null> {
             const pack = game.packs.get("fftweaks.journals");
             if (!pack) {
-                console.error("[FFTweaks] Compendium 'fftweaks.journals' not found.");
+                console.error("Compendium 'fftweaks.journals' not found.");
                 return null;
             }
-            const journal = await pack.getDocument("ij43IJbeKdTP3rJd") as JournalEntry | null;
-            console.log("[FFTweaks] Loaded Journal:", journal);
-            return journal;
+            return (await pack.getDocument("ij43IJbeKdTP3rJd")) as JournalEntry | null;
         }
 
+        /** Get the list of spell UUIDs for a given class from the Spell Journal */
         static async getClassSpells(className: string): Promise<string[]> {
             const journal = await this.getSpellJournal();
             if (!journal) return [];
             const pages = (journal as JournalEntry).pages.contents;
             const page = pages.find((p: any) => p.name === className);
-            console.log(`[FFTweaks] Page for ${className}:`, page);
-            // Get spells from page.system.spells; if it's a Set, convert it to an array.
-            const spells = page?.system?.spells;
-            console.log(`[FFTweaks] Raw spells for ${className}:`, spells);
-            if (spells instanceof Set) {
-                return Array.from(spells);
-            } else if (Array.isArray(spells)) {
-                return spells;
-            }
+            const rawSpells = page?.system?.spells;
+            if (rawSpells instanceof Set) return Array.from(rawSpells);
+            if (Array.isArray(rawSpells)) return rawSpells;
             return [];
         }
     }
