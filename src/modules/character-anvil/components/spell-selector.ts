@@ -16,7 +16,7 @@ namespace FFT {
             let selectedRank = "All";
             let nameFilter = "";
 
-            // Rank options from Cantrip(0) to 9th
+            // Ranks from Cantrip(0) to 9th
             const rankOptions = `
           <option value="All">All</option>
           <option value="0">Cantrip</option>
@@ -47,7 +47,7 @@ namespace FFT {
                 flex-direction: column;
               }
   
-              /* Filter row at the top, no background color */
+              /* Filter row at the top, unchanged (40px) */
               .fft-dialog .filter-row {
                 flex: 0 0 40px;
                 display: flex;
@@ -76,6 +76,8 @@ namespace FFT {
                 width: 100%;
                 border-collapse: collapse;
                 table-layout: fixed;
+                /* Keep the same font-size */
+                font-size: 0.9em;
               }
   
               /* Column widths:
@@ -89,17 +91,21 @@ namespace FFT {
               .fft-dialog .data-table col:nth-child(3) { width: 100px; }
               .fft-dialog .data-table col:nth-child(4) { width: 100px; }
   
-              .fft-dialog .data-table td {
+              /* Spell rows: reduce height by lowering padding and line-height */
+              .fft-dialog .data-table tbody tr td {
                 border: 1px solid #444;
                 text-align: center;
+                /* Reduced padding */
                 padding: 2px 4px;
+                /* Smaller line-height but same font-size */
+                line-height: 1.0;
               }
               .fft-dialog .spell-name-cell {
                 text-align: left !important;
                 padding-left: 4px;
               }
   
-              /* Button row at the bottom */
+              /* Button row at the bottom, unchanged (40px) */
               .fft-dialog .button-row {
                 flex: 0 0 40px;
                 display: flex;
