@@ -1,22 +1,52 @@
 namespace FFT {
     export class CharacterAnvil {
         static initialize() {
+
             Hooks.on("createItem", async (item: Item5e, options, userId) => {
                 let character = new Character(item.parent);
-                if (item.type === "background") {
+
+                this.handleActions(item, "background", () => {
                     EquipmentManager.showDialog("createItem", character, item);
-                } else if (item.type === "class") {
+                });
+
+                this.handleActions(item, "class", () => {
                     EquipmentManager.showDialog("createItem", character, item);
-                    SpellSelector.showSpellDialog(character);
-                }
+                    SpellSelector.showDialog(character);
+                });
+
+                this.handleActions(item, "spell", () => {
+                    SpellSelector.refreshKnownSpells(character);
+                });
             });
-            Hooks.on("preDeleteItem", (item, options, userId) => {
+
+            Hooks.on("updateItem", (item: Item5e, updateData, options, userId) => {
+                this.handleActions(item, "spell", () => {
+                    let character = new Character(item.parent);
+                    SpellSelector.refreshKnownSpells(character);
+                });
+            });
+
+            Hooks.on("deleteItem", (item: Item5e, options, userId) => {
                 let character = new Character(item.parent);
-                if (item.type === "class" || item.type === "background") {
-                    EquipmentManager.showDialog("preDeleteItem", character, item);
-                }
+                this.handleActions(item, "background", () => {
+                    EquipmentManager.showDialog("deleteItem", character, item);
+                });
+                this.handleActions(item, "class", () => {
+                    EquipmentManager.showDialog("deleteItem", character, item);
+                    SpellSelector.showDialog(character);
+                });
+                this.handleActions(item, "spell", () => {
+                    SpellSelector.refreshKnownSpells(character);
+                });
             });
         }
+
+        static handleActions(item: Item5e, itemType: string, action: () => void) {
+            if (item.type === itemType) {
+                action();
+            }
+        }
+
     }
 }
 
