@@ -1,6 +1,6 @@
 namespace FFT {
   export class SpellSelector {
-    static async showSpellDialog() {
+    static async showSpellDialog(character: Character) {
       // Load class names from the Spell Journal
       const journal = await this.getSpellJournal();
       if (!journal) return;
@@ -124,6 +124,11 @@ namespace FFT {
               padding-left: 4px;
             }
 
+            /* Highlight known spells */
+            .fft-dialog .data-table tbody tr.known-spell {
+              background: #444;
+            }
+
             /* Button row: fixed at bottom, always visible */
             .fft-dialog .button-row {
               flex: 0 0 40px;
@@ -182,12 +187,15 @@ namespace FFT {
         content,
         buttons: {},
         render: async (html) => {
-          // Grab filter inputs and button
+          // Capture filter inputs and the spell list container
           const nameInput = html[0].querySelector("#spell-name-filter") as HTMLInputElement;
           const classSelect = html[0].querySelector("#spell-class") as HTMLSelectElement;
           const rankSelect = html[0].querySelector("#spell-rank") as HTMLSelectElement;
           const spellList = html[0].querySelector("#spell-list") as HTMLTableSectionElement;
           const acceptBtn = html[0].querySelector("#accept-btn") as HTMLButtonElement;
+
+          // Retrieve known spells from the character using the custom markKnownSpells function.
+          const knownSpellNames = await FFT.SpellSelector.markKnownSpells(character);
 
           // Update spell list when filters change
           nameInput.addEventListener("input", updateSpellList);
@@ -243,15 +251,20 @@ namespace FFT {
               return;
             }
 
-            // Render spell rows
-            spellList.innerHTML = filtered.map(sp => `
-              <tr>
-                <td><input type="checkbox" /></td>
-                <td class="spell-name-cell">${sp.name}</td>
-                <td>${sp.level === 0 ? "Cantrip" : sp.level}</td>
-                <td>${sp.range}</td>
-              </tr>
-            `).join("");
+            // Render spell rows; mark spells as known if they exist in the knownSpellNames set
+            spellList.innerHTML = filtered.map(sp => {
+              const isKnown = knownSpellNames.has(sp.name.toLowerCase());
+              return `
+                <tr class="${isKnown ? 'known-spell' : ''}">
+                  <td>
+                    <input type="checkbox" ${isKnown ? "checked disabled" : ""} />
+                  </td>
+                  <td class="spell-name-cell">${sp.name}</td>
+                  <td>${sp.level === 0 ? "Cantrip" : sp.level}</td>
+                  <td>${sp.range}</td>
+                </tr>
+              `;
+            }).join("");
           }
 
           function getRangeString(item: any): string {
@@ -292,6 +305,12 @@ namespace FFT {
       if (rawSpells instanceof Set) return Array.from(rawSpells);
       if (Array.isArray(rawSpells)) return rawSpells;
       return [];
+    }
+
+    // Modified markKnownSpells now returns a set of known spell names for easy lookup.
+    static async markKnownSpells(character: Character): Promise<Set<string>> {
+      // Assumes that character.spells is an array of spell items with a 'name' property.
+      return new Set(character.spells.map((spell: any) => spell.name.toLowerCase()));
     }
   }
 }

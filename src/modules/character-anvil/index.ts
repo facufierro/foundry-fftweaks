@@ -7,7 +7,7 @@ namespace FFT {
                     EquipmentManager.showDialog("createItem", character, item);
                 } else if (item.type === "class") {
                     EquipmentManager.showDialog("createItem", character, item);
-                    SpellSelector.showSpellDialog();
+                    SpellSelector.showSpellDialog(character);
                 }
             });
             Hooks.on("preDeleteItem", (item, options, userId) => {
