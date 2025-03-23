@@ -1,17 +1,11 @@
 namespace FFT {
     export class UI {
-        // Fetch button data from JSON
-        static async fetchButtonData(): Promise<Record<string, { name: string; icon: string; script: string }>> {
-            const response = await fetch('modules/fftweaks/src/modules/function-bar/data/button-data.json');
-            if (!response.ok) {
-                console.error("Failed to fetch button data:", response.statusText);
-                return {};
-            }
-            return await response.json();
-        }
+        static initialize() { }
+        // Crate sheet button
+        static createSheetButton() { }
 
-        // Create a customizable form with original styles and functionality
-        static createForm({
+        // Create function bar
+        static createFunctonBar({
             id = 'fft-functionbar',
             position = { top: '150px', left: '150px' },
             buttons = [],
@@ -78,6 +72,22 @@ namespace FFT {
             document.body.appendChild(form);
 
             return form;
+        }
+
+        // Create function bar button
+        static createFunctionBarButton() { }
+
+
+
+
+        // Fetch button data from JSON
+        static async fetchButtonData(): Promise<Record<string, { name: string; icon: string; script: string }>> {
+            const response = await fetch('modules/fftweaks/src/modules/function-bar/data/button-data.json');
+            if (!response.ok) {
+                console.error("Failed to fetch button data:", response.statusText);
+                return {};
+            }
+            return await response.json();
         }
 
         // Helper function to create a button with original styles

@@ -1,6 +1,5 @@
 namespace FFT {
   export class SpellSelector {
-    // Store a reference to the dialog's root element for later updates.
     private static _dialogHtml: JQuery | null = null;
 
     static async showDialog(character: Character) {
@@ -15,14 +14,12 @@ namespace FFT {
         content: content,
         buttons: {},
         render: (html: JQuery) => {
-          // Save the dialog's HTML element so we can update it later.
           this._dialogHtml = html;
           this.initializeDialogEvents(html, character, dialogInstance);
         }
       });
       dialogInstance.render(true);
 
-      // Center and size the dialog.
       Hooks.once("renderDialog", () => {
         const w = window.innerWidth * 0.75;
         const h = window.innerHeight * 0.8;
@@ -32,7 +29,6 @@ namespace FFT {
       });
     }
 
-    // Builds the HTML content for the dialog.
     static buildDialogContent(journal: JournalEntry): string | null {
       const pages = journal.pages.contents || [];
       if (!pages.length) {
@@ -54,9 +50,7 @@ namespace FFT {
         <option value="8">8th</option>
         <option value="9">9th</option>
       `;
-      const classOptions = classNames
-        .map((c) => `<option value="${c}">${c}</option>`)
-        .join("");
+      const classOptions = classNames.map((c) => `<option value="${c}">${c}</option>`).join("");
 
       return `
         <div class="fft-dialog">
@@ -118,9 +112,6 @@ namespace FFT {
               text-align: left !important;
               padding-left: 4px;
             }
-            .fft-dialog .data-table tbody tr.known-spell {
-              background: #444;
-            }
             .fft-dialog .button-row {
               flex: 0 0 40px;
               position: sticky;
@@ -178,13 +169,80 @@ namespace FFT {
       nameInput.addEventListener("input", updateHandler);
       classSelect.addEventListener("change", updateHandler);
       rankSelect.addEventListener("change", updateHandler);
-      acceptBtn.addEventListener("click", () => dialog.close());
+      acceptBtn.addEventListener("click", async () => {
+        await this.addSelectedSpells(character, html, dialog);
+        dialog.close();
+      });
 
-      updateHandler(); // initial render
+      updateHandler();
+    }
+
+    static async addSelectedSpells(character: FFT.Character, html: JQuery, dialog: Dialog) {
+      const spellRows = html[0].querySelectorAll("#spell-list tr");
+
+      const selectedSpellNames: string[] = [];
+      const visibleKnownSpellNames: string[] = [];
+
+      spellRows.forEach(row => {
+        const checkbox = row.querySelector("input[type='checkbox']") as HTMLInputElement;
+        const nameCell = row.querySelector(".spell-name-cell");
+        if (!checkbox || !nameCell) return;
+
+        const spellName = nameCell.textContent?.trim();
+        if (!spellName) return;
+
+        const lowerName = spellName.toLowerCase();
+
+        if (checkbox.checked) {
+          selectedSpellNames.push(spellName);
+        }
+
+        if (character.spells.some(spell => (spell.name as string).toLowerCase() === lowerName)) {
+          visibleKnownSpellNames.push(spellName);
+        }
+      });
+
+      // Filter out known spells that are no longer selected
+      const namesToRemove = visibleKnownSpellNames.filter(name =>
+        !selectedSpellNames.includes(name)
+      );
+
+      if (namesToRemove.length > 0) {
+        await character.removeItemsByName(namesToRemove);
+        ui.notifications.info(`${namesToRemove.length} removed spell(s).`);
+      }
+
+      // Filter out known spells from selected so we don’t re-add
+      const knownSpellNames = new Set(character.spells.map(spell => (spell.name as string).toLowerCase()));
+
+      const newSpellNames = selectedSpellNames.filter(
+        name => !knownSpellNames.has(name.toLowerCase())
+      );
+
+      if (newSpellNames.length === 0) {
+        ui.notifications.info("No new spells selected.");
+        return;
+      }
+
+      const spellsPack = game.packs.get("fftweaks.spells");
+      if (!spellsPack) {
+        ui.notifications.error("Spell compendium not found.");
+        return;
+      }
+
+      await spellsPack.getIndex();
+      const documents = await spellsPack.getDocuments();
+      const itemsToAdd = documents.filter(item => newSpellNames.includes(item.name));
+
+      if (itemsToAdd.length === 0) {
+        ui.notifications.warn("No matching spell items found.");
+      } else {
+        await character.actor.createEmbeddedDocuments("Item", itemsToAdd.map(item => item.toObject()));
+        ui.notifications.info(`${itemsToAdd.length} spell(s) added to ${character.actor.name}.`);
+      }
     }
 
 
-    // Updates the spell list using the current filters and marks known spells.
     static async updateSpellList(html: JQuery, knownSpellNames: Set<string>) {
       const nameInput = html[0].querySelector("#spell-name-filter") as HTMLInputElement;
       const classSelect = html[0].querySelector("#spell-class") as HTMLSelectElement;
@@ -195,7 +253,6 @@ namespace FFT {
       const selectedClass = classSelect.value;
       const selectedRank = rankSelect.value;
 
-      // Get spell IDs for the selected class.
       const spellIds = await this.getClassSpells(selectedClass);
       const spellsPack = game.packs.get("fftweaks.spells");
       if (spellsPack) await spellsPack.getIndex();
@@ -205,7 +262,6 @@ namespace FFT {
         return;
       }
 
-      // Load spell details.
       const spells = await Promise.all(
         spellIds.map(async (id) => {
           const item = await fromUuid(id) as any;
@@ -218,7 +274,6 @@ namespace FFT {
       );
       const validSpells = spells.filter(sp => sp !== null);
 
-      // Apply filters.
       let filtered = validSpells.filter(sp => sp.name.toLowerCase().includes(nameFilter));
       if (selectedRank !== "All") {
         const numericRank = parseInt(selectedRank);
@@ -230,13 +285,12 @@ namespace FFT {
         return;
       }
 
-      // Render spell rows, marking known spells.
       spellList.innerHTML = filtered.map(sp => {
         const isKnown = knownSpellNames.has(sp.name.toLowerCase());
         return `
-          <tr class="${isKnown ? 'known-spell' : ''}">
+          <tr>
             <td>
-              <input type="checkbox" ${isKnown ? "checked disabled" : ""} />
+              <input type="checkbox" ${isKnown ? "checked" : ""} />
             </td>
             <td class="spell-name-cell">${sp.name}</td>
             <td>${sp.level === 0 ? "Cantrip" : sp.level}</td>
@@ -246,7 +300,6 @@ namespace FFT {
       }).join("");
     }
 
-    // Helper: returns a formatted range string for a spell.
     static getRangeString(item: any): string {
       const rng = item.system?.range;
       if (!rng) return "";
@@ -274,18 +327,10 @@ namespace FFT {
       return [];
     }
 
-    /**
-     * Refreshes the known spells in the dialog.
-     * If a spellName is provided, toggles its "known" state in the set
-     * before updating the dialog.
-     */
     static async refreshKnownSpells(character: Character) {
       if (!this._dialogHtml) return;
-
       const knownSpellNames = new Set(character.spells.map((spell: any) => spell.name.toLowerCase()));
       await this.updateSpellList(this._dialogHtml, knownSpellNames);
     }
-
   }
-
 }

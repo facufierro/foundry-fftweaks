@@ -1,6 +1,10 @@
 namespace FFT {
     export class CharacterAnvil {
         static initialize() {
+            // on open sheet
+            Hooks.on("renderItemSheet", (sheet, html, data) => {
+                
+            });
 
             Hooks.on("createItem", async (item: Item5e, options, userId) => {
                 let character = new Character(item.parent);
@@ -33,7 +37,6 @@ namespace FFT {
                 });
                 this.handleActions(item, "class", () => {
                     EquipmentManager.showDialog("deleteItem", character, item);
-                    SpellSelector.showDialog(character);
                 });
                 this.handleActions(item, "spell", () => {
                     SpellSelector.refreshKnownSpells(character);
