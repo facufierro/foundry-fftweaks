@@ -31,12 +31,6 @@ namespace FFT {
           title: "Spell Selector",
           content: content,
           buttons: {
-            done: {
-              label: "Done",
-              callback: () => {
-                resolve();
-              }
-            }
           },
           render: (html: JQuery) => {
             this._dialogHtml = html;
