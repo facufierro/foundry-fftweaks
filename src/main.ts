@@ -6,4 +6,6 @@
 Hooks.once("ready", () => {
     (window as any).FFT = FFT;
     FFT.CharacterAnvil.initialize();
+    FFT.ItemMacro.initialize();
+
 });
