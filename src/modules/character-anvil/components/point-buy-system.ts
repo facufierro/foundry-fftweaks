@@ -21,55 +21,64 @@ namespace FFT {
             button.appendTo(buttonHolder);
         }
 
-
-
-        static renderDialog(actor: Actor): void {
-            if (this.activeDialog) {
-                if (this.activeDialog.rendered) {
-                    this.activeDialog.bringToTop();
-                }
-                return;
-            }
-
-            let abilities: Record<string, number> = {
-                str: 8, dex: 8, con: 8, int: 8, wis: 8, cha: 8
-            };
-            let abilityLabels: Record<string, string> = {
-                str: "Strength",
-                dex: "Dexterity",
-                con: "Constitution",
-                int: "Intelligence",
-                wis: "Wisdom",
-                cha: "Charisma"
-            };
-
-            let currentPoints = this.calculatePoints(abilities);
-            let content = this.generateDialogContent(abilities, abilityLabels, currentPoints);
-
-            this.activeDialog = new Dialog({
-                title: "Point Buy System",
-                content: content,
-                render: (html: JQuery<HTMLElement>) => {
-                    this.setupListeners(html, abilities);
-                    html.closest(".app").addClass("no-resize"); // ✅ Prevent resizing via CSS
-                    html.closest(".window-app").find(".window-resizable-handle").remove(); // ✅ Remove resize handle
-                },
-                buttons: {
-                    confirm: {
-                        label: "Apply",
-                        callback: (html) => this.applyChanges(actor, $(html))
-                    },
-                    cancel: {
-                        label: "Cancel",
-                        callback: () => { this.activeDialog = null; }
+        static renderDialog(actor: Actor): Promise<boolean> {
+            return new Promise((resolve) => {
+                if (this.activeDialog) {
+                    if (this.activeDialog.rendered) {
+                        this.activeDialog.bringToTop();
                     }
-                },
-                close: () => { this.activeDialog = null; }
+                    return resolve(false); // Resolves immediately if already open
+                }
+
+                let abilities: Record<string, number> = {
+                    str: 8, dex: 8, con: 8, int: 8, wis: 8, cha: 8
+                };
+                let abilityLabels: Record<string, string> = {
+                    str: "Strength",
+                    dex: "Dexterity",
+                    con: "Constitution",
+                    int: "Intelligence",
+                    wis: "Wisdom",
+                    cha: "Charisma"
+                };
+
+                let currentPoints = this.calculatePoints(abilities);
+                let content = this.generateDialogContent(abilities, abilityLabels, currentPoints);
+
+                this.activeDialog = new Dialog({
+                    title: "Point Buy System",
+                    content: content,
+                    render: (html: JQuery<HTMLElement>) => {
+                        this.setupListeners(html, abilities);
+                        html.closest(".app").addClass("no-resize");
+                        html.closest(".window-app").find(".window-resizable-handle").remove();
+                    },
+                    buttons: {
+                        confirm: {
+                            label: "Apply",
+                            callback: (html) => {
+                                this.applyChanges(actor, $(html));
+                                this.activeDialog = null;
+                                resolve(true); // ✅ Resolves when "Apply" is clicked
+                            }
+                        },
+                        cancel: {
+                            label: "Cancel",
+                            callback: () => {
+                                this.activeDialog = null;
+                                resolve(false); // ✅ Resolves on cancel
+                            }
+                        }
+                    },
+                    close: () => {
+                        this.activeDialog = null;
+                        resolve(false); // ✅ Resolves if closed manually
+                    }
+                });
+
+                this.activeDialog.render(true);
             });
-
-            this.activeDialog.render(true);
         }
-
 
         static generateDialogContent(abilities: Record<string, number>, abilityLabels: Record<string, string>, currentPoints: number): string {
             let content = `<style>

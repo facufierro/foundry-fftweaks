@@ -18,30 +18,44 @@ namespace FFT {
 
       button.appendTo(buttonHolder);
     }
-    static async renderDialog(character: Character) {
+    static async renderDialog(character: Character): Promise<void> {
       const journal = await this.getSpellJournal();
       if (!journal) return;
+
       const content = this.buildDialogContent(journal);
       if (!content) return;
 
-      let dialogInstance: Dialog;
-      dialogInstance = new Dialog({
-        title: "Spell Selector",
-        content: content,
-        buttons: {},
-        render: (html: JQuery) => {
-          this._dialogHtml = html;
-          this.initializeDialogEvents(html, character, dialogInstance);
-        }
-      });
-      dialogInstance.render(true);
+      return new Promise<void>((resolve) => {
+        let dialogInstance: Dialog;
+        dialogInstance = new Dialog({
+          title: "Spell Selector",
+          content: content,
+          buttons: {
+            done: {
+              label: "Done",
+              callback: () => {
+                resolve();
+              }
+            }
+          },
+          render: (html: JQuery) => {
+            this._dialogHtml = html;
+            this.initializeDialogEvents(html, character, dialogInstance);
+          },
+          close: () => {
+            resolve(); // Also resolve if closed manually
+          }
+        });
 
-      Hooks.once("renderDialog", () => {
-        const w = window.innerWidth * 0.75;
-        const h = window.innerHeight * 0.8;
-        const left = (window.innerWidth - w) / 2;
-        const top = (window.innerHeight - h) / 2;
-        dialogInstance.setPosition({ width: w, height: h, left, top });
+        dialogInstance.render(true);
+
+        Hooks.once("renderDialog", () => {
+          const w = window.innerWidth * 0.75;
+          const h = window.innerHeight * 0.8;
+          const left = (window.innerWidth - w) / 2;
+          const top = (window.innerHeight - h) / 2;
+          dialogInstance.setPosition({ width: w, height: h, left, top });
+        });
       });
     }
 

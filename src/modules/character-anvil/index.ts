@@ -9,14 +9,15 @@ namespace FFT {
             Hooks.on("createItem", async (item: Item5e, options, userId) => {
                 let character = new Character(item.parent);
 
-                this.handleActions(item, "background", () => {
-                    EquipmentManager.renderDialog("createItem", character, item);
+                this.handleActions(item, "background", async () => {
+                    await EquipmentManager.renderDialog("createItem", character, item);
                 });
 
-                this.handleActions(item, "class", () => {
-                    SpellSelector.renderDialog(character);
-                    EquipmentManager.renderDialog("createItem", character, item);
+                this.handleActions(item, "class", async () => {
+                    await SpellSelector.renderDialog(character);
+                    await EquipmentManager.renderDialog("createItem", character, item);
                 });
+
 
                 this.handleActions(item, "spell", () => {
                     SpellSelector.refreshKnownSpells(character);
@@ -32,11 +33,11 @@ namespace FFT {
 
             Hooks.on("deleteItem", (item: Item5e, options, userId) => {
                 let character = new Character(item.parent);
-                this.handleActions(item, "background", () => {
-                    EquipmentManager.renderDialog("deleteItem", character, item);
+                this.handleActions(item, "background", async () => {
+                    await EquipmentManager.renderDialog("deleteItem", character, item);
                 });
-                this.handleActions(item, "class", () => {
-                    EquipmentManager.renderDialog("deleteItem", character, item);
+                this.handleActions(item, "class", async () => {
+                    await EquipmentManager.renderDialog("deleteItem", character, item);
                 });
                 this.handleActions(item, "spell", () => {
                     SpellSelector.refreshKnownSpells(character);
