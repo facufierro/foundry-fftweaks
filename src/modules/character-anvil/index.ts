@@ -29,6 +29,10 @@ namespace FFT {
                     let character = new Character(item.parent);
                     SpellSelector.refreshKnownSpells(character);
                 });
+                this.handleActions(item, "class", async () => {
+                    let character = new Character(item.parent);
+                    SpellSelector.renderDialog(character);
+                });
             });
 
             Hooks.on("deleteItem", (item: Item5e, options, userId) => {

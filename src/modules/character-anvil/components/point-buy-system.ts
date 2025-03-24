@@ -177,7 +177,6 @@ namespace FFT {
             }
 
             actor.update(updates);
-            ui.notifications.info("Abilities updated successfully.");
             this.activeDialog = null;
         }
     }

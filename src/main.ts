@@ -3,7 +3,7 @@
 
 (window as any).FFT = (window as any).FFT || {};
 
-// on ready
 Hooks.once("ready", () => {
+    (window as any).FFT = FFT;
     FFT.CharacterAnvil.initialize();
 });

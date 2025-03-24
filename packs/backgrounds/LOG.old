@@ -1,21 +1,8 @@
-2025/03/14-14:58:15.912769 7ffed7fff0c0 Recovering log #211
-2025/03/14-14:58:15.915679 7ffed7fff0c0 Delete type=0 #211
-2025/03/14-14:58:15.915700 7ffed7fff0c0 Delete type=3 #209
-2025/03/23-09:35:16.787737 7ffed65330c0 Level-0 table #215: started
-2025/03/23-09:35:16.787754 7ffed65330c0 Level-0 table #215: 0 bytes OK
-2025/03/23-09:35:16.789031 7ffed65330c0 Delete type=0 #213
-2025/03/23-09:35:16.790404 7ffed65330c0 Manual compaction at level-0 from '!items!4FfoDHkDJAxPlk7B' @ 72057594037927935 : 1 .. '!items!ZyQQmnjMZiSxusJz' @ 0 : 0; will stop at '!items!4FfoDHkDJAxPlk7B' @ 119 : 1
-2025/03/23-09:35:16.790409 7ffed65330c0 Compacting 1@0 + 0@1 files
-2025/03/23-09:35:16.791574 7ffed65330c0 Generated table #216@0: 1 keys, 3254 bytes
-2025/03/23-09:35:16.791583 7ffed65330c0 Compacted 1@0 + 0@1 files => 3254 bytes
-2025/03/23-09:35:16.792806 7ffed65330c0 compacted to: files[ 0 1 1 0 0 0 0 ]
-2025/03/23-09:35:16.792836 7ffed65330c0 Delete type=2 #210
-2025/03/23-09:35:16.797921 7ffed65330c0 Manual compaction at level-0 from '!items!4FfoDHkDJAxPlk7B' @ 119 : 1 .. '!items!ZyQQmnjMZiSxusJz' @ 0 : 0; will stop at (end)
-2025/03/23-09:35:16.800371 7ffed65330c0 Manual compaction at level-1 from '!items!4FfoDHkDJAxPlk7B' @ 72057594037927935 : 1 .. '!items!ZyQQmnjMZiSxusJz' @ 0 : 0; will stop at '!items!4FfoDHkDJAxPlk7B' @ 119 : 1
-2025/03/23-09:35:16.800376 7ffed65330c0 Compacting 1@1 + 1@2 files
-2025/03/23-09:35:16.801666 7ffed65330c0 Generated table #217@1: 6 keys, 11901 bytes
-2025/03/23-09:35:16.801676 7ffed65330c0 Compacted 1@1 + 1@2 files => 11901 bytes
-2025/03/23-09:35:16.802877 7ffed65330c0 compacted to: files[ 0 0 1 0 0 0 0 ]
-2025/03/23-09:35:16.802906 7ffed65330c0 Delete type=2 #216
-2025/03/23-09:35:16.802950 7ffed65330c0 Delete type=2 #206
-2025/03/23-09:35:16.805727 7ffed65330c0 Manual compaction at level-1 from '!items!4FfoDHkDJAxPlk7B' @ 119 : 1 .. '!items!ZyQQmnjMZiSxusJz' @ 0 : 0; will stop at (end)
+2025/03/24-11:56:34.423589 7ffef0fef0c0 Recovering log #220
+2025/03/24-11:56:34.426519 7ffef0fef0c0 Delete type=0 #220
+2025/03/24-11:56:34.426541 7ffef0fef0c0 Delete type=3 #218
+2025/03/24-15:05:51.036140 7ffed65330c0 Level-0 table #225: started
+2025/03/24-15:05:51.036154 7ffed65330c0 Level-0 table #225: 0 bytes OK
+2025/03/24-15:05:51.037424 7ffed65330c0 Delete type=0 #223
+2025/03/24-15:05:51.038803 7ffed65330c0 Manual compaction at level-0 from '!items!4FfoDHkDJAxPlk7B' @ 72057594037927935 : 1 .. '!items!ZyQQmnjMZiSxusJz' @ 0 : 0; will stop at (end)
+2025/03/24-15:05:51.040112 7ffed65330c0 Manual compaction at level-1 from '!items!4FfoDHkDJAxPlk7B' @ 72057594037927935 : 1 .. '!items!ZyQQmnjMZiSxusJz' @ 0 : 0; will stop at (end)

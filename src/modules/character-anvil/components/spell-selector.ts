@@ -12,13 +12,15 @@ namespace FFT {
         tooltip: "Spell Selector",
         iconClass: "fas fa-book-spells",
         onClick: () => {
-          this.renderDialog(character);
+          // Pass the desired choicesNumber here (for example, 2)
+          this.renderDialog(character, 2);
         }
       });
 
       button.appendTo(buttonHolder);
     }
-    static async renderDialog(character: Character): Promise<void> {
+
+    static async renderDialog(character: Character, choicesNumber?: number): Promise<void> {
       const journal = await this.getSpellJournal();
       if (!journal) return;
 
@@ -34,7 +36,7 @@ namespace FFT {
           },
           render: (html: JQuery) => {
             this._dialogHtml = html;
-            this.initializeDialogEvents(html, character, dialogInstance);
+            this.initializeDialogEvents(html, character, dialogInstance, choicesNumber);
           },
           close: () => {
             resolve(); // Also resolve if closed manually
@@ -56,7 +58,6 @@ namespace FFT {
     static buildDialogContent(journal: JournalEntry): string | null {
       const pages = journal.pages.contents || [];
       if (!pages.length) {
-        ui.notifications.warn("No pages found in the Spell Journal.");
         return null;
       }
       const classNames = pages.map((p: any) => p.name);
@@ -182,13 +183,18 @@ namespace FFT {
       `;
     }
 
-    static initializeDialogEvents(html: JQuery, character: Character, dialog: Dialog) {
+    static initializeDialogEvents(html: JQuery, character: Character, dialog: Dialog, choicesNumber: number) {
       const nameInput = html[0].querySelector("#spell-name-filter") as HTMLInputElement;
       const classSelect = html[0].querySelector("#spell-class") as HTMLSelectElement;
       const rankSelect = html[0].querySelector("#spell-rank") as HTMLSelectElement;
       const acceptBtn = html[0].querySelector("#accept-btn") as HTMLButtonElement;
 
-      const updateHandler = () => this.refreshKnownSpells(character);
+      // When filters change, refresh the spell list then enforce the limit.
+      const updateHandler = () => {
+        this.refreshKnownSpells(character).then(() => {
+          this.enforceChoiceLimit(html, choicesNumber);
+        });
+      };
 
       nameInput.addEventListener("input", updateHandler);
       classSelect.addEventListener("change", updateHandler);
@@ -196,6 +202,11 @@ namespace FFT {
       acceptBtn.addEventListener("click", async () => {
         await this.addSelectedSpells(character, html, dialog);
         dialog.close();
+      });
+
+      // Delegate a change event on any checkbox within the spell list.
+      html.find("#spell-list").on("change", "input[type='checkbox']", () => {
+        this.enforceChoiceLimit(html, choicesNumber);
       });
 
       updateHandler();
@@ -233,7 +244,6 @@ namespace FFT {
 
       if (namesToRemove.length > 0) {
         await character.removeItemsByName(namesToRemove);
-        ui.notifications.info(`${namesToRemove.length} removed spell(s).`);
       }
 
       // Filter out known spells from selected so we don’t re-add
@@ -244,13 +254,11 @@ namespace FFT {
       );
 
       if (newSpellNames.length === 0) {
-        ui.notifications.info("No new spells selected.");
         return;
       }
 
       const spellsPack = game.packs.get("fftweaks.spells");
       if (!spellsPack) {
-        ui.notifications.error("Spell compendium not found.");
         return;
       }
 
@@ -259,13 +267,10 @@ namespace FFT {
       const itemsToAdd = documents.filter(item => newSpellNames.includes(item.name));
 
       if (itemsToAdd.length === 0) {
-        ui.notifications.warn("No matching spell items found.");
       } else {
         await character.actor.createEmbeddedDocuments("Item", itemsToAdd.map(item => item.toObject()));
-        ui.notifications.info(`${itemsToAdd.length} spell(s) added to ${character.actor.name}.`);
       }
     }
-
 
     static async updateSpellList(html: JQuery, knownSpellNames: Set<string>) {
       const nameInput = html[0].querySelector("#spell-name-filter") as HTMLInputElement;
@@ -309,12 +314,13 @@ namespace FFT {
         return;
       }
 
+      // Note the addition of the data-is-known attribute.
       spellList.innerHTML = filtered.map(sp => {
         const isKnown = knownSpellNames.has(sp.name.toLowerCase());
         return `
           <tr>
             <td>
-              <input type="checkbox" ${isKnown ? "checked" : ""} />
+              <input type="checkbox" data-is-known="${isKnown}" ${isKnown ? "checked" : ""} />
             </td>
             <td class="spell-name-cell">${sp.name}</td>
             <td>${sp.level === 0 ? "Cantrip" : sp.level}</td>
@@ -355,6 +361,29 @@ namespace FFT {
       if (!this._dialogHtml) return;
       const knownSpellNames = new Set(character.spells.map((spell: any) => spell.name.toLowerCase()));
       await this.updateSpellList(this._dialogHtml, knownSpellNames);
+    }
+
+    // New helper method to enforce the limit on new spell selections.
+    static enforceChoiceLimit(html: JQuery, choicesNumber: number) {
+      const checkboxes = html.find("#spell-list input[type='checkbox']");
+      let newSelectionCount = 0;
+      checkboxes.each((i, checkbox) => {
+        const $cb = $(checkbox);
+        // Check the data attribute to see if this spell was already known.
+        const isKnown = $cb.attr("data-is-known") === "true";
+        if (!isKnown && $cb.prop("checked")) {
+          newSelectionCount++;
+        }
+      });
+      checkboxes.each((i, checkbox) => {
+        const $cb = $(checkbox);
+        const isKnown = $cb.attr("data-is-known") === "true";
+        if (!isKnown && !$cb.prop("checked")) {
+          // If the number of new selections equals or exceeds the limit,
+          // disable unchecked checkboxes for new spells.
+          $cb.prop("disabled", newSelectionCount >= choicesNumber);
+        }
+      });
     }
   }
 }
