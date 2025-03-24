@@ -1,9 +1,8 @@
 namespace FFT {
     export class CharacterAnvil {
         static initialize() {
-            // on open sheet
-            Hooks.on("renderItemSheet", (sheet, html, data) => {
-                
+            Hooks.on("renderActorSheet5eCharacter", (app, html) => {
+                PointBuySystem.initialize(app.actor, html);
             });
 
             Hooks.on("createItem", async (item: Item5e, options, userId) => {
