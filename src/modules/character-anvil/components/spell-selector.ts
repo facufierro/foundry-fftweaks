@@ -2,7 +2,23 @@ namespace FFT {
   export class SpellSelector {
     private static _dialogHtml: JQuery | null = null;
 
-    static async showDialog(character: Character) {
+    static renderButton(actor: Actor5e, html: JQuery<HTMLElement>) {
+      const character = new Character(actor);
+      const buttonHolder = html.find('.sheet-header-buttons');
+      if (!buttonHolder.length || html.find("#fft-custom-button").length) return;
+
+      const button = new FFT.CustomButton({
+        id: "fft-spellselector-button",
+        tooltip: "Spell Selector",
+        iconClass: "fas fa-book-spells",
+        onClick: () => {
+          this.renderDialog(character);
+        }
+      });
+
+      button.appendTo(buttonHolder);
+    }
+    static async renderDialog(character: Character) {
       const journal = await this.getSpellJournal();
       if (!journal) return;
       const content = this.buildDialogContent(journal);

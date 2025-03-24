@@ -1,17 +1,20 @@
 namespace FFT {
     export class PointBuySystem {
-        private static activeDialog: Dialog | null = null; // Prevent multiple windows
+        private static activeDialog: Dialog | null = null;
 
-        static initialize(actor: Actor, html: JQuery<HTMLElement>) {
+        static renderButton(actor: Actor, html: JQuery<HTMLElement>) {
             const buttonHolder = html.find('.sheet-header-buttons');
             if (!buttonHolder.length || html.find("#fft-custom-button").length) return;
+
+            const hasBackground = actor.items.some(item => item.type === "background");
+            if (hasBackground) return;
 
             const button = new FFT.CustomButton({
                 id: "fft-pointbuy-button",
                 tooltip: "Point Buy System",
                 iconClass: "fas fa-chart-bar",
                 onClick: () => {
-                    this.showDialog(actor);
+                    this.renderDialog(actor);
                 }
             });
 
@@ -19,7 +22,8 @@ namespace FFT {
         }
 
 
-        static showDialog(actor: Actor): void {
+
+        static renderDialog(actor: Actor): void {
             if (this.activeDialog) {
                 if (this.activeDialog.rendered) {
                     this.activeDialog.bringToTop();

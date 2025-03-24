@@ -2,19 +2,20 @@ namespace FFT {
     export class CharacterAnvil {
         static initialize() {
             Hooks.on("renderActorSheet5eCharacter", (app, html) => {
-                PointBuySystem.initialize(app.actor, html);
+                PointBuySystem.renderButton(app.actor, html);
+                SpellSelector.renderButton(app.actor, html);
             });
 
             Hooks.on("createItem", async (item: Item5e, options, userId) => {
                 let character = new Character(item.parent);
 
                 this.handleActions(item, "background", () => {
-                    EquipmentManager.showDialog("createItem", character, item);
+                    EquipmentManager.renderDialog("createItem", character, item);
                 });
 
                 this.handleActions(item, "class", () => {
-                    EquipmentManager.showDialog("createItem", character, item);
-                    SpellSelector.showDialog(character);
+                    SpellSelector.renderDialog(character);
+                    EquipmentManager.renderDialog("createItem", character, item);
                 });
 
                 this.handleActions(item, "spell", () => {
@@ -32,10 +33,10 @@ namespace FFT {
             Hooks.on("deleteItem", (item: Item5e, options, userId) => {
                 let character = new Character(item.parent);
                 this.handleActions(item, "background", () => {
-                    EquipmentManager.showDialog("deleteItem", character, item);
+                    EquipmentManager.renderDialog("deleteItem", character, item);
                 });
                 this.handleActions(item, "class", () => {
-                    EquipmentManager.showDialog("deleteItem", character, item);
+                    EquipmentManager.renderDialog("deleteItem", character, item);
                 });
                 this.handleActions(item, "spell", () => {
                     SpellSelector.refreshKnownSpells(character);

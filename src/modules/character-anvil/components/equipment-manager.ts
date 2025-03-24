@@ -1,7 +1,7 @@
 namespace FFT {
     export class EquipmentManager {
 
-        static async showDialog(event: String, character: Character, item: Item5e) {
+        static async renderDialog(event: String, character: Character, item: Item5e) {
             if (item.type === "class" || item.type === "background") {
                 new CustomDialog(
                     `Equipment Manager`,
