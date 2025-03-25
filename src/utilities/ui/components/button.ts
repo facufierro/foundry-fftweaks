@@ -37,5 +37,20 @@ namespace FFT {
             const elem = target instanceof $ ? target[0] : target;
             elem.appendChild(this.element);
         }
+
+        prependTo(target: HTMLElement | JQuery<HTMLElement>): void {
+            const elem = target instanceof $ ? target[0] : target;
+            elem.insertBefore(this.element, elem.firstChild);
+        }
+
+        insertBefore(target: HTMLElement | JQuery<HTMLElement>): void {
+            const elem = target instanceof $ ? target[0] : target;
+            elem.parentElement?.insertBefore(this.element, elem);
+        }
+
+        insertAfter(target: HTMLElement | JQuery<HTMLElement>): void {
+            const elem = target instanceof $ ? target[0] : target;
+            elem.parentElement?.insertBefore(this.element, elem.nextSibling);
+        }
     }
 }

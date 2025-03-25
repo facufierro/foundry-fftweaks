@@ -11,12 +11,15 @@ if (level === 5) {
 if (level === 9) {
     await FFT.SpellSelector.giveAllSpells(character, className, 3);
 }
-if (level === 11) {
+if (level === 10) {
     await FFT.SpellSelector.renderDialog({ character, list: className, level: 0, choices: 1 });
 }
-if (level === 5) {
+if (level === 13) {
     await FFT.SpellSelector.giveAllSpells(character, className, 4);
 }
-if (level === 5) {
-    await FFT.SpellSelector.giveAllSpells(character, className, 4);
+if (level === 14) {
+    await FFT.SpellSelector.renderDialog({ character, list: className, level: 0, choices: 1 });
+}
+if (level === 17) {
+    await FFT.SpellSelector.giveAllSpells(character, className, 5);
 }

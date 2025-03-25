@@ -4,7 +4,11 @@ namespace FFT {
             Hooks.on("renderActorSheet5eCharacter", (app, html) => {
                 PointBuySystem.renderButton(app.actor, html);
                 SpellSelector.renderButton(app.actor, html);
+                LevelupManager.renderButton(app.actor, html);
             });
+
+
+
             // Hooks.on("updateItem", (item: Item5e, updateData, options, userId) => {
             //     this.handleActions(item, "spell", () => {
             //         let character = new Character(item.parent);

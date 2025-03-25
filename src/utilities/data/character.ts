@@ -2,6 +2,7 @@ namespace FFT {
     export class Character {
         public background: Item5e | null;
         public class: Item5e | null;
+        public species: Item5e | null;
         public spells: Item5e[];
         public inventory: Record<string, Item5e[]>;
 
@@ -9,7 +10,7 @@ namespace FFT {
             this.background = actor.items.find(i => String(i.type) === "background") ?? null;
             this.class = actor.items.find(i => i.type === "class") ?? null;
             this.spells = actor.items.filter(i => String(i.type) === "spell") ?? [];
-
+            this.species = actor.items.find(i => String(i.type) === "race") ?? null;
             this.inventory = {
                 consumable: [],
                 container: [],
@@ -65,5 +66,17 @@ namespace FFT {
                 Debug.Error(error);
             }
         }
+        canLevelUp(): boolean {
+            let result: boolean;
+            if (this.class) {
+                const xp = foundry.utils.getProperty(this.actor, "system.details.xp.value") ?? 0;
+                const required = foundry.utils.getProperty(this.actor, "system.details.xp.max") ?? Infinity;
+                result = xp >= required;
+            } else {
+                result = true;
+            }
+            return result;
+        }
+
     }
 }
