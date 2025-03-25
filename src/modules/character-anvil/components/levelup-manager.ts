@@ -16,58 +16,70 @@ namespace FFT {
                 iconClass: "fas fa-arrow-alt-circle-up",
                 onClick: () => {
                     this.levelUp(character);
-                    console.log((actor.sheet as any)._onFindItem.toString());
-
                 }
             });
-
             button.prependTo(buttonHolder);
         }
-
         static async levelUp(character: Character): Promise<void> {
-            // if no background, render point buy dialog then pickBackground
             if (!character.background) {
                 await PointBuySystem.renderDialog(character.actor);
                 await this.pickItem(character.actor, "background");
-
             }
-            // if no species, pickSpecies
             if (!character.species) {
                 await this.pickItem(character.actor, "race");
-
             }
-            // if no class, pickClass
-            if (character.canLevelUp()) {
+            if (!character.class) {
                 await this.pickItem(character.actor, "class");
+            } else {
+                await this.levelClass(character);
             }
         }
         static async pickItem(actor: Actor5e, type: "class" | "background" | "race"): Promise<void> {
-
             const sheet = actor.sheet as any;
+
             if (typeof sheet._onFindItem !== "function") {
                 ui.notifications.warn(`Cannot open ${type} selector: unsupported sheet.`);
                 return;
             }
 
             return new Promise<void>((resolve) => {
-                // Listen for the new item being created
                 const createdHook = Hooks.once("createItem", async (item: Item5e) => {
                     if (item.parent?.id !== actor.id || item.type !== type) return resolve();
-
-                    // Wait for the advancement dialog to complete
-                    Hooks.once("dnd5e.advancementManagerComplete", () => {
-                        resolve();
-                    });
+                    Hooks.once("dnd5e.advancementManagerComplete", () => resolve());
                 });
 
-                // Trigger the compendium browser
+                const originalMethod = sheet._onFindItem;
+                sheet._onFindItem = function (patchType: string, options: any = {}) {
+                    if (patchType === "class" && options.classIdentifier) {
+                        delete options.classIdentifier;
+                    }
+                    return originalMethod.call(this, patchType, options);
+                };
                 sheet._onFindItem(type);
+                setTimeout(() => {
+                    sheet._onFindItem = originalMethod;
+                }, 0);
             });
         }
-        static async waitForAdvancement(): Promise<void> {
-            await new Promise<void>((resolve) => {
-                Hooks.once("dnd5e.advancementManagerComplete", resolve);
-            });
+        static async levelClass(character: Character): Promise<void> {
+            const actor = character.actor;
+            const classItem = character.class;
+            if (!actor || !classItem) return;
+
+            const newItemData = classItem.toObject();
+            const [created] = await actor.createEmbeddedDocuments("Item", [newItemData]) as unknown as Item5e[];
+
+            if (created) {
+                const manager = await dnd5e.applications.advancement.AdvancementManager.forModifyChoices(actor, created.id, 1);
+                if (manager?.steps?.length) {
+                    await new Promise<void>((resolve) => {
+                        const hookId = Hooks.once("dnd5e.advancementManagerComplete", () => {
+                            resolve();
+                        });
+                        manager.render(true);
+                    });
+                }
+            }
         }
 
     }
