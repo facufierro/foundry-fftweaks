@@ -1,8 +1,8 @@
-className = item.name
+className = "Artificer";
 character = new FFT.Character(actor);
 level = actor.items.find(i => i.type === "class" && i.name === className)?.system?.levels ?? 0;
 if (level === 1) {
-    await FFT.SpellSelector.renderDialog({ character, list: className, level: 0, choices: 2 });
+    await FFT.SpellSelector.renderDialog({ character, list: "Artificer", level: 0, choices: 2 });
     await FFT.SpellSelector.giveAllSpells(character, className, 1);
 }
 if (level === 5) {

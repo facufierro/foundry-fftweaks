@@ -384,16 +384,27 @@ namespace FFT {
     static async giveAllSpells(character: Character, list: string, level: number): Promise<void> {
       const spellIds = await this.getClassSpells(list);
       if (!spellIds.length) return;
-      const spellsPack = game.packs.get("fftweaks.spells");
-      if (!spellsPack) return;
-      await spellsPack.getIndex();
-      const documents = (await spellsPack.getDocuments()) as Item5e[];
-      const spellsToAdd = documents.filter((item: Item5e) => (item.system.level ?? 0) === level);
-      if (!spellsToAdd.length) return;
+
+      const matchingSpells: Item5e[] = [];
+
+      for (const uuid of spellIds) {
+        const item = await fromUuid(uuid) as Item5e | null;
+        if (!item) continue;
+        const itemLevel = item.system?.level ?? 0;
+        if (itemLevel === level) {
+          matchingSpells.push(item);
+        }
+      }
+
+      if (!matchingSpells.length) return;
+
       const knownSpellNames = new Set(character.spells.map((spell: any) => String(spell.name).toLowerCase()));
-      const newSpells = spellsToAdd.filter((item: any) => !knownSpellNames.has(String(item.name).toLowerCase()));
+      const newSpells = matchingSpells.filter(item =>
+        !knownSpellNames.has(String(item.name).toLowerCase())
+      );
+
       if (newSpells.length > 0) {
-        await character.actor.createEmbeddedDocuments("Item", newSpells.map((item: any) => item.toObject()));
+        await character.actor.createEmbeddedDocuments("Item", newSpells.map(item => item.toObject()));
       }
     }
 
