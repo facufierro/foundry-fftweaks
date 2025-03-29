@@ -250,8 +250,6 @@ namespace FFT {
           .fft-dialog .spell-name-cell {
             text-align: left !important;
             padding-left: 4px;
-            cursor: pointer;
-            text-decoration: underline;
           }
           .fft-dialog .button-row {
             flex: 0 0 40px;
@@ -426,11 +424,11 @@ namespace FFT {
             <td>
               <input type="checkbox" data-is-known="${isKnown}" ${isKnown ? "checked" : ""} />
             </td>
-            <td class="spell-name-cell" data-uuid="${sp.uuid}">
+            <td class="spell-name-cell item-action item-tooltip rollable" data-uuid="${sp.uuid}" role="button" data-action="use" aria-label="${sp.name}" data-tooltip="<section class='loading' data-uuid='${sp.uuid}'><i class='fas fa-spinner fa-spin-pulse'></i></section>" data-tooltip-class="dnd5e2 dnd5e-tooltip item-tooltip" data-tooltip-direction="LEFT">
               ${sp.name}
             </td>
             <td>${sp.level === 0 ? "Cantrip" : sp.level}</td>
-            <td>${sp.school}</td>
+            <td data-tooltip="${sp.school}" aria-label="${sp.school}">${sp.school}</td>
             <td>${sp.range}</td>
           </tr>
         `;
