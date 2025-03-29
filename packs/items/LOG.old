@@ -1,8 +1,8 @@
-2025/03/25-12:24:46.173943 7fff164930c0 Recovering log #789
-2025/03/25-12:24:46.176866 7fff164930c0 Delete type=0 #789
-2025/03/25-12:24:46.176889 7fff164930c0 Delete type=3 #788
-2025/03/25-14:31:55.821256 7fff0ffff0c0 Level-0 table #793: started
-2025/03/25-14:31:55.821276 7fff0ffff0c0 Level-0 table #793: 0 bytes OK
-2025/03/25-14:31:55.822530 7fff0ffff0c0 Delete type=0 #791
-2025/03/25-14:31:55.823863 7fff0ffff0c0 Manual compaction at level-0 from '!folders!1aDgsGVwDbPdxG2V' @ 72057594037927935 : 1 .. '!items.effects!wBYmPQG3nZfD88aP.GjOniAcdINQsZbnX' @ 0 : 0; will stop at (end)
-2025/03/25-14:31:55.826577 7fff0ffff0c0 Manual compaction at level-1 from '!folders!1aDgsGVwDbPdxG2V' @ 72057594037927935 : 1 .. '!items.effects!wBYmPQG3nZfD88aP.GjOniAcdINQsZbnX' @ 0 : 0; will stop at (end)
+2025/03/28-08:45:52.233567 7fff2dc830c0 Recovering log #799
+2025/03/28-08:45:52.236399 7fff2dc830c0 Delete type=3 #796
+2025/03/28-08:45:52.236424 7fff2dc830c0 Delete type=0 #799
+2025/03/29-06:07:58.570067 7fff2cba30c0 Level-0 table #806: started
+2025/03/29-06:07:58.570082 7fff2cba30c0 Level-0 table #806: 0 bytes OK
+2025/03/29-06:07:58.571342 7fff2cba30c0 Delete type=0 #804
+2025/03/29-06:07:58.572664 7fff2cba30c0 Manual compaction at level-0 from '!folders!1aDgsGVwDbPdxG2V' @ 72057594037927935 : 1 .. '!items.effects!wBYmPQG3nZfD88aP.GjOniAcdINQsZbnX' @ 0 : 0; will stop at (end)
+2025/03/29-06:07:58.572678 7fff2cba30c0 Manual compaction at level-1 from '!folders!1aDgsGVwDbPdxG2V' @ 72057594037927935 : 1 .. '!items.effects!wBYmPQG3nZfD88aP.GjOniAcdINQsZbnX' @ 0 : 0; will stop at (end)
