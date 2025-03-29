@@ -201,9 +201,13 @@ namespace FFT {
             height: 24px;
             margin: 0 8px 0 4px;
             background: transparent;
-            color: #fff;
+            color: #fff; /* keep the closed select's text white */
             border: 1px solid #444;
             padding: 0 4px;
+          }
+          /* Change the dropdown options to have black text */
+          .fft-dialog .filter-row select option {
+            color: #000;
           }
           .fft-dialog .filter-row input::placeholder {
             color: #fff;
@@ -271,7 +275,7 @@ namespace FFT {
     private static buildOptions(options: string[], isRank: boolean = false): string {
       return options.map(option => {
         if (isRank && option !== "All") {
-          return `<option value="${option}">${option === "0" ? "Cantrip" : option + (option === "1" ? "st" : option === "2" ? "nd" : option === "3" ? "rd" : "th")}</option>`;
+          return `<option value="${option}">${option === "0" ? "Cantrip" : option + (option === "1" ? "st Level" : option === "2" ? "nd Level" : option === "3" ? "rd Level" : "th Level")}</option>`;
         }
         return `<option value="${option}">${option}</option>`;
       }).join("");
