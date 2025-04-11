@@ -1,123 +1,105 @@
 //RunOnCreate
 let actor = canvas.tokens.controlled[0]?.actor;
 if (!actor) {
-    ui.notifications.warn("You must select a token with an assigned character.");
-    return;
+  ui.notifications.warn("You must select a token with an assigned character.");
+  return;
 }
-// Create Item Activity
-const items = {
-    "Ball Bearings": "Compendium.fftweaks.classes.Item.MarWpSSYt7VXykxe",
-    "Net": "Compendium.fftweaks.classes.Item.8FZ75JNhp1qq0NHc",
-    "Basket": "Compendium.fftweaks.classes.Item.6ohoz06qiMRPB7F0",
-    "Oil": "Compendium.fftweaks.classes.Item.mggFEQobg5DXA9lw",
-    "Bedroll": "Compendium.fftweaks.classes.Item.GQxsonOwGBwJDxUF",
-    "Paper": "Compendium.fftweaks.classes.Item.esAUHUrQFv6L7uD8",
-    "Bell": "Compendium.fftweaks.classes.Item.wBSZTemPxkoEXaHa",
-    "Parchment": "Compendium.fftweaks.classes.Item.4d4FVJTU6TLJu1Qs",
-    "Blanket": "Compendium.fftweaks.classes.Item.nHSu2Xp75yzsIuRh",
-    "Pole": "Compendium.fftweaks.classes.Item.2dO4UG82mwfYBYAA",
-    "Block and Tackle": "Compendium.fftweaks.classes.Item.HTxZAHhRl4TcwnRh",
-    "Pouch": "Compendium.fftweaks.classes.Item.jlr45yEiMKw2U3Lg",
-    "Bucket": "Compendium.fftweaks.classes.Item.VcDuyoF3sF15lEEj",
-    "Rope": "Compendium.fftweaks.classes.Item.FWSv0zGWKKOGqGVy",
-    "Caltrops": "Compendium.fftweaks.classes.Item.lkdJChvVcFtoiWaR",
-    "Sack": "Compendium.fftweaks.classes.Item.9l0FtGVavUM7jr1Q",
-    "Candle": "Compendium.fftweaks.classes.Item.qofKqBzz8IqiaqID",
-    "Shovel": "Compendium.fftweaks.classes.Item.tqBVYVqsmyPjoqRT",
-    "Crowbar": "Compendium.fftweaks.classes.Item.UPSiFTKgVkxX0u1E",
-    "String": "Compendium.fftweaks.classes.Item.aVcoSo5r0qJ1FnwQ",
-    "Flask": "Compendium.fftweaks.classes.Item.Y7f2VKnE3mFgJKBQ",
-    "Tinderbox": "Compendium.fftweaks.classes.Item.gYc50kfJS5RVumhN",
-    "Jug": "Compendium.fftweaks.classes.Item.Z4U7sh9KyLawGM7S",
-    "Torch": "Compendium.fftweaks.classes.Item.xvTtsUI8HZSppCpl"
-};
 
-// Add item to actor
-async function addItemToActor(itemId) {
-    const item = await fromUuid(itemId);
-    if (!item) return ui.notifications.error("Item not found in compendium.");
+const character = new FFT.Character(token.actor);
+const compendiumId = "fftweaks.items";
+const itemNames = ["Ball Bearings", "Net", "Basket", "Oil", "Bedroll", "Paper", "Bell", "Parchment", "Blanket", "Pole", "Block and Tackle", "Pouch", "Bucket", "Rope", "Caltrops", "Sack", "Candle", "Shovel", "Crowbar", "String", "Flask", "Tinderbox", "Jug", "Torch"];
+const macroCode = `//RunOnCreate
+Hooks.once("dnd5e.restCompleted", (actor, data) => {
+  if (actor.uuid !== item.parent?.uuid) return;
+  ui.notifications.info(\`As you rest, the \${item.name} made with Tinker's Magic fades away.\`);
+  item.delete();
+});`;
 
-    const existing = actor.items.find(i => i.name === item.name);
-    if (existing) {
-        await existing.update({ "system.quantity": existing.system.quantity + 1 });
-        ui.notifications.info(`${item.name} quantity increased.`);
-    } else {
-        await actor.createEmbeddedDocuments("Item", [item.toObject()]);
-        ui.notifications.info(`${item.name} added to inventory.`);
+openItemSelectionDialog(character, compendiumId, itemNames, macroCode);
+// Add item by name using Character class and attach given macro
+async function addItemToActor(name, character, compendiumId, macroCode) {
+  const pack = game.packs.get(compendiumId);
+  if (!pack) return;
+
+  const entry = (await pack.getIndex()).find(e => e.name === name);
+  if (!entry) return;
+
+  const item = await pack.getDocument(entry._id);
+  const actor = character.actor;
+
+  // Check if item already exists
+  const existing = actor.items.find(i => i.name === item.name);
+  if (existing) return existing.update({ "system.quantity": existing.system.quantity + 1 });
+
+  // Add the item to the actor's inventory
+  await character.addItemsByName([name], compendiumId);
+  const created = actor.items.find(i => i.name === name);
+
+  if (created) {
+    // Create the macro and set it on the item
+    const macro = await Macro.create({
+      name: created.name,
+      type: "script",
+      scope: "global",
+      command: macroCode
+    });
+
+    // Attach the macro to the item
+    await created.setMacro(macro);
+
+    // Execute the macro directly from the item
+    await created.executeMacro();
+  }
+}
+
+
+async function openItemSelectionDialog(character, compendiumId, itemNames, macroCode) {
+  const pack = game.packs.get(compendiumId);
+  if (!pack) return;
+
+  const index = await pack.getIndex();
+  const entries = index.filter(e => itemNames.includes(e.name));
+
+  const style = `
+    <style>
+      .fft-item-dialog .item-grid {
+        display: grid; grid-template-columns: repeat(3, 1fr);
+        gap: 8px; padding: 8px;
+      }
+      .fft-item-dialog .item-entry {
+        display: flex; align-items: center; gap: 8px;
+        padding: 4px; border: 1px solid #666;
+        border-radius: 5px; cursor: pointer;
+        background: rgba(0,0,0,0.2);
+      }
+      .fft-item-dialog .item-entry:hover {
+        background-color: rgba(255,255,255,0.1);
+      }
+      .fft-item-dialog .item-icon {
+        width: 30px; height: 30px; object-fit: contain;
+      }
+    </style>`;
+
+  let content = `${style}<div class="fft-item-dialog"><div class="item-grid">`;
+
+  for (const entry of entries) {
+    const uuid = `Compendium.${compendiumId}.${entry._id}`;
+    const item = await fromUuid(uuid);
+    content += `
+      <div class="item-entry" data-name="${item.name}">
+        <img src="${item.img}" class="item-icon"><span>${item.name}</span>
+      </div>`;
+  }
+
+  content += `</div></div>`;
+
+  new FFT.CustomDialog("Select an Item", content, {}, "", {
+    render: html => {
+      html.find(".item-entry").on("click", async function () {
+        const name = $(this).data("name");
+        await addItemToActor(name, character, compendiumId, macroCode);
+        html.closest(".app.dialog").remove();
+      });
     }
+  }).render();
 }
-
-// Build and render the dialog
-async function openItemSelectionDialog() {
-    const contentStyle = `
-      <style>
-        .fft-item-dialog .item-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 8px;
-          padding: 8px;
-        }
-        .fft-item-dialog .item-entry {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 4px;
-          border: 1px solid #666;
-          border-radius: 5px;
-          cursor: pointer;
-          background: rgba(0,0,0,0.2);
-        }
-        .fft-item-dialog .item-entry:hover {
-          background-color: rgba(255, 255, 255, 0.1);
-        }
-        .fft-item-dialog .item-icon {
-          width: 30px;
-          height: 30px;
-          object-fit: contain;
-        }
-      </style>`;
-
-    let content = `${contentStyle}<div class="fft-item-dialog"><div class="item-grid">`;
-
-    for (const [name, uuid] of Object.entries(items)) {
-        const item = await fromUuid(uuid);
-        const img = item?.img || "icons/svg/mystery-man.svg";
-        const safeName = name.replace(/"/g, '&quot;');
-        content += `
-        <div class="item-entry item-tooltip"
-             data-uuid="${uuid}" 
-             data-tooltip="<section class='loading' data-uuid='${uuid}'><i class='fas fa-spinner fa-spin-pulse'></i></section>" 
-             data-tooltip-class="dnd5e2 dnd5e-tooltip item-tooltip" 
-             data-tooltip-direction="LEFT"
-             role="button">
-          <img src="${img}" class="item-icon">
-          <span>${safeName}</span>
-        </div>`;
-    }
-
-    content += `</div></div>`;
-
-    // Define the dialog variable first
-    let dialog;
-
-    dialog = new FFT.CustomDialog(
-        "Select an Item",
-        content,
-        {},
-        "",
-        {
-            render: html => {
-                html.find(".item-entry").on("click", async function () {
-                    const uuid = $(this).data("uuid");
-                    await addItemToActor(uuid);
-                    html.closest(".app.dialog").remove();
-                });
-            }
-        }
-    );
-
-    dialog.render();
-}
-
-// Run it
-openItemSelectionDialog();

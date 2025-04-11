@@ -3,6 +3,13 @@ namespace FFT {
         static initialize() {
             Hooks.on("renderItemSheet", (_app, html) => this._onRenderItemSheet(html));
 
+            Hooks.on("preCreateItem", async (item, data, options, userId) => {
+                const source = await FFT.ItemMacro._getMacroSource(item);
+                if (source?.includes("//RunOnPreCreate")) {
+                    await (item as any).executeMacro();
+                }
+            });
+
             Hooks.on("createItem", async (item) => {
                 const source = await FFT.ItemMacro._getMacroSource(item);
                 if (source?.includes("//RunOnCreate")) {
