@@ -5,7 +5,7 @@ namespace FFT {
         static createSheetButton() { }
 
         // Create function bar
-        static createFunctonBar({
+        static createForm({
             id = 'fft-functionbar',
             position = { top: '150px', left: '150px' },
             buttons = [],

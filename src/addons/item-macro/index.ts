@@ -1,38 +1,44 @@
 namespace FFT {
     export class ItemMacro {
         static initialize() {
-            Hooks.on("renderItemSheet", (_app, html) => {
-                const header = html.closest(".app").find(".window-header");
-                const itemMacroBtn = header.find(".open-itemacro");
+            Hooks.on("renderItemSheet", (_app, html) => this._onRenderItemSheet(html));
 
-                if (!itemMacroBtn.length) return;
-
-                // Style it like other buttons
-                itemMacroBtn
-                    .removeClass()
-                    .addClass("header-button control open-itemacro")
-                    .attr("data-tooltip", "Item Macro")
-                    .attr("aria-label", "Item Macro");
-
-                // Move it after the UUID button (or after title if needed)
-                const uuidButton = header.find(".document-id-link");
-                if (uuidButton.length) {
-                    uuidButton.after(itemMacroBtn);
-                } else {
-                    header.append(itemMacroBtn); // fallback
+            Hooks.on("createItem", async (item) => {
+                const source = await FFT.ItemMacro._getMacroSource(item);
+                if (source?.includes("//RunOnCreate")) {
+                    await (item as any).executeMacro();
                 }
-                console.log("Found and moved ItemMacro button");
             });
-            Hooks.on("createItem", async (item, options, userId) => {
-                await item.executeMacro();
-            });
+
             Hooks.on("updateItem", async (item, changes) => {
                 if (item.type === "class" && foundry.utils.hasProperty(changes, "system.levels")) {
-                    await item.executeMacro();
+                    const source = await FFT.ItemMacro._getMacroSource(item);
+                    if (source?.includes("//RunOnUpdate")) {
+                        await (item as any).executeMacro();
+                    }
                 }
             });
+        }
 
+        private static async _getMacroSource(item: any): Promise<string | null> {
+            if (typeof item.getMacro !== "function" || !item.hasMacro?.()) return null;
+            const macro = await item.getMacro();
+            return macro?.command ?? null;
+        }
 
+        private static _onRenderItemSheet(html: JQuery) {
+            const header = html.closest(".app").find(".window-header");
+            const itemMacroBtn = header.find(".open-itemacro");
+            if (!itemMacroBtn.length) return;
+
+            itemMacroBtn
+                .removeClass()
+                .addClass("header-button control open-itemacro")
+                .attr("data-tooltip", "Item Macro")
+                .attr("aria-label", "Item Macro");
+
+            const uuidButton = header.find(".document-id-link");
+            uuidButton.length ? uuidButton.after(itemMacroBtn) : header.append(itemMacroBtn);
         }
     }
 }

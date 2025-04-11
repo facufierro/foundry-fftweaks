@@ -9,4 +9,5 @@ Hooks.once("ready", () => {
     FFT.CharacterAnvil.initialize();
     FFT.ItemMacro.initialize();
     FFT.ResizeHandler.initialize();
+    FFT.FunctionBar.initialize();
 });

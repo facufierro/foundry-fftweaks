@@ -47,7 +47,10 @@ namespace FFT {
         });
       });
     }
-
+    /**
+     * Adds a list of spells to the character by name.
+     * Grants bonus selections for spells already known.
+     */
     static async addSpellsByName(character: Character, spellNames: string[]): Promise<void> {
       const knownSpellNames = new Set(character.spells.map(spell => String(spell.name).toLowerCase()));
       const spellsPack = game.packs.get("fftweaks.spells");

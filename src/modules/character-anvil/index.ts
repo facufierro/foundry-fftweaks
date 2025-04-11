@@ -4,7 +4,7 @@ namespace FFT {
             Hooks.on("renderActorSheet5eCharacter", (app, html) => {
                 PointBuySystem.renderButton(app.actor, html);
                 SpellSelector.renderButton(app.actor, html);
-                LevelupManager.renderButton(app.actor, html);
+                // LevelupManager.renderButton(app.actor, html);
             });
 
 
