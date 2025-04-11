@@ -1,12 +1,11 @@
-// Ensure a token is selected
+//RunOnCreate
 let actor = canvas.tokens.controlled[0]?.actor;
 if (!actor) {
     ui.notifications.warn("You must select a token with an assigned character.");
     return;
 }
-
-// List of items mapped to their compendium IDs
-let items = {
+// Create Item Activity
+const items = {
     "Ball Bearings": "Compendium.fftweaks.classes.Item.MarWpSSYt7VXykxe",
     "Net": "Compendium.fftweaks.classes.Item.8FZ75JNhp1qq0NHc",
     "Basket": "Compendium.fftweaks.classes.Item.6ohoz06qiMRPB7F0",
@@ -33,58 +32,92 @@ let items = {
     "Torch": "Compendium.fftweaks.classes.Item.xvTtsUI8HZSppCpl"
 };
 
-// Function to retrieve item from compendium and add to actor
-async function addItemToActor(itemId, dialog) {
-    let item = await fromUuid(itemId);
-    if (!item) {
-        ui.notifications.error("Item not found in compendium.");
-        return;
-    }
-    
-    // Check if the actor already has this item
-    let existingItem = actor.items.find(i => i.name === item.name);
-    if (existingItem) {
-        await existingItem.update({ "system.quantity": existingItem.system.quantity + 1 });
+// Add item to actor
+async function addItemToActor(itemId) {
+    const item = await fromUuid(itemId);
+    if (!item) return ui.notifications.error("Item not found in compendium.");
+
+    const existing = actor.items.find(i => i.name === item.name);
+    if (existing) {
+        await existing.update({ "system.quantity": existing.system.quantity + 1 });
         ui.notifications.info(`${item.name} quantity increased.`);
     } else {
         await actor.createEmbeddedDocuments("Item", [item.toObject()]);
         ui.notifications.info(`${item.name} added to inventory.`);
     }
-    
-    // Close the dialog after selecting an item
-    dialog.close();
 }
 
-// Build the HTML content for a **tidy vertical list with icons**
-let content = `<style>
-    .item-list { display: flex; flex-direction: column; gap: 5px; }
-    .item-entry { display: flex; align-items: center; gap: 10px; padding: 5px; border: 1px solid gray; border-radius: 5px; cursor: pointer; }
-    .item-entry:hover { background: rgba(255,255,255,0.1); }
-    .item-icon { width: 30px; height: 30px; object-fit: contain; }
-</style>`;
+// Build and render the dialog
+async function openItemSelectionDialog() {
+    const contentStyle = `
+      <style>
+        .fft-item-dialog .item-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 8px;
+          padding: 8px;
+        }
+        .fft-item-dialog .item-entry {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 4px;
+          border: 1px solid #666;
+          border-radius: 5px;
+          cursor: pointer;
+          background: rgba(0,0,0,0.2);
+        }
+        .fft-item-dialog .item-entry:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+        .fft-item-dialog .item-icon {
+          width: 30px;
+          height: 30px;
+          object-fit: contain;
+        }
+      </style>`;
 
-content += `<div class="item-list">`;
+    let content = `${contentStyle}<div class="fft-item-dialog"><div class="item-grid">`;
 
-for (let [name, id] of Object.entries(items)) {
-    let item = await fromUuid(id);
-    let img = item?.img || "icons/svg/mystery-man.svg"; // Default icon if missing
-    content += `<div class="item-entry" data-id="${id}">
-        <img src="${img}" class="item-icon">
-        <span>${name}</span>
-    </div>`;
-}
-
-content += `</div>`;
-
-// Create the **interactive dialog**
-let d = new Dialog({
-    title: "Select an Item",
-    content: content,
-    buttons: {},
-    render: (html) => {
-        html.find(".item-entry").click(async function () {
-            let itemId = $(this).attr("data-id");
-            await addItemToActor(itemId, d);
-        });
+    for (const [name, uuid] of Object.entries(items)) {
+        const item = await fromUuid(uuid);
+        const img = item?.img || "icons/svg/mystery-man.svg";
+        const safeName = name.replace(/"/g, '&quot;');
+        content += `
+        <div class="item-entry item-tooltip"
+             data-uuid="${uuid}" 
+             data-tooltip="<section class='loading' data-uuid='${uuid}'><i class='fas fa-spinner fa-spin-pulse'></i></section>" 
+             data-tooltip-class="dnd5e2 dnd5e-tooltip item-tooltip" 
+             data-tooltip-direction="LEFT"
+             role="button">
+          <img src="${img}" class="item-icon">
+          <span>${safeName}</span>
+        </div>`;
     }
-}).render(true);
+
+    content += `</div></div>`;
+
+    // Define the dialog variable first
+    let dialog;
+
+    dialog = new FFT.CustomDialog(
+        "Select an Item",
+        content,
+        {},
+        "",
+        {
+            render: html => {
+                html.find(".item-entry").on("click", async function () {
+                    const uuid = $(this).data("uuid");
+                    await addItemToActor(uuid);
+                    html.closest(".app.dialog").remove();
+                });
+            }
+        }
+    );
+
+    dialog.render();
+}
+
+// Run it
+openItemSelectionDialog();
