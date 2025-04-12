@@ -47,17 +47,6 @@
       }
     },
     {
-      "name": "creatures",
-      "label": "Creatures",
-      "path": "packs/creatures",
-      "type": "Actor",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
       "name": "scenes",
       "label": "Scenes",
       "path": "packs/scenes",
@@ -128,6 +117,17 @@
       "label": "Journals",
       "path": "packs/journals",
       "type": "JournalEntry",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "creatures",
+      "label": "Creatures",
+      "path": "packs/creatures",
+      "type": "Actor",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
