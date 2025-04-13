@@ -1,4 +1,4 @@
- //RunOnCreate
- character = new FFT.Character(actor);
- await FFT.SpellSelector.renderDialog({ character, choices: 2, list: "Warlock", level: 0 });
- await FFT.SpellSelector.renderDialog({ character, choices: 1, list: "Warlock", level: 1 });
+//RunOnCreate
+character = new FFT.Character(actor);
+await FFT.SpellSelector.renderDialog({ character, list: "Wizard", level: 0, choices: 2 });
+await FFT.SpellSelector.renderDialog({ character, list: "Wizard", level: 1, choices: 1 });

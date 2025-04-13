@@ -26,7 +26,10 @@ namespace FFT {
     }): Promise<void> {
       const journal = await this.getSpellJournal();
       if (!journal) return;
+
       const levelArray = Array.isArray(level) ? level : level !== undefined ? [level] : undefined;
+      (this as any)._lockedLevels = levelArray;  // <-- ✅ THIS IS NEEDED
+
       const content = this.buildDialogContent(journal, list, levelArray, choices);
       if (!content) return;
 
@@ -38,7 +41,6 @@ namespace FFT {
           buttons: {},
           render: (html: JQuery) => {
             this._dialogHtml = html;
-            // Use Infinity if no choices provided.
             const choiceValue = choices === undefined ? Infinity : choices;
             this.initializeDialogEvents(html, character, dialogInstance, choiceValue);
           },
@@ -51,6 +53,7 @@ namespace FFT {
         });
       });
     }
+
     /**
      * Adds a list of spells to the character by name.
      * Grants bonus selections for spells already known.
@@ -132,8 +135,9 @@ namespace FFT {
         : `<select id="spell-class">${this.buildOptions(pages.map((p: any) => p.name))}</select>`;
 
       const rankDisplay = Array.isArray(lockedRanks)
-        ? lockedRanks.map(this.getRankLabel).join(", ")
-        : lockedRanks !== undefined ? this.getRankLabel(lockedRanks) : "All";
+        ? lockedRanks.map(rank => this.getRankLabel(rank)).join(", ")
+        : (typeof lockedRanks === "number" ? this.getRankLabel(lockedRanks) : "All");
+
 
       const rankSelectHTML = lockedRanks !== undefined
         ? `<select id="spell-rank" disabled><option value="locked">${rankDisplay}</option></select>`
@@ -397,19 +401,11 @@ namespace FFT {
       const selectedClass = classSelect.value;
 
       // Determine level filters from locked rank or dropdown
-      const rankAttr = rankSelect.querySelector("option")?.value;
       let filterLevels: number[] | null = null;
-
-      if (rankAttr === "locked") {
-        // When using locked multiple levels (levels: [1, 2, 5])
-        const display = rankSelect.querySelector("option")?.textContent ?? "";
-        filterLevels = display
-          .split(",")
-          .map(s => s.match(/\d+/)?.[0])  // extract numbers
-          .map(n => parseInt(n!))
-          .filter(n => !isNaN(n));
+      const lockedLevels = (this as any)._lockedLevels;
+      if (Array.isArray(lockedLevels)) {
+        filterLevels = lockedLevels;
       } else if (rankSelect.value !== "All") {
-        // Single level from dropdown (level: 2)
         const parsed = parseInt(rankSelect.value);
         if (!isNaN(parsed)) filterLevels = [parsed];
       }

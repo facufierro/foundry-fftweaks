@@ -1,6 +1,9 @@
 namespace FFT {
     export class CharacterAnvil {
         static initialize() {
+            Hooks.on("createItem", (item: Item5e, options, userId) => {
+                SpellSelector.refreshKnownSpells(new FFT.Character(item.parent));
+            });
             Hooks.on("renderActorSheet5eCharacter", (app, html) => {
                 PointBuySystem.renderButton(app.actor, html);
                 SpellSelector.renderButton(app.actor, html);
