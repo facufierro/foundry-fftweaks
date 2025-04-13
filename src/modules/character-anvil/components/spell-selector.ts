@@ -114,9 +114,36 @@ namespace FFT {
 
     static async refreshKnownSpells(character: Character) {
       if (!this._dialogHtml) return;
+
+      const html = this._dialogHtml;
       const knownSpellNames = new Set(character.spells.map((spell: any) => spell.name.toLowerCase()));
-      await this.updateSpellList(this._dialogHtml, knownSpellNames);
+      await this.updateSpellList(html, knownSpellNames);
+
+      const currentKnownCount = html.find("#spell-list input[data-is-known='true']").length;
+
+      // If this is the first time, initialize the count
+      if (this._initialKnownCount === null) {
+        this._initialKnownCount = currentKnownCount;
+      }
+
+      // Get the total number of allowed choices from the label (if it exists)
+      const labelEl = html.find("#choices-label");
+      let totalAllowed = currentKnownCount;
+
+      if (labelEl.length) {
+        const match = labelEl.text().match(/select up to (\d+)/i);
+        if (match) {
+          const prevRemaining = parseInt(match[1]);
+          totalAllowed = currentKnownCount + prevRemaining;
+        }
+      }
+
+      // Update label and checkbox limit
+      this._initialKnownCount = currentKnownCount;
+      this.updateChoicesInfo(html, totalAllowed - currentKnownCount);
+      this.enforceChoiceLimit(html, totalAllowed - currentKnownCount);
     }
+
 
     static getRankLabel(rank: number): string {
       if (rank === 0) return "Cantrips";
