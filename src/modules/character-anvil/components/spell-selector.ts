@@ -18,12 +18,16 @@ namespace FFT {
       });
       button.appendTo(buttonHolder);
     }
-
-    static async renderDialog({ character, list, level, choices }: { character: Character; choices?: number; list?: string; level?: number; }): Promise<void> {
+    static async renderDialog({ character, list, level, choices }: {
+      character: Character;
+      choices?: number;
+      list?: string;
+      level?: number | number[];
+    }): Promise<void> {
       const journal = await this.getSpellJournal();
       if (!journal) return;
-
-      const content = this.buildDialogContent(journal, list, level, choices);
+      const levelArray = Array.isArray(level) ? level : level !== undefined ? [level] : undefined;
+      const content = this.buildDialogContent(journal, list, levelArray, choices);
       if (!content) return;
 
       this._initialKnownCount = null;
@@ -119,7 +123,7 @@ namespace FFT {
       return rank + "th Level";
     }
 
-    static buildDialogContent(journal: JournalEntry, lockedFilter?: string, lockedRank?: number, choices?: number): string | null {
+    static buildDialogContent(journal: JournalEntry, lockedFilter?: string, lockedRanks?: number | number[], choices?: number): string | null {
       const pages = journal.pages.contents || [];
       if (!pages.length) return null;
 
@@ -127,11 +131,13 @@ namespace FFT {
         ? `<select id="spell-class" disabled><option value="${lockedFilter}">${lockedFilter}</option></select>`
         : `<select id="spell-class">${this.buildOptions(pages.map((p: any) => p.name))}</select>`;
 
-      const rankSelectHTML = lockedRank !== undefined
-        ? `<select id="spell-rank" disabled><option value="${lockedRank}">${this.getRankLabel(lockedRank)}</option></select>`
-        : `<select id="spell-rank">${this.buildOptions([
-          "All", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
-        ], true)}</select>`;
+      const rankDisplay = Array.isArray(lockedRanks)
+        ? lockedRanks.map(this.getRankLabel).join(", ")
+        : lockedRanks !== undefined ? this.getRankLabel(lockedRanks) : "All";
+
+      const rankSelectHTML = lockedRanks !== undefined
+        ? `<select id="spell-rank" disabled><option value="locked">${rankDisplay}</option></select>`
+        : `<select id="spell-rank">${this.buildOptions(["All", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], true)}</select>`;
 
       return `
         <div class="fft-dialog">
@@ -169,6 +175,7 @@ namespace FFT {
         </div>
       `;
     }
+
 
     /* ─── PRIVATE HELPER METHODS ────────────────────────────────────────────── */
 
@@ -388,11 +395,29 @@ namespace FFT {
       const spellList = html[0].querySelector("#spell-list") as HTMLTableSectionElement;
       const nameFilter = nameInput.value.toLowerCase().trim();
       const selectedClass = classSelect.value;
-      const selectedRank = rankSelect.value;
+
+      // Determine level filters from locked rank or dropdown
+      const rankAttr = rankSelect.querySelector("option")?.value;
+      let filterLevels: number[] | null = null;
+
+      if (rankAttr === "locked") {
+        // When using locked multiple levels (levels: [1, 2, 5])
+        const display = rankSelect.querySelector("option")?.textContent ?? "";
+        filterLevels = display
+          .split(",")
+          .map(s => s.match(/\d+/)?.[0])  // extract numbers
+          .map(n => parseInt(n!))
+          .filter(n => !isNaN(n));
+      } else if (rankSelect.value !== "All") {
+        // Single level from dropdown (level: 2)
+        const parsed = parseInt(rankSelect.value);
+        if (!isNaN(parsed)) filterLevels = [parsed];
+      }
 
       const spellIds = await this.getClassSpells(selectedClass);
       const spellsPack = game.packs.get("fftweaks.spells");
       if (spellsPack) await spellsPack.getIndex();
+
       if (!spellIds.length) {
         spellList.innerHTML = `<tr><td colspan="5">No spells found.</td></tr>`;
         return;
@@ -402,24 +427,30 @@ namespace FFT {
         spellIds.map(async (id) => {
           const item = await fromUuid(id) as any;
           if (!item) return null;
-          const name = item.name;
           const level = item.system?.level ?? 0;
-          const schoolAbbrev = item.system?.school ?? "";
-          const school = schoolAbbrev ? this.getFullSchoolName(schoolAbbrev) : "";
-          const range = this.getRangeString(item);
-          return { name, level, school, range, uuid: id };
+          return {
+            name: item.name,
+            level,
+            school: this.getFullSchoolName(item.system?.school ?? ""),
+            range: this.getRangeString(item),
+            uuid: id
+          };
         })
       );
-      const validSpells = spells.filter(sp => sp !== null);
-      let filtered = validSpells.filter(sp => sp.name.toLowerCase().includes(nameFilter));
-      if (selectedRank !== "All") {
-        const numericRank = parseInt(selectedRank);
-        filtered = filtered.filter(sp => sp.level === numericRank);
+
+      let filtered = spells.filter(Boolean).filter(sp =>
+        sp!.name.toLowerCase().includes(nameFilter)
+      );
+
+      if (filterLevels) {
+        filtered = filtered.filter(sp => filterLevels!.includes(sp.level));
       }
+
       if (!filtered.length) {
         spellList.innerHTML = `<tr><td colspan="5">No spells found.</td></tr>`;
         return;
       }
+
       spellList.innerHTML = filtered.map(sp => {
         const isKnown = knownSpellNames.has(sp.name.toLowerCase());
         return `
@@ -446,9 +477,6 @@ namespace FFT {
       });
     }
 
-    /**
-     * Returns the full spell school name given an abbreviation.
-     */
     static getFullSchoolName(abbrev: string): string {
       const map: Record<string, string> = {
         "abj": "Abjuration",
@@ -464,11 +492,6 @@ namespace FFT {
       return map[key] || (abbrev.charAt(0).toUpperCase() + abbrev.slice(1));
     }
 
-    /**
-     * Returns a string representing the spell's range.
-     * It first checks for a long description. If none exists, it attempts to determine if the spell
-     * is Self or Touch based on the value and units.
-     */
     static getRangeString(item: any): string {
       const rng = item.system?.range;
       if (!rng) return "";
