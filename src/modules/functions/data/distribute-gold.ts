@@ -1,7 +1,7 @@
 async function distributeGold(): Promise<void> {
-    const tokens = canvas.tokens?.controlled;
+    const tokens = canvas.tokens?.controlled.filter(t => t.actor?.hasPlayerOwner);
     if (!tokens || tokens.length === 0) {
-        ui.notifications?.warn("No tokens selected.");
+        ui.notifications?.warn("No player characters selected.");
         return;
     }
 
