@@ -7,12 +7,15 @@ namespace FFT {
 
             const buttonData = await UI.fetchButtonData();
 
-            const buttons = Object.entries(buttonData).map(([id, { name, icon, script }]) => ({
+            const buttons = Object.entries(buttonData).map(([id, { name, icon, script, row }]) => ({
                 id,
                 title: name,
                 icon,
+                row,
                 onClick: UI.resolveFunction(script),
             }));
+
+
 
             UI.createForm({
                 id: 'fft-functionbar',

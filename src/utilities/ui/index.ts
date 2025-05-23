@@ -12,7 +12,8 @@ namespace FFT {
         }: {
             id?: string;
             position?: { top: string; left: string };
-            buttons: Array<{ id: string; title: string; icon: string; onClick: (event: Event) => void }>;
+            buttons: Array<{ id: string; title: string; icon: string; row: number; onClick: (event: Event) => void }>
+
         }): HTMLElement {
             // Remove existing form if it exists
             const existingForm = document.getElementById(id);
@@ -57,13 +58,27 @@ namespace FFT {
                 padding: '4px',
             });
 
-            // Create buttons and append them to the button row
-            buttons.forEach(({ id, title, icon, onClick }) => {
-                const button = this.createButton(id, title, icon, onClick);
-                buttonRow.appendChild(button);
+            // Group buttons by row
+            const rows = new Map<number, HTMLElement[]>();
+            buttons.forEach(({ id, title, icon, row = 1, onClick }) => {
+                if (!rows.has(row)) rows.set(row, []);
+                rows.get(row)!.push(this.createButton(id, title, icon, onClick));
             });
 
-            form.appendChild(buttonRow);
+            // Add each row to the form
+            [...rows.keys()].sort().forEach((rowNum) => {
+                const rowContainer = document.createElement('div');
+                Object.assign(rowContainer.style, {
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: '4px',
+                    padding: '4px',
+                });
+
+                rows.get(rowNum)!.forEach((btn) => rowContainer.appendChild(btn));
+                form.appendChild(rowContainer);
+            });
+
 
             // Make the form draggable
             this.makeDraggable(form, moveHandle);
@@ -81,7 +96,7 @@ namespace FFT {
 
 
         // Fetch button data from JSON
-        static async fetchButtonData(): Promise<Record<string, { name: string; icon: string; script: string }>> {
+        static async fetchButtonData(): Promise<Record<string, { name: string; icon: string; script: string; row: number }>> {
             const response = await fetch('modules/fftweaks/src/modules/function-bar/data/button-data.json');
             if (!response.ok) {
                 console.error("Failed to fetch button data:", response.statusText);
@@ -89,6 +104,7 @@ namespace FFT {
             }
             return await response.json();
         }
+
 
         // Helper function to create a button with original styles
         static createButton(id: string, title: string, icon: string, onClick: (event: Event) => void): HTMLElement {

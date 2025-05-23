@@ -14,25 +14,25 @@
     "rest": {
         "name": "Rest",
         "icon": "fas fa-bed",
-        "row": 2,
+        "row": 1,
         "script": "FFT.Functions.restSelected"
     },
     "combat": {
         "name": "Toggle combat",
         "icon": "fas fa-swords",
-        "row": 3,
+        "row": 2,
         "script": "FFT.Functions.toggleCombat"
     },
     "money": {
         "name": "Add gold",
         "icon": "fas fa-regular fa-coins",
-        "row": 3,
+        "row": 2,
         "script": "FFT.Functions.distributeGold"
     },
     "experience": {
         "name": "Add XP",
         "icon": "fas fa-book",
-        "row": 3,
+        "row": 2,
         "script": "FFT.Functions.distributeExperience"
     }
 }
