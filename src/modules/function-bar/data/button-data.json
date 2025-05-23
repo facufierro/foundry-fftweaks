@@ -22,5 +22,11 @@
         "icon": "fas fa-swords",
         "row": 2,
         "script": "FFT.Functions.toggleCombatState"
+    },
+    "money": {
+        "name": "Add gold",
+        "icon": "fas fa-regular fa-coins",
+        "row": 2,
+        "script": "FFT.Functions.addGold"
     }
 }

@@ -34,10 +34,8 @@
 
 .extended-combat-hud .action-element-title {
     font-size: 1.4rem;
-    /* Font size for action titles like "Greataxe", "Cast Spell" */
 }
 
-/* features like "Torch", "Rations" */
 
 .extended-combat-hud .action-hud .feature-element-title {
     background-color: rgba(0, 0, 0, 0);
@@ -56,7 +54,6 @@
 
 .extended-combat-hud .feature-accordion-title {
     font-size: 1.6rem;
-    /* Font size for accordion titles like "Innate Spellcasting" */
 }
 
 .extended-combat-hud .action-hud .actions-container[data-title="Action"]:before {

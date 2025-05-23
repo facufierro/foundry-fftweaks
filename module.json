@@ -128,11 +128,11 @@
       "label": "Creatures",
       "path": "packs/creatures",
       "type": "Actor",
+      "system": "dnd5e",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      },
-      "system": "dnd5e"
+      }
     }
   ],
   "authors": [
