@@ -71,7 +71,7 @@ async function distributeGold(): Promise<void> {
 
                     await ChatMessage.create({
                         content: messageContent,
-                        speaker: ChatMessage.getSpeaker(),
+                        speaker: { alias: "" }, // removes name and portrait
                     });
                 }
             },
