@@ -6,8 +6,11 @@ declare const dnd5e: any;
 
 Hooks.once("ready", () => {
     (window as any).FFT = FFT;
-    FFT.CharacterAnvil.initialize();
+    // Addons
     FFT.ItemMacro.initialize();
-    FFT.ResizeHandler.initialize();
+    FFT.Levels.initialize();
+    // Modules
+    FFT.CharacterAnvil.initialize();
+    // FFT.ResizeHandler.initialize();
     FFT.FunctionBar.initialize();
 });
