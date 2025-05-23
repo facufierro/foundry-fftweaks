@@ -88,5 +88,38 @@ namespace FFT {
                 }
             }
         }
+        static async createDefaultLevels(): Promise<void> {
+            const scene = game.scenes?.active;
+            if (!scene) {
+                ui.notifications?.error("No active scene.");
+                return;
+            }
+
+            // This is the structure Levels uses for visible levels in the UI
+            const sceneLevels = [];
+
+            for (let i = -1; i <= 20; i++) {
+                const bottom = i * 10;
+                const top = (i + 1) * 10;
+                const name = i === 0 ? "0" : `${i}`;
+                sceneLevels.push([bottom, top, name]);
+            }
+
+            // Force it into the scene even if TypeScript complains
+            await (scene as any).setFlag("levels", "sceneLevels", sceneLevels);
+
+            ui.notifications?.info("Scene levels created.");
+
+            // Switch to Levels tool and enter edit mode
+            ui.controls.initialize({ control: "levels", layer: "levels" });
+            setTimeout(() => {
+                const levelsUI = (CONFIG as any).Levels?.UI;
+                if (levelsUI?.toggleEditMode) {
+                    if (levelsUI._editMode) levelsUI.toggleEditMode(false);
+                    setTimeout(() => levelsUI.toggleEditMode(true), 100);
+                }
+            }, 200);
+        }
+
     }
 }
