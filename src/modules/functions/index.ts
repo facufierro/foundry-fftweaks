@@ -5,6 +5,7 @@ namespace FFT {
         static restSelected = restSelected;
         static toggleCombat = toggleCombat;
         static distributeGold = distributeGold;
+        static distributeExperience = distributeExperience;
         static createDefaultLevels = createDefaultLevels;
     }
 }
