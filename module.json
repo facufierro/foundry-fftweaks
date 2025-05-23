@@ -21,7 +21,7 @@
   "styles": [
     "src/styles/style.css",
     "src/styles/argon-hud.css",
-    "src/styles/minimal-ui.css"
+    "src/styles/function-bar.css"
   ],
   "packs": [
     {
