@@ -1,5 +1,4 @@
-
-export async function createDefaultLevels(start = 0, end = 0, height = 10): Promise<void> {
+async function createDefaultLevels(start = 0, end = 0, height = 10): Promise<void> {
     const scene = game.scenes?.active;
     if (!scene) return;
 

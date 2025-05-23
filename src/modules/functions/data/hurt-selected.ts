@@ -1,4 +1,5 @@
-export function hurtSelected(event: MouseEvent) {
+
+function hurtSelected(event: MouseEvent) {
     const selectedTokens = canvas.tokens?.controlled;
     if (!selectedTokens || selectedTokens.length === 0) {
         ui.notifications?.warn("No tokens selected.");

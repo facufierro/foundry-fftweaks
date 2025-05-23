@@ -1,4 +1,5 @@
-export async function restSelected(event: MouseEvent) {
+
+async function restSelected(event: MouseEvent) {
     const selectedTokens = canvas.tokens?.controlled;
     if (!selectedTokens || selectedTokens.length === 0) {
         ui.notifications?.warn("No tokens selected.");
