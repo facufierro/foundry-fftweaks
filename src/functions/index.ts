@@ -98,16 +98,11 @@ namespace FFT {
             }
 
             await (scene as any).setFlag("levels", "sceneLevels", levels);
-            await scene.view();
 
-            ui.controls.initialize({ control: "levels", layer: "levels" });
-            setTimeout(() => {
-                const uiRef = (CONFIG as any).Levels?.UI;
-                if (uiRef?.toggleEditMode) {
-                    if (uiRef._editMode) uiRef.toggleEditMode(false);
-                    setTimeout(() => uiRef.toggleEditMode(true), 100);
-                }
-            }, 200);
+            if (confirm("Levels created. Reload the scene now?")) {
+                window.location.reload();
+            }
         }
+
     }
 }
