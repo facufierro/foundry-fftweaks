@@ -3,30 +3,30 @@
         "name": "Heal",
         "icon": "fas fa-heart",
         "row": 1,
-        "script": "FFT.Functions.healSelectedTokens"
+        "script": "FFT.Functions.healSelected"
     },
     "hurt": {
         "name": "Hurt",
         "icon": "fas fa-heart-crack",
         "row": 1,
-        "script": "FFT.Functions.hurtSelectedTokens"
+        "script": "FFT.Functions.hurtSelected"
     },
     "rest": {
         "name": "Rest",
         "icon": "fas fa-bed",
         "row": 2,
-        "script": "FFT.Functions.restSelectedTokens"
+        "script": "FFT.Functions.restSelected"
     },
     "combat": {
         "name": "Toggle combat",
         "icon": "fas fa-swords",
         "row": 2,
-        "script": "FFT.Functions.toggleCombatState"
+        "script": "FFT.Functions.toggleCombat"
     },
     "money": {
         "name": "Add gold",
         "icon": "fas fa-regular fa-coins",
         "row": 2,
-        "script": "FFT.Functions.addGold"
+        "script": "FFT.Functions.distributeGold"
     }
 }
