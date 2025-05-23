@@ -16,15 +16,25 @@ async function distributeGold(): Promise<void> {
                     const totalGold = Number(goldInput);
                     if (isNaN(totalGold) || totalGold <= 0) return;
 
-                    const share = Math.floor(totalGold / tokens.length);
+                    const numTokens = tokens.length;
+                    const baseShare = Math.floor(totalGold / numTokens);
+                    let remainder = totalGold % numTokens;
+
+                    // Create a shuffled copy of the tokens list
+                    const shuffledTokens = tokens.slice().sort(() => Math.random() - 0.5);
                     const results: string[] = [];
 
-                    for (const token of tokens) {
+                    for (let i = 0; i < shuffledTokens.length; i++) {
+                        const token = shuffledTokens[i];
                         const actor = token.actor;
                         if (!actor) continue;
 
+                        // Add 1 extra gp for the first [remainder] characters
+                        const extra = i < remainder ? 1 : 0;
+                        const totalShare = baseShare + extra;
+
                         const currentGold = foundry.utils.getProperty(actor.system, "currency.gp") ?? 0;
-                        const newGold = currentGold + share;
+                        const newGold = currentGold + totalShare;
 
                         const updateData: Record<string, unknown> = {};
                         foundry.utils.setProperty(updateData, "system.currency.gp", newGold);
@@ -41,7 +51,7 @@ async function distributeGold(): Promise<void> {
                                             <h4>${actor.name}</h4>
                                         </div>
                                         <div class="dice-total xp-result flexrow noselect">
-                                            +${share} gp
+                                            +${totalShare} gp
                                         </div>
                                     </div>
                                 </div>
@@ -71,7 +81,7 @@ async function distributeGold(): Promise<void> {
 
                     await ChatMessage.create({
                         content: messageContent,
-                        speaker: { alias: "" }, // removes name and portrait
+                        speaker: { alias: "" },
                     });
                 }
             },
