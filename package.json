@@ -3,7 +3,8 @@
     "@eslint/eslintrc": "^3.1.0",
     "@league-of-foundry-developers/foundry-vtt-dnd5e-types": "^1.5.2-2",
     "@league-of-foundry-developers/foundry-vtt-types": "^12.331.1-beta",
-    "fvtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#main"
+    "fvtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#main",
+    "typescript": "^5.8.3"
   },
   "name": "fftweaks",
   "version": "1.0.0",
