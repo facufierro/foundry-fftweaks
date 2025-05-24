@@ -7,3 +7,5 @@ _env/
 
 # Ignore build output
 dist/
+
+packs/
