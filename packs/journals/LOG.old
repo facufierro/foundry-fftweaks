@@ -1,7 +1,0 @@
-2025/05/24-16:10:02.615019 7ffef3fff040 Recovering log #335
-2025/05/24-16:10:02.618355 7ffef3fff040 Delete type=0 #335
-2025/05/24-16:10:02.618381 7ffef3fff040 Delete type=3 #333
-2025/05/24-16:34:31.084909 7ff9c9db3040 Level-0 table #340: started
-2025/05/24-16:34:31.084926 7ff9c9db3040 Level-0 table #340: 0 bytes OK
-2025/05/24-16:34:31.086289 7ff9c9db3040 Delete type=0 #338
-2025/05/24-16:34:31.087783 7ff9c9db3040 Manual compaction at level-0 from '!journal!ij43IJbeKdTP3rJd' @ 72057594037927935 : 1 .. '!journal.pages!ij43IJbeKdTP3rJd.vi259pfZpIXCmRFm' @ 0 : 0; will stop at (end)
