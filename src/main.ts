@@ -7,10 +7,11 @@ declare const dnd5e: any;
 Hooks.once("ready", () => {
     (window as any).FFT = FFT;
     // Addons
-    FFT.ItemMacro.initialize();
-    FFT.Levels.initialize();
+    FFT.ItemMacroAddon.initialize();
+    FFT.LevelsAddon.initialize();
+    FFT.SimpleCalendarAddon.initialize();
     // Modules
-    FFT.CharacterAnvil.initialize();
+    FFT.FunctionBarModule.initialize();
+    // FFT.CharacterAnvilModule.initialize();
     // FFT.ResizeHandler.initialize();
-    FFT.FunctionBar.initialize();
 });

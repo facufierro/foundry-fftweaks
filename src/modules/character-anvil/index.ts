@@ -1,5 +1,5 @@
 namespace FFT {
-    export class CharacterAnvil {
+    export class CharacterAnvilModule {
         static initialize() {
             // Hooks.on("createItem", (item: Item5e, options, userId) => {
             //     // SpellSelector.refreshKnownSpells(new FFT.Character(item.parent));

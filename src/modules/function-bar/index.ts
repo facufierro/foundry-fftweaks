@@ -1,5 +1,5 @@
 namespace FFT {
-    export class FunctionBar {
+    export class FunctionBarModule {
         static async initialize() {
             if (!game.user.isGM) {
                 return;

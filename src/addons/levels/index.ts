@@ -1,9 +1,9 @@
 namespace FFT {
-    export class Levels {
+    export class LevelsAddon {
         static initialize(): void {
             try {
                 Debug.Success("Initializing levels addon...");
-                Hooks.on("canvasReady", () => Levels.selectGroundFloor());
+                Hooks.on("canvasReady", () => LevelsAddon.selectGroundFloor());
             } catch (e) {
                 console.error("Initialization error:", e);
             }

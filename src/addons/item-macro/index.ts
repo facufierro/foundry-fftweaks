@@ -1,17 +1,17 @@
 namespace FFT {
-    export class ItemMacro {
+    export class ItemMacroAddon {
         static initialize() {
             Hooks.on("renderItemSheet", (_app, html) => this._onRenderItemSheet(html));
 
             Hooks.on("preCreateItem", async (item, data, options, userId) => {
-                const source = await FFT.ItemMacro._getMacroSource(item);
+                const source = await FFT.ItemMacroAddon._getMacroSource(item);
                 if (source?.includes("//RunOnPreCreate")) {
                     await (item as any).executeMacro();
                 }
             });
 
             Hooks.on("createItem", async (item) => {
-                const source = await FFT.ItemMacro._getMacroSource(item);
+                const source = await FFT.ItemMacroAddon._getMacroSource(item);
                 if (source?.includes("//RunOnCreate")) {
                     await (item as any).executeMacro();
                 }
@@ -19,7 +19,7 @@ namespace FFT {
 
             Hooks.on("updateItem", async (item, changes) => {
                 if (item.type === "class" && foundry.utils.hasProperty(changes, "system.levels")) {
-                    const source = await FFT.ItemMacro._getMacroSource(item);
+                    const source = await FFT.ItemMacroAddon._getMacroSource(item);
                     if (source?.includes("//RunOnUpdate")) {
                         await (item as any).executeMacro();
                     }
