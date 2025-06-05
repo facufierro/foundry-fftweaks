@@ -9,9 +9,9 @@ Hooks.once("ready", () => {
     // Addons
     FFT.ItemMacroAddon.initialize();
     FFT.LevelsAddon.initialize();
-    FFT.SimpleCalendarAddon.initialize();
+    // FFT.SimpleCalendarAddon.initialize();
     // Modules
     FFT.FunctionBarModule.initialize();
-    // FFT.CharacterAnvilModule.initialize();
+    FFT.CharacterAnvilModule.initialize();
     // FFT.ResizeHandler.initialize();
 });

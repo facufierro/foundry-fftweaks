@@ -2,9 +2,17 @@
     "compilerOptions": {
         "target": "ES6",
         "module": "None",
-        "lib": [ "ESNext", "DOM" ],
-        "moduleResolution": "node",
         "strict": false,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+        "strictFunctionTypes": false,
+        "strictBindCallApply": false,
+        "strictPropertyInitialization": false,
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
+        "moduleResolution": "node",
         "skipLibCheck": true,
         "baseUrl": ".",
         "paths": {
@@ -17,6 +25,10 @@
         },
         "outFile": "./dist/main.js"
     },
-    "include": [ "src" ],
-    "exclude": [ "node_modules" ]
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }

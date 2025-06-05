@@ -7,5 +7,8 @@ namespace FFT {
         static distributeGold = distributeGold;
         static distributeExperience = distributeExperience;
         static createDefaultLevels = createDefaultLevels;
+
+        // classes
+        static runicInscription = runicInscription;
     }
 }

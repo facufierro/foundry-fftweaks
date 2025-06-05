@@ -2,12 +2,24 @@ namespace FFT {
     export class LevelsAddon {
         static initialize(): void {
             try {
-                Debug.Success("Initializing levels addon...");
-                Hooks.on("canvasReady", () => LevelsAddon.selectGroundFloor());
+                Debug.Log("Initializing levels addon...");
+
+                Hooks.on("canvasReady", () => {
+                    const levels = game.modules.get("levels");
+
+                    if (levels?.active) {
+                        LevelsAddon.selectGroundFloor();
+                        Debug.Success("Levels addon initialized")
+                    } else {
+                        Debug.Warn("Levels module is not active or not available.");
+                    }
+                });
+
             } catch (e) {
-                console.error("Initialization error:", e);
+                Debug.Error("Initialization error in LevelsAddon:", e);
             }
         }
+
 
         private static selectGroundFloor(): void {
             if (!game.user?.isGM) return;

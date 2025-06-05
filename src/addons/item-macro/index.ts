@@ -2,7 +2,6 @@ namespace FFT {
     export class ItemMacroAddon {
         static initialize() {
             Hooks.on("renderItemSheet", (_app, html) => this._onRenderItemSheet(html));
-
             Hooks.on("preCreateItem", async (item, data, options, userId) => {
                 const source = await FFT.ItemMacroAddon._getMacroSource(item);
                 if (source?.includes("//RunOnPreCreate")) {
