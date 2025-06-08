@@ -14,4 +14,5 @@ Hooks.once("ready", () => {
     FFT.FunctionBarModule.initialize();
     FFT.CharacterAnvilModule.initialize();
     // FFT.ResizeHandler.initialize();
+    FFT.TokenVisualsModule.initialize();
 });
