@@ -3,6 +3,7 @@ namespace FFT {
         static initialize() {
             Hooks.on("updateItem", this.handleTokenEquipmentUpdate);
             Hooks.on("createToken", this.handleTokenSizeScaling);
+            Hooks.on("createToken", this.handleTokenNameShortening);  // New hook
         }
 
         static async handleTokenEquipmentUpdate(item: any, updateData: any) {
@@ -75,7 +76,6 @@ namespace FFT {
             const currentScaleY = currentTexture.scaleY ?? 1;
 
             if (currentScaleX !== expectedScale || currentScaleY !== expectedScale) {
-                // Update both token and prototype token
                 await Promise.all([
                     tokenDocument.update({
                         texture: {
@@ -93,6 +93,13 @@ namespace FFT {
             }
         }
 
+        static async handleTokenNameShortening(tokenDocument: any) {
+            const actor = tokenDocument.actor;
+            if (!actor) return;
 
+            const firstName = actor.name.split(" ")[0];
+
+            await tokenDocument.update({ name: firstName });
+        }
     }
 }
