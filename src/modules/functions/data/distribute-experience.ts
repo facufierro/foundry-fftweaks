@@ -1,8 +1,19 @@
 async function distributeExperience(): Promise<void> {
-    const tokens = canvas.tokens?.controlled.filter(t => t.actor?.hasPlayerOwner);
-    if (!tokens || tokens.length === 0) {
+    const controlledTokens = canvas.tokens?.controlled ?? [];
+    const tokens = controlledTokens.filter(t => t.actor?.hasPlayerOwner);
+    if (tokens.length === 0) {
         ui.notifications?.warn("No player characters selected.");
         return;
+    }
+
+    // Calculate default XP from any selected hostile tokens
+    let defaultXP = 0;
+    const hostileTokens = controlledTokens.filter(t => t.document.disposition === -1 && !t.actor?.hasPlayerOwner);
+    for (const token of hostileTokens) {
+        const actor = token.actor;
+        if (!actor) continue;
+        const xpVal = Number(foundry.utils.getProperty(actor.system, "details.xp.value")) || 0;
+        defaultXP += xpVal;
     }
 
     new Dialog({
@@ -10,7 +21,7 @@ async function distributeExperience(): Promise<void> {
         content: `
             <div style="text-align: center; margin: 10px 0;">
                 <label for="xp">Enter amount of XP:</label><br>
-                <input id="xp" type="number" value="0" style="width: 60%; text-align: center; margin-top: 5px;" placeholder="e.g. 500" />
+                <input id="xp" type="number" value="${defaultXP}" style="width: 60%; text-align: center; margin-top: 5px;" placeholder="e.g. 500" />
                 <div style="margin-top: 10px;">
                     <input type="checkbox" id="subtract" />
                     <label for="subtract">Subtract XP instead</label>
