@@ -3,15 +3,18 @@
   "title": "FFTweaks",
   "version": "1.0.1",
   "compatibility": {
-    "minimum": "11",
-    "verified": "12"
+    "minimum": "13",
+    "verified": "13"
   },
   "relationships": {
     "systems": [
       {
         "id": "dnd5e",
         "type": "system",
-        "compatibility": {}
+        "compatibility": {
+          "minimum": "5",
+          "verified": "5"
+        }
       }
     ]
   },
