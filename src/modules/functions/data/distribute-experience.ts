@@ -1,20 +1,34 @@
 async function distributeExperience(): Promise<void> {
     const controlledTokens = canvas.tokens?.controlled ?? [];
-    const tokens = controlledTokens.filter(t => t.actor?.hasPlayerOwner);
-    if (tokens.length === 0) {
+
+    // Separate player and hostile tokens from selection
+    const playerTokens = controlledTokens.filter(t => t.actor?.hasPlayerOwner);
+    const hostileTokens = controlledTokens.filter(t => {
+        const actor = t.actor;
+        if (!actor) return false;
+        const isHostile = t.document.disposition === -1;
+        const isEnemy = !actor.hasPlayerOwner;
+        const hp = foundry.utils.getProperty(actor.system, "attributes.hp.value");
+        const isDead = typeof hp === "number" && hp <= 0;
+        return isHostile && isEnemy && isDead;
+    });
+
+
+    // Sanity check
+    if (playerTokens.length === 0) {
         ui.notifications?.warn("No player characters selected.");
         return;
     }
 
-    // Calculate default XP from any selected hostile tokens
+    // Calculate default XP from selected hostile tokens only
     let defaultXP = 0;
-    const hostileTokens = controlledTokens.filter(t => t.document.disposition === -1 && !t.actor?.hasPlayerOwner);
     for (const token of hostileTokens) {
         const actor = token.actor;
         if (!actor) continue;
         const xpVal = Number(foundry.utils.getProperty(actor.system, "details.xp.value")) || 0;
         defaultXP += xpVal;
     }
+
 
     new Dialog({
         title: "Distribute XP",
@@ -40,11 +54,12 @@ async function distributeExperience(): Promise<void> {
 
                     const isSubtraction = subtractChecked;
                     const totalXP = inputXP;
-                    const numTokens = tokens.length;
+                    const numTokens = playerTokens.length;
                     const baseShare = Math.floor(totalXP / numTokens);
                     let remainder = totalXP % numTokens;
 
-                    const shuffledTokens = tokens.slice().sort(() => Math.random() - 0.5);
+                    const shuffledTokens = playerTokens.slice().sort(() => Math.random() - 0.5);
+
                     const results: string[] = [];
 
                     for (let i = 0; i < shuffledTokens.length; i++) {
