@@ -1,14 +1,40 @@
 async function toggleCombat(event: MouseEvent) {
     const selectedTokens = canvas.tokens?.controlled;
-    if (!selectedTokens || selectedTokens.length === 0) return;
+    if (!selectedTokens || selectedTokens.length === 0) {
+        ui.notifications?.warn("No tokens selected.");
+        return;
+    }
 
-    // Ensure there is a combat encounter for this scene
+    // Handle modifier keys
+    if (event.ctrlKey && game.combat) {
+        // Ctrl+click: End the current combat
+        await game.combat.endCombat();
+        return;
+    }
+
+    if (event.altKey && game.combat) {
+        // Alt+click: Delete the current combat encounter
+        await game.combat.delete();
+        return;
+    }
+
     let combat = game.combat;
     if (!combat) {
         combat = await Combat.create({ scene: canvas.scene?.id });
-        ui.notifications.info("Combat encounter created.");
     }
 
+    if (event.shiftKey) {
+        // Shift+click: Remove selected tokens from combat
+        for (const token of selectedTokens) {
+            const combatant = token.document.combatant;
+            if (combatant) {
+                await combatant.delete();
+            }
+        }
+        return;
+    }
+
+    // Default: Add selected tokens to combat if not already, and roll initiative
     const toRollInitiative: Combatant[] = [];
 
     for (const token of selectedTokens) {
@@ -24,8 +50,6 @@ async function toggleCombat(event: MouseEvent) {
             if (tokenDocument.combatant) {
                 toRollInitiative.push(tokenDocument.combatant);
             }
-        } else {
-            await tokenDocument.toggleCombatant();
         }
     }
 
