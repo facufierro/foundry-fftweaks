@@ -1,18 +1,18 @@
 {
     "heal": {
-        "name": "Click: Heal Full\nAlt+Click: Heal 1\nCtrl+Click: Heal 5\nShift+Click: Heal 10",
+        "name": "Heal\nClick: Heal Full\nAlt+Click: Heal 1\nCtrl+Click: Heal 5\nShift+Click: Heal 10",
         "icon": "fas fa-heart",
         "row": 1,
         "script": "FFT.Functions.healSelected"
     },
     "hurt": {
-        "name": "Hurt",
+        "name": "Hurt\nClick: Hurt Full\nAlt+Click: Hurt 1\nCtrl+Click: Hurt 5\nShift+Click: Hurt 10",
         "icon": "fas fa-heart-crack",
         "row": 1,
         "script": "FFT.Functions.hurtSelected"
     },
     "rest": {
-        "name": "Rest",
+        "name": "Rest\nClick: Long Rest\nShift+Click: Short Rest",
         "icon": "fas fa-bed",
         "row": 1,
         "script": "FFT.Functions.restSelected"
