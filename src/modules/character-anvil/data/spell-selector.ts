@@ -4,20 +4,28 @@ namespace FFT {
     private static _initialKnownCount: number | null = null;
 
     /* ─── PUBLIC API ────────────────────────────────────────────────────────── */
-
-    static renderButton(actor: Actor5e, html: JQuery<HTMLElement>) {
-      const character = new Character(actor);
+    static renderButton(actor: Actor, html: JQuery<HTMLElement>) {
       const buttonHolder = html.find('.sheet-header-buttons');
-      if (!buttonHolder.length || html.find("#fft-custom-button").length) return;
+      if (!buttonHolder.length || html.find("#fft-pointbuy-button").length) return;
+
+      const hasBackground = actor.items.some(item => item.type === "background");
+      if (hasBackground) return;
 
       const button = new FFT.CustomButton({
-        id: "fft-spellselector-button",
-        tooltip: "Spell Selector",
-        iconClass: "fas fa-book-spells",
-        onClick: () => this.renderDialog({ character })
+        id: "fft-pointbuy-button",
+        tooltip: "Point Buy System",
+        iconClass: "fas fa-chart-bar",
+        onClick: () => {
+          FFT.PointBuySystem.renderDialog(actor);
+        },
+        classes: ["fft-pointbuy-button"]
       });
-      button.appendTo(buttonHolder);
+
+      buttonHolder.append(button.element); // ✅ Safe, simple, clean
     }
+
+
+
     static async renderDialog({ character, list, level, choices }: {
       character: Character;
       choices?: number;

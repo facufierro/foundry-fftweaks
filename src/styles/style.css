@@ -1,3 +1,30 @@
+.fft-button {
+    width: 28px;
+    height: 28px;
+    background: rgba(0, 0, 0, 0%);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #c9c7b8;
+    text-align: center;
+    margin: 0;
+    cursor: pointer;
+    padding: 0;
+    box-sizing: border-box;
+    box-shadow: none;
+    transition: box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fft-button i {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6", "FontAwesome";
+    color: #c9c7b8;
+    font-size: 16px;
+    line-height: 28px;
+    margin: 0;
+    transition: text-shadow 0.2s ease;
+}
 
 
 /* .character-anvil-dialog {

@@ -4,7 +4,7 @@ namespace FFT {
 
         static renderButton(actor: Actor, html: JQuery<HTMLElement>) {
             const buttonHolder = html.find('.sheet-header-buttons');
-            if (!buttonHolder.length || html.find("#fft-custom-button").length) return;
+            if (!buttonHolder.length || html.find("#fft-pointbuy-button").length) return;
 
             const hasBackground = actor.items.some(item => item.type === "background");
             if (hasBackground) return;
@@ -13,13 +13,14 @@ namespace FFT {
                 id: "fft-pointbuy-button",
                 tooltip: "Point Buy System",
                 iconClass: "fas fa-chart-bar",
-                onClick: () => {
-                    this.renderDialog(actor);
-                }
+                onClick: () => FFT.PointBuySystem.renderDialog(actor),
+                classes: ["fft-pointbuy-button"] // Optional for theming
             });
 
-            button.appendTo(buttonHolder);
+            // Use the .element directly — no appendTo() defined
+            buttonHolder.append(button.element);
         }
+
 
         static renderDialog(actor: Actor): Promise<boolean> {
             return new Promise((resolve) => {
