@@ -1,11 +1,5 @@
 async function toggleCombat(event: MouseEvent) {
-    const selectedTokens = canvas.tokens?.controlled;
-    if (!selectedTokens || selectedTokens.length === 0) {
-        ui.notifications?.warn("No tokens selected.");
-        return;
-    }
-
-    // Handle modifier keys
+    // Handle modifier keys that do not require tokens
     if (event.ctrlKey && game.combat) {
         // Ctrl+click: End the current combat
         await game.combat.endCombat();
@@ -15,6 +9,12 @@ async function toggleCombat(event: MouseEvent) {
     if (event.altKey && game.combat) {
         // Alt+click: Delete the current combat encounter
         await game.combat.delete();
+        return;
+    }
+
+    const selectedTokens = canvas.tokens?.controlled;
+    if (!selectedTokens || selectedTokens.length === 0) {
+        ui.notifications?.warn("No tokens selected.");
         return;
     }
 
