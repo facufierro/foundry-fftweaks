@@ -1,6 +1,6 @@
 {
     "heal": {
-        "name": "Heal",
+        "name": "Click: Heal Full\nAlt+Click: Heal 1\nCtrl+Click: Heal 5\nShift+Click: Heal 10",
         "icon": "fas fa-heart",
         "row": 1,
         "script": "FFT.Functions.healSelected"
