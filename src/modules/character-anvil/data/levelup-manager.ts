@@ -1,5 +1,4 @@
 namespace FFT {
-
     export class LevelupManager {
         static renderButton(actor: Actor5e, html: JQuery<HTMLElement>) {
             const character = new Character(actor);
@@ -8,7 +7,7 @@ namespace FFT {
             if (!needsAdvancement && !character.canLevelUp()) return;
 
             const buttonHolder = html.find('.xp-label');
-            if (!buttonHolder.length || html.find("#fft-custom-button").length) return;
+            if (!buttonHolder.length || html.find("#fft-spellselector-button").length) return;
 
             const button = new FFT.CustomButton({
                 id: "fft-spellselector-button",
@@ -16,10 +15,14 @@ namespace FFT {
                 iconClass: "fas fa-arrow-alt-circle-up",
                 onClick: () => {
                     this.levelUp(character);
-                }
+                },
+                classes: ["fft-levelup-button"] // Optional: CSS class for future styling
             });
-            button.prependTo(buttonHolder);
+
+            // Attach to the DOM
+            buttonHolder.prepend(button.element);
         }
+
         static async levelUp(character: Character): Promise<void> {
             if (!character.background) {
                 await PointBuySystem.renderDialog(character.actor);
@@ -34,6 +37,7 @@ namespace FFT {
                 await this.levelClass(character);
             }
         }
+
         static async pickItem(actor: Actor5e, type: "class" | "background" | "race"): Promise<void> {
             const sheet = actor.sheet as any;
 
@@ -61,6 +65,7 @@ namespace FFT {
                 }, 0);
             });
         }
+
         static async levelClass(character: Character): Promise<void> {
             const actor = character.actor;
             const classItem = character.class;
@@ -81,6 +86,5 @@ namespace FFT {
                 }
             }
         }
-
     }
 }

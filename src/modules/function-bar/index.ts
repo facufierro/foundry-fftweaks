@@ -1,27 +1,17 @@
 namespace FFT {
     export class FunctionBarModule {
-        static async initialize() {
-            if (!game.user.isGM) {
-                return;
-            }
+        static async initialize(): Promise<void> {
+            if (!game.user?.isGM) return;
 
-            const buttonData = await UI.fetchButtonData();
+            const buttonConfigs = await FFT.ButtonDataService.loadButtons();
 
-            const buttons = Object.entries(buttonData).map(([id, { name, icon, script, row }]) => ({
-                id,
-                title: name,
-                icon,
-                row,
-                onClick: UI.resolveFunction(script),
-            }));
-
-
-
-            UI.createForm({
-                id: 'fft-functionbar',
-                position: { top: '150px', left: '150px' },
-                buttons,
+            const functionBar = new FFT.FunctionBar({
+                id: "fft-functionbar",
+                position: { top: "150px", left: "150px" },
+                buttons: buttonConfigs
             });
+
+            functionBar.render();
         }
     }
 }
