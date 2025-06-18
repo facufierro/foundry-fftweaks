@@ -13,7 +13,7 @@ async function lootCorpses(): Promise<void> {
         return;
     }
 
-    const selectedItems: Record<string, { playerId: string; color: string; tokenId: string }> = {};
+    const selectedItems: Record<string, { playerId: string; color: string; tokenId: string; playerName: string }> = {};
     const lootSections = generateLootSections(deadNpcs, selectedItems);
 
     if (lootSections.trim() === "") {
@@ -42,7 +42,7 @@ function getDeadHostileNpcs(): Token[] {
     });
 }
 
-function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string }>): string {
+function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string; playerName: string }>): string {
     return deadNpcs.map(npc => {
         const actor = npc.actor;
         if (!actor) return "";
@@ -69,13 +69,17 @@ function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, {
             const selection = selectedItems[item.id];
             const isSelected = selection !== undefined;
             const borderColor = isSelected ? selection.color : "transparent";
+            const claimedLabel = isSelected 
+                ? `<div class="item-claimed-label" style="position: absolute; bottom: -4px; left: -4px; right: -4px; background: linear-gradient(135deg, ${selection.color}, ${selection.color}dd); color: white; font-size: 10px; text-align: center; padding: 3px 1px; border-radius: 0 0 5px 5px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.9); z-index: 2; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 2px 4px rgba(0,0,0,0.5); text-transform: uppercase; letter-spacing: 0.5px;">${selection.playerName.substring(0, 6)}</div>`
+                : "";
 
             return `
                 <div class="item-selector" 
                      data-item-id="${item.id}"
                      data-npc-id="${npc.id}"
-                     style="display: inline-block; margin: 0 2px; border: 2px solid ${borderColor}; border-radius: 3px;">
-                    <img src="${item.img}" width="30" height="30" />
+                     style="display: inline-block; margin: 0 2px; border: 3px solid ${borderColor}; border-radius: 5px; position: relative; box-shadow: ${isSelected ? `0 0 8px ${selection.color}55` : '0 2px 4px rgba(0,0,0,0.1)'};">
+                    <img src="${item.img}" width="30" height="30" style="display: block; border-radius: 2px;" />
+                    ${claimedLabel}
                 </div>
             `;
         }).join("");
@@ -89,7 +93,7 @@ function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, {
     }).join("");
 }
 
-function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string }>, lootSections: string): void {
+function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string; playerName: string }>, lootSections: string): void {
     const playerIcons = playerTokens.map((token, index) => {
         const actor = token.actor;
         if (!actor) return "";
@@ -155,13 +159,24 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
             cancel: { label: "Close" }
         },
         default: "cancel",
-        render: (html) => setupItemClickHandler($(html), playerTokens, selectedItems, dialog)
+        render: (html) => {
+            setupItemClickHandler($(html), playerTokens, selectedItems, dialog);
+            
+            // Initialize visual state for already selected items
+            $(html).find('.item-selector').each((index, element) => {
+                const itemId = $(element).data('item-id');
+                const selection = selectedItems[itemId];
+                if (selection) {
+                    updateItemVisuals($(element), selection);
+                }
+            });
+        }
     });
 
     dialog.render(true);
 }
 
-async function distributeLoot(playerTokens: Token[], deadNpcs: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string }>): Promise<void> {
+async function distributeLoot(playerTokens: Token[], deadNpcs: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string; playerName: string }>): Promise<void> {
     for (const [itemId, selection] of Object.entries(selectedItems)) {
         // Find the item from the dead NPCs
         let sourceItem: any = null;
@@ -213,7 +228,7 @@ async function distributeLoot(playerTokens: Token[], deadNpcs: Token[], selected
     ui.notifications?.info("Loot distributed to selected characters!");
 }
 
-function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string }>, dialog: Dialog<DialogOptions>): void {
+function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string; playerName: string }>, dialog: Dialog<DialogOptions>): void {
     let selectedPlayerId: string | null = null;
     let selectedPlayerColor: string = "#000000";
 
@@ -299,24 +314,49 @@ function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItem
         // If item is already selected by the same player, deselect it
         if (currentSelection && currentSelection.playerId === selectedPlayerId) {
             delete selectedItems[itemId];
-            $(ev.currentTarget).css("border-color", "transparent");
+            updateItemVisuals($(ev.currentTarget), null);
         } else {
             // Select item for current player
             const targetToken = playerTokens.find(t => t.actor?.id === selectedPlayerId);
-            if (!targetToken) return;
+            if (!targetToken?.actor) return;
 
             selectedItems[itemId] = {
                 playerId: selectedPlayerId,
                 color: selectedPlayerColor,
-                tokenId: targetToken.id
+                tokenId: targetToken.id,
+                playerName: targetToken.actor.name
             };
 
-            $(ev.currentTarget).css("border-color", selectedPlayerColor);
+            updateItemVisuals($(ev.currentTarget), selectedItems[itemId]);
         }
-
-        // No need to update data-tooltip attribute since we removed it
     });
 
     // Initially disable item selection until a player is chosen
     $(html).find(".item-selector").addClass("disabled");
+}
+
+function updateItemVisuals(itemElement: JQuery, selection: { playerId: string; color: string; tokenId: string; playerName: string } | null): void {
+    if (selection) {
+        // Item is claimed - add border, glow, and label
+        itemElement.css({
+            "border-color": selection.color,
+            "border-width": "3px",
+            "box-shadow": `0 0 8px ${selection.color}55`
+        });
+        
+        // Remove existing label if any
+        itemElement.find('.item-claimed-label').remove();
+        
+        // Add new label with enhanced visibility
+        const claimedLabel = `<div class="item-claimed-label" style="position: absolute; bottom: -4px; left: -4px; right: -4px; background: linear-gradient(135deg, ${selection.color}, ${selection.color}dd); color: white; font-size: 10px; text-align: center; padding: 3px 1px; border-radius: 0 0 5px 5px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.9); z-index: 2; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 2px 4px rgba(0,0,0,0.5); text-transform: uppercase; letter-spacing: 0.5px;">${selection.playerName.substring(0, 6)}</div>`;
+        itemElement.append(claimedLabel);
+    } else {
+        // Item is unclaimed - remove border, glow, and label
+        itemElement.css({
+            "border-color": "transparent",
+            "border-width": "3px",
+            "box-shadow": "0 2px 4px rgba(0,0,0,0.1)"
+        });
+        itemElement.find('.item-claimed-label').remove();
+    }
 }
