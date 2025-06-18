@@ -93,17 +93,47 @@ function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, {
 }
 
 function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string }>, lootSections: string): void {
+    const playerIcons = playerTokens.map((token, index) => {
+        const actor = token.actor;
+        if (!actor) return "";
+        const colors = ["#ff4444", "#44ff44", "#4444ff", "#ffff44", "#ff44ff", "#44ffff"];
+        const color = colors[index % colors.length];
+        return `
+            <div class="player-selector" 
+                 data-token-id="${token.id}"
+                 data-player-color="${color}"
+                 style="display: inline-block; margin: 5px; padding: 10px; border: 3px solid transparent; border-radius: 8px; cursor: pointer; text-align: center; background: rgba(0,0,0,0.1);">
+                <img src="${actor.img}" width="60" height="60" style="border-radius: 50%; display: block; margin: 0 auto 5px auto;" />
+                <div style="font-size: 12px; font-weight: bold;">${actor.name}</div>
+            </div>
+        `;
+    }).join("");
+
     const dialog: Dialog<DialogOptions> = new Dialog({
         title: "Loot Corpses",
         content: `
-            <p><strong>Selected Players:</strong> ${playerTokens.map(t => t.actor?.name).join(", ")}</p>
-            <p>Click items to assign them to a player token.</p>
-            <div style="max-height: 60vh; overflow-y: auto;">
-                ${lootSections}
+            <div style="margin-bottom: 15px;">
+                <h3>Select a Character:</h3>
+                <div id="player-selection" style="display: flex; flex-wrap: wrap; justify-content: center;">
+                    ${playerIcons}
+                </div>
+                <div id="selected-player" style="text-align: center; margin-top: 10px; font-weight: bold; display: none;">
+                    Selected: <span id="selected-player-name"></span>
+                </div>
+            </div>
+            <div style="border-top: 2px solid #ccc; padding-top: 15px;">
+                <h3>Click items to assign to selected character:</h3>
+                <div style="max-height: 50vh; overflow-y: auto;">
+                    ${lootSections}
+                </div>
             </div>
             <style>
+                .player-selector { transition: border-color 0.2s, background-color 0.2s; }
+                .player-selector:hover { background: rgba(255,100,0,0.2) !important; }
+                .player-selector.selected { border-color: var(--selected-color) !important; background: var(--selected-bg) !important; }
                 .item-selector { cursor: pointer; transition: border 0.2s; }
                 .item-selector:hover { border-color: #ff6400 !important; }
+                .item-selector.disabled { opacity: 0.5; cursor: not-allowed; }
                 [data-tooltip]:hover:after {
                     content: attr(data-tooltip);
                     position: absolute;
@@ -112,6 +142,7 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
                     padding: 4px 8px;
                     border-radius: 4px;
                     font-size: 12px;
+                    z-index: 1000;
                 }
             </style>
         `,
@@ -132,43 +163,125 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
 
 async function distributeLoot(playerTokens: Token[], deadNpcs: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string }>): Promise<void> {
     for (const [itemId, selection] of Object.entries(selectedItems)) {
-        const item = game.items?.get(itemId);
+        // Find the item from the dead NPCs
+        let sourceItem: any = null;
+        let sourceActor: any = null;
+        
+        for (const npc of deadNpcs) {
+            const item = npc.actor?.items.get(itemId);
+            if (item) {
+                sourceItem = item;
+                sourceActor = npc.actor;
+                break;
+            }
+        }
+        
+        if (!sourceItem || !sourceActor) continue;
+
         const targetToken = canvas.tokens?.get(selection.tokenId);
-        if (item && targetToken?.actor) {
-            // await item.update({ "actorId": targetToken.actor.id });
+        if (targetToken?.actor) {
+            // Create a copy of the item data and add it to the target actor
+            const itemData = sourceItem.toObject();
+            itemData.system.equipped = false; // Ensure transferred items are unequipped
+            await targetToken.actor.createEmbeddedDocuments("Item", [itemData]);
+            
+            // Remove the item from the source actor
+            await sourceItem.delete();
         }
     }
 
+    // Clean up empty NPCs (optional - remove if you don't want this behavior)
     for (const npc of deadNpcs) {
-        const remainingItems = npc.actor?.items.filter(i => !selectedItems[i.id]);
-        if (remainingItems?.length === 0) {
+        if (!npc.actor) continue;
+        const remainingItems = npc.actor.items.filter(i => {
+            // Only count lootable items (same filter as in generateLootSections)
+            if (i.type === "feat" || i.type === "spell") return false;
+            if (i.type === "weapon") {
+                const weaponType = i.system.type;
+                if (weaponType && typeof weaponType === 'object' && 'value' in weaponType && weaponType.value === "natural") {
+                    return false;
+                }
+            }
+            return true;
+        });
+        
+        if (remainingItems.length === 0) {
             await npc.document.delete();
         }
     }
 
-    ui.notifications?.info("Loot distributed to selected tokens!");
+    ui.notifications?.info("Loot distributed to selected characters!");
 }
 
 function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string }>, dialog: Dialog<DialogOptions>): void {
+    let selectedPlayerId: string | null = null;
+    let selectedPlayerColor: string = "#000000";
+
+    // Handle player selection
+    $(html).find(".player-selector").click((ev) => {
+        const tokenId = $(ev.currentTarget).data("token-id");
+        const playerColor = $(ev.currentTarget).data("player-color");
+        const token = playerTokens.find(t => t.id === tokenId);
+        
+        if (!token?.actor) return;
+
+        selectedPlayerId = token.actor.id;
+        selectedPlayerColor = playerColor;
+
+        // Update UI
+        $(html).find(".player-selector").removeClass("selected").css({
+            "border-color": "transparent",
+            "background": "rgba(0,0,0,0.1)"
+        });
+        
+        $(ev.currentTarget).addClass("selected").css({
+            "border-color": playerColor,
+            "background": `${playerColor}33`
+        });
+
+        $(html).find("#selected-player").show();
+        $(html).find("#selected-player-name").text(token.actor.name);
+
+        // Enable item selection
+        $(html).find(".item-selector").removeClass("disabled");
+    });
+
+    // Handle item selection
     $(html).find(".item-selector").click((ev) => {
+        if (!selectedPlayerId) {
+            ui.notifications?.warn("Please select a character first.");
+            return;
+        }
+
         const itemId = $(ev.currentTarget).data("item-id");
         const currentSelection = selectedItems[itemId];
 
-        const playerTokenIndex = currentSelection
-            ? (playerTokens.findIndex(t => t.id === currentSelection.tokenId) + 1) % playerTokens.length
-            : 0;
+        // If item is already selected by the same player, deselect it
+        if (currentSelection && currentSelection.playerId === selectedPlayerId) {
+            delete selectedItems[itemId];
+            $(ev.currentTarget).css("border-color", "transparent");
+        } else {
+            // Select item for current player
+            const targetToken = playerTokens.find(t => t.actor?.id === selectedPlayerId);
+            if (!targetToken) return;
 
-        const targetToken = playerTokens[playerTokenIndex];
-        if (!targetToken.actor) return;
+            selectedItems[itemId] = {
+                playerId: selectedPlayerId,
+                color: selectedPlayerColor,
+                tokenId: targetToken.id
+            };
 
-        selectedItems[itemId] = {
-            playerId: targetToken.actor.id,
-            color: targetToken.actor.hasPlayerOwner ? "#000000" : "#CCCCCC",
-            tokenId: targetToken.id
-        };
-
-        if (dialog instanceof Dialog) {
-            dialog.render(true);
+            $(ev.currentTarget).css("border-color", selectedPlayerColor);
         }
+
+        // Update tooltip
+        const selection = selectedItems[itemId];
+        const tooltip = selection
+            ? `Claimed by ${game.users.get(selection.playerId)?.name || "Unknown"}`
+            : "Click to assign to selected character";
+        $(ev.currentTarget).find("img").attr("data-tooltip", tooltip);
     });
+
+    // Initially disable item selection until a player is chosen
+    $(html).find(".item-selector").addClass("disabled");
 }
