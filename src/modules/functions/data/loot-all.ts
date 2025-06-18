@@ -14,7 +14,7 @@ async function lootCorpses(): Promise<void> {
     }
 
     const selectedItems: Record<string, { playerId: string; color: string; tokenId: string; playerName: string }> = {};
-    const lootSections = generateLootSections(deadNpcs, selectedItems);
+    const lootSections = generateLootSections(deadNpcs, selectedItems, playerTokens);
 
     if (lootSections.trim() === "") {
         ui.notifications?.warn("No lootable items found.");
@@ -42,7 +42,7 @@ function getDeadHostileNpcs(): Token[] {
     });
 }
 
-function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string; playerName: string }>): string {
+function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string; playerName: string }>, playerTokens: Token[]): string {
     return deadNpcs.map(npc => {
         const actor = npc.actor;
         if (!actor) return "";
@@ -70,7 +70,7 @@ function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, {
             const isSelected = selection !== undefined;
             const borderColor = isSelected ? selection.color : "transparent";
             const claimedLabel = isSelected 
-                ? `<div class="item-claimed-label" style="position: absolute; bottom: -4px; left: -4px; right: -4px; background: linear-gradient(135deg, ${selection.color}, ${selection.color}dd); color: white; font-size: 10px; text-align: center; padding: 3px 1px; border-radius: 0 0 5px 5px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.9); z-index: 2; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 2px 4px rgba(0,0,0,0.5); text-transform: uppercase; letter-spacing: 0.5px;">${selection.playerName.substring(0, 6)}</div>`
+                ? `<div class="item-claimed-portrait" style="position: absolute; bottom: -2px; right: -2px; width: 10px; height: 10px; border: 2px solid ${selection.color}; border-radius: 50%; overflow: hidden; z-index: 2; box-shadow: 0 1px 3px rgba(0,0,0,0.7); background: white;"><img src="${getPlayerPortrait(selection.playerId, playerTokens)}" style="width: 100%; height: 100%; object-fit: cover;" /></div>`
                 : "";
 
             return `
@@ -167,7 +167,7 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
                 const itemId = $(element).data('item-id');
                 const selection = selectedItems[itemId];
                 if (selection) {
-                    updateItemVisuals($(element), selection);
+                    updateItemVisuals($(element), selection, playerTokens);
                 }
             });
         }
@@ -314,7 +314,7 @@ function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItem
         // If item is already selected by the same player, deselect it
         if (currentSelection && currentSelection.playerId === selectedPlayerId) {
             delete selectedItems[itemId];
-            updateItemVisuals($(ev.currentTarget), null);
+            updateItemVisuals($(ev.currentTarget), null, playerTokens);
         } else {
             // Select item for current player
             const targetToken = playerTokens.find(t => t.actor?.id === selectedPlayerId);
@@ -327,7 +327,7 @@ function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItem
                 playerName: targetToken.actor.name
             };
 
-            updateItemVisuals($(ev.currentTarget), selectedItems[itemId]);
+            updateItemVisuals($(ev.currentTarget), selectedItems[itemId], playerTokens);
         }
     });
 
@@ -335,7 +335,7 @@ function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItem
     $(html).find(".item-selector").addClass("disabled");
 }
 
-function updateItemVisuals(itemElement: JQuery, selection: { playerId: string; color: string; tokenId: string; playerName: string } | null): void {
+function updateItemVisuals(itemElement: JQuery, selection: { playerId: string; color: string; tokenId: string; playerName: string } | null, playerTokens: Token[]): void {
     if (selection) {
         // Item is claimed - add border, glow, and label
         itemElement.css({
@@ -345,11 +345,11 @@ function updateItemVisuals(itemElement: JQuery, selection: { playerId: string; c
         });
         
         // Remove existing label if any
-        itemElement.find('.item-claimed-label').remove();
+        itemElement.find('.item-claimed-portrait').remove();
         
-        // Add new label with enhanced visibility
-        const claimedLabel = `<div class="item-claimed-label" style="position: absolute; bottom: -4px; left: -4px; right: -4px; background: linear-gradient(135deg, ${selection.color}, ${selection.color}dd); color: white; font-size: 10px; text-align: center; padding: 3px 1px; border-radius: 0 0 5px 5px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.9); z-index: 2; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 2px 4px rgba(0,0,0,0.5); text-transform: uppercase; letter-spacing: 0.5px;">${selection.playerName.substring(0, 6)}</div>`;
-        itemElement.append(claimedLabel);
+        // Add new portrait label
+        const claimedPortrait = `<div class="item-claimed-portrait" style="position: absolute; bottom: -2px; right: -2px; width: 10px; height: 10px; border: 2px solid ${selection.color}; border-radius: 50%; overflow: hidden; z-index: 2; box-shadow: 0 1px 3px rgba(0,0,0,0.7); background: white;"><img src="${getPlayerPortrait(selection.playerId, playerTokens)}" style="width: 100%; height: 100%; object-fit: cover;" /></div>`;
+        itemElement.append(claimedPortrait);
     } else {
         // Item is unclaimed - remove border, glow, and label
         itemElement.css({
@@ -357,6 +357,12 @@ function updateItemVisuals(itemElement: JQuery, selection: { playerId: string; c
             "border-width": "3px",
             "box-shadow": "0 2px 4px rgba(0,0,0,0.1)"
         });
-        itemElement.find('.item-claimed-label').remove();
+        itemElement.find('.item-claimed-portrait').remove();
     }
+}
+
+function getPlayerPortrait(playerId: string, playerTokens: Token[]): string {
+    // Find the player token by actor ID
+    const playerToken = playerTokens.find(token => token.actor?.id === playerId);
+    return playerToken?.actor?.img || "icons/svg/mystery-man.svg";
 }
