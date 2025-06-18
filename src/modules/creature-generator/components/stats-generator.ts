@@ -48,14 +48,8 @@ namespace FFT {
                     }
                 }
 
-                // Set a reasonable base AC that equipment can build upon
-                if (template.stats.ac) {
-                    // Just use the template AC as a base - don't scale it
-                    updates["system.attributes.ac.flat"] = template.stats.ac;
-                    updates["system.attributes.ac.calc"] = "flat";
-                }
-
-                // No need to set it manually here
+                // AC is handled automatically by FoundryVTT based on equipped armor + DEX modifier
+                // Don't set AC manually - let it calculate naturally
 
                 // Update HP with conservative scaling
                 if (template.stats.hp) {
