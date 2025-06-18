@@ -56,5 +56,10 @@ async function toggleCombat(event: MouseEvent) {
     if (toRollInitiative.length > 0 && game.combat) {
         const ids = toRollInitiative.map(c => c.id);
         await game.combat.rollInitiative(ids);
+
+        // Begin the combat encounter if not already active
+        if (!game.combat.started) {
+            await game.combat.startCombat();
+        }
     }
 }
