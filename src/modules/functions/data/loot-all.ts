@@ -130,7 +130,7 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
                 </div>
             </div>
             <div style="border-top: 2px solid #ccc; padding-top: 20px;">
-                <div style="max-height: 70vh; overflow-y: auto;">
+                <div>
                     ${lootSections}
                 </div>
             </div>
@@ -167,6 +167,19 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
                 .dialog .dialog-content {
                     padding-bottom: 60px !important;
                 }
+                /* Flexible dialog sizing */
+                .loot-dialog {
+                    min-width: 400px !important;
+                    max-width: 90vw !important;
+                    min-height: 300px !important;
+                    max-height: 90vh !important;
+                    width: fit-content !important;
+                    height: fit-content !important;
+                }
+                .loot-dialog .dialog-content {
+                    max-height: calc(90vh - 100px) !important;
+                    overflow-y: auto !important;
+                }
             </style>
         `,
         buttons: {
@@ -190,9 +203,9 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
             });
         }
     }, {
-        width: 800,
-        height: 600,
-        resizable: true
+        resizable: true,
+        classes: ["loot-dialog"],
+        jQuery: true
     });
 
     dialog.render(true);
