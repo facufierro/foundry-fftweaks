@@ -101,10 +101,12 @@ namespace FFT {
                     continue;
                 }
 
-                // Roll for chance
-                const chance = spell.chance || 100;
+                // Add ±20% randomization to spell chances
+                const baseChance = spell.chance || 100;
+                const randomizedChance = Math.max(10, Math.min(90, baseChance + (Math.random() * 40 - 20)));
                 const roll = Math.random() * 100;
-                if (roll <= chance) {
+                
+                if (roll <= randomizedChance) {
                     successfulSpells.push(spell);
                 }
             }
@@ -115,11 +117,18 @@ namespace FFT {
         private static async addSpellsToActor(actor: Actor, spellItems: SpellItem[], spellLevel?: number): Promise<void> {
             const itemsToCreate: any[] = [];
 
+            console.log(`SpellsGenerator: Processing ${spellItems.length} spells for ${actor.name} (level ${spellLevel || 0})`);
+
             for (const spellItem of spellItems) {
+                console.log(`SpellsGenerator: Looking for spell "${spellItem.name}"`);
+                
                 let spellData = await this.findSpellInCompendium(spellItem.name);
 
                 if (!spellData) {
+                    console.log(`SpellsGenerator: Spell "${spellItem.name}" not found in compendium, creating placeholder`);
                     spellData = this.createPlaceholderSpell(spellItem.name, spellLevel || 0);
+                } else {
+                    console.log(`SpellsGenerator: Spell "${spellItem.name}" found in compendium`);
                 }
 
                 const itemToAdd = foundry.utils.duplicate(spellData);
@@ -137,7 +146,10 @@ namespace FFT {
             }
 
             if (itemsToCreate.length > 0) {
+                console.log(`SpellsGenerator: Adding ${itemsToCreate.length} spells to ${actor.name}`);
                 await actor.createEmbeddedDocuments("Item", itemsToCreate);
+            } else {
+                console.log(`SpellsGenerator: No spells to add to ${actor.name}`);
             }
         }
 
@@ -174,17 +186,17 @@ namespace FFT {
                 img: "icons/svg/book.svg",
                 system: {
                     description: {
-                        value: `<p>Placeholder spell: ${spellName}</p><p><em>This spell was not found in the compendium and needs to be configured manually.</em></p>`
+                        value: `<p><strong>${spellName}</strong></p><p><em>This spell was not found in the compendium and needs to be configured manually.</em></p>`,
+                        chat: ""
+                    },
+                    source: {
+                        custom: "",
+                        rules: "2024",
+                        revision: 1
                     },
                     level: level,
                     school: "div",
-                    components: {
-                        vocal: false,
-                        somatic: false,
-                        material: false,
-                        ritual: false,
-                        concentration: false
-                    },
+                    properties: level > 0 ? ["vocal", "somatic"] : ["vocal"],
                     materials: {
                         value: "",
                         consumed: false,
@@ -192,64 +204,52 @@ namespace FFT {
                         supply: 0
                     },
                     preparation: {
-                        mode: level > 0 ? "prepared" : "cantrip",
+                        mode: level > 0 ? "prepared" : "always",
                         prepared: level > 0
                     },
-                    scaling: {
-                        mode: "none",
-                        formula: ""
+                    target: {
+                        template: {
+                            count: "",
+                            contiguous: false,
+                            type: "",
+                            size: "",
+                            width: "",
+                            height: "",
+                            units: ""
+                        },
+                        affects: {
+                            count: "",
+                            type: "",
+                            choice: false,
+                            special: ""
+                        }
                     },
-                    properties: [],
+                    range: {
+                        value: "0",
+                        units: "touch",
+                        special: ""
+                    },
                     activation: {
                         type: "action",
-                        cost: 1,
+                        value: 1,
                         condition: ""
                     },
                     duration: {
-                        value: null,
+                        value: "0",
                         units: "inst"
                     },
-                    target: {
-                        value: null,
-                        width: null,
-                        units: "",
-                        type: ""
-                    },
-                    range: {
-                        value: null,
-                        long: null,
-                        units: "touch"
-                    },
                     uses: {
-                        value: null,
                         max: "",
-                        per: null,
-                        recovery: ""
+                        recovery: [],
+                        spent: 0
                     },
-                    consume: {
-                        type: "",
-                        target: null,
-                        amount: null
-                    },
-                    ability: "",
-                    actionType: "",
-                    attackBonus: "",
-                    chatFlavor: "",
-                    critical: {
-                        threshold: null,
-                        damage: ""
-                    },
-                    damage: {
-                        parts: [],
-                        versatile: ""
-                    },
-                    formula: "",
-                    save: {
-                        ability: "",
-                        dc: null,
-                        scaling: "spell"
-                    }
-                }
+                    activities: {}
+                },
+                effects: [],
+                ownership: {
+                    default: 0
+                },
+                flags: {}
             };
         }
 

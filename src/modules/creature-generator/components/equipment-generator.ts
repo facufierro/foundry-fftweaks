@@ -87,8 +87,9 @@ namespace FFT {
                 }
             }
 
-            // Maybe pick a ranged set (70% chance)
-            if (template.rangedSets && template.rangedSets.length > 0 && Math.random() * 100 <= 70) {
+            // Maybe pick a ranged set (50-80% chance, randomized)
+            const rangedChance = 50 + Math.random() * 30; // 50% to 80%
+            if (template.rangedSets && template.rangedSets.length > 0 && Math.random() * 100 <= rangedChance) {
                 const rangedSet = this.rollForWeaponSet(template.rangedSets);
                 if (rangedSet && rangedSet.items) {
                     itemsToAdd.push(...rangedSet.items);
@@ -107,9 +108,14 @@ namespace FFT {
                 }
             }
 
-            // Roll for individual gear items
+            // Roll for individual gear items with slightly randomized chances
             if (template.gear && template.gear.length > 0) {
-                const gearItems = this.rollForItems(template.gear);
+                const modifiedGear = template.gear.map(item => ({
+                    ...item,
+                    // Add ±10% randomization to gear chances
+                    chance: Math.max(5, Math.min(95, (item.chance || 100) + (Math.random() * 20 - 10)))
+                }));
+                const gearItems = this.rollForItems(modifiedGear);
                 itemsToAdd.push(...gearItems);
             }
 
@@ -163,13 +169,20 @@ namespace FFT {
         private static async addItemsToActor(actor: Actor, lootItems: EquipmentItem[]): Promise<void> {
             const itemsToCreate: any[] = [];
 
+            console.log(`EquipmentGenerator: Processing ${lootItems.length} items for ${actor.name}`);
+
             for (const lootItem of lootItems) {
+                console.log(`EquipmentGenerator: Looking for item "${lootItem.name}"`);
+                
                 // Try to find the item in the compendium
                 let itemData = await this.findItemInCompendium(lootItem.name);
 
                 if (!itemData) {
+                    console.log(`EquipmentGenerator: Item "${lootItem.name}" not found in compendium, creating placeholder`);
                     // Create a placeholder item if not found in compendium
                     itemData = this.createPlaceholderItem(lootItem.name);
+                } else {
+                    console.log(`EquipmentGenerator: Item "${lootItem.name}" found in compendium`);
                 }
 
                 // Set quantity and equipped state
@@ -185,7 +198,10 @@ namespace FFT {
             }
 
             if (itemsToCreate.length > 0) {
+                console.log(`EquipmentGenerator: Adding ${itemsToCreate.length} items to ${actor.name}`);
                 await actor.createEmbeddedDocuments("Item", itemsToCreate);
+            } else {
+                console.log(`EquipmentGenerator: No items to add to ${actor.name}`);
             }
         }
 
@@ -223,17 +239,40 @@ namespace FFT {
                 img: "icons/svg/item-bag.svg",
                 system: {
                     description: {
-                        value: `<p>Placeholder item: ${itemName}</p><p><em>This item was not found in the compendium and needs to be configured manually.</em></p>`
+                        value: `<p><strong>${itemName}</strong></p><p><em>This item was not found in the compendium and needs to be configured manually.</em></p>`,
+                        chat: ""
+                    },
+                    source: {
+                        custom: "",
+                        rules: "2024",
+                        revision: 1
                     },
                     quantity: 1,
-                    weight: 0,
+                    weight: {
+                        value: 0,
+                        units: "lb"
+                    },
                     price: {
                         value: 0,
                         denomination: "gp"
                     },
                     rarity: "common",
-                    identified: true
-                }
+                    identified: true,
+                    unidentified: {
+                        description: ""
+                    },
+                    container: null,
+                    properties: [],
+                    type: {
+                        value: "",
+                        subtype: ""
+                    }
+                },
+                effects: [],
+                ownership: {
+                    default: 0
+                },
+                flags: {}
             };
         }
 

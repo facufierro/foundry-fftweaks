@@ -4,12 +4,16 @@ namespace FFT {
 
         static async applyFeaturesToActor(actor: Actor, template: CreatureTemplate): Promise<boolean> {
             if (!actor || !template.features || template.features.length === 0) {
+                console.log(`FeaturesGenerator: No features to apply for ${actor?.name || 'unknown actor'}`);
                 return false;
             }
 
             try {
                 const targetCR = CRCalculator.getTargetCR(template.type, template.baseCR);
+                console.log(`FeaturesGenerator: Target CR for ${actor.name}: ${targetCR}`);
+                
                 const featuresToAdd = this.rollForFeatures(template.features, targetCR);
+                console.log(`FeaturesGenerator: Rolled ${featuresToAdd.length} features from ${template.features.length} possible features`);
 
                 if (featuresToAdd.length === 0) {
                     console.log(`FeaturesGenerator: No features rolled for ${actor.name}`);
@@ -29,17 +33,27 @@ namespace FFT {
         private static rollForFeatures(features: FeatureItem[], currentCR: number): FeatureItem[] {
             const successfulFeatures: FeatureItem[] = [];
 
+            console.log(`FeaturesGenerator: Rolling for features with CR ${currentCR}`);
+
             for (const feature of features) {
                 // Check CR requirement
                 if (feature.requiresCR && currentCR < feature.requiresCR) {
+                    console.log(`FeaturesGenerator: Skipping "${feature.name}" - requires CR ${feature.requiresCR}, current CR ${currentCR}`);
                     continue;
                 }
 
-                // Roll for chance
-                const chance = feature.chance || 100;
+                // Add ±15% randomization to feature chances
+                const baseChance = feature.chance || 100;
+                const randomizedChance = Math.max(5, Math.min(95, baseChance + (Math.random() * 30 - 15)));
                 const roll = Math.random() * 100;
-                if (roll <= chance) {
+                
+                console.log(`FeaturesGenerator: Rolling for "${feature.name}" - chance ${randomizedChance.toFixed(1)}%, rolled ${roll.toFixed(1)}`);
+                
+                if (roll <= randomizedChance) {
+                    console.log(`FeaturesGenerator: Successfully rolled for "${feature.name}"`);
                     successfulFeatures.push(feature);
+                } else {
+                    console.log(`FeaturesGenerator: Failed roll for "${feature.name}"`);
                 }
             }
 
@@ -49,11 +63,18 @@ namespace FFT {
         private static async addFeaturesToActor(actor: Actor, featureItems: FeatureItem[]): Promise<void> {
             const itemsToCreate: any[] = [];
 
+            console.log(`FeaturesGenerator: Processing ${featureItems.length} features for ${actor.name}`);
+
             for (const featureItem of featureItems) {
+                console.log(`FeaturesGenerator: Looking for feature "${featureItem.name}"`);
+                
                 let featureData = await this.findFeatureInCompendium(featureItem.name);
 
                 if (!featureData) {
+                    console.log(`FeaturesGenerator: Feature "${featureItem.name}" not found in compendium, creating placeholder`);
                     featureData = this.createPlaceholderFeature(featureItem.name);
+                } else {
+                    console.log(`FeaturesGenerator: Feature "${featureItem.name}" found in compendium`);
                 }
 
                 const itemToAdd = foundry.utils.duplicate(featureData);
@@ -61,7 +82,10 @@ namespace FFT {
             }
 
             if (itemsToCreate.length > 0) {
+                console.log(`FeaturesGenerator: Adding ${itemsToCreate.length} features to ${actor.name}`);
                 await actor.createEmbeddedDocuments("Item", itemsToCreate);
+            } else {
+                console.log(`FeaturesGenerator: No features to add to ${actor.name}`);
             }
         }
 
@@ -98,11 +122,14 @@ namespace FFT {
                 img: "icons/svg/upgrade.svg",
                 system: {
                     description: {
-                        value: `<p>Placeholder feature: ${featureName}</p><p><em>This feature was not found in the compendium and needs to be configured manually.</em></p>`
+                        value: `<p><strong>${featureName}</strong></p><p><em>This feature was not found in the compendium and needs to be configured manually.</em></p>`,
+                        chat: "",
+                        unidentified: ""
                     },
-                    type: {
-                        value: "passive",
-                        subtype: ""
+                    source: {
+                        custom: "",
+                        rules: "2024",
+                        revision: 1
                     },
                     activation: {
                         type: "",
@@ -113,6 +140,8 @@ namespace FFT {
                         value: null,
                         units: ""
                     },
+                    cover: null,
+                    crewed: false,
                     target: {
                         value: null,
                         width: null,
@@ -128,7 +157,7 @@ namespace FFT {
                         value: null,
                         max: "",
                         per: null,
-                        recovery: ""
+                        recovery: []
                     },
                     consume: {
                         type: "",
@@ -153,12 +182,22 @@ namespace FFT {
                         dc: null,
                         scaling: "spell"
                     },
+                    type: {
+                        value: "passive",
+                        subtype: ""
+                    },
                     requirements: "",
                     recharge: {
                         value: null,
                         charged: true
                     }
-                }
+                },
+                effects: [],
+                ownership: {
+                    default: 0
+                },
+                flags: {},
+                activities: {}
             };
         }
 

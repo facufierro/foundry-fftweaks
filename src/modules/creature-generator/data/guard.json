@@ -206,27 +206,35 @@
     {
       "name": "Keen Senses",
       "chance": 30,
-      "requiresCR": 0.5
+      "requiresCR": 0.25
     },
     {
       "name": "Pack Tactics",
       "chance": 20,
-      "requiresCR": 1
+      "requiresCR": 0.5
     },
     {
       "name": "Multiattack",
       "chance": 80,
-      "requiresCR": 1
+      "requiresCR": 0.5
     },
     {
       "name": "Parry",
       "chance": 40,
-      "requiresCR": 2
+      "requiresCR": 1
     },
     {
       "name": "Leadership",
       "chance": 60,
-      "requiresCR": 3
+      "requiresCR": 2
+    },
+    {
+      "name": "Alert",
+      "chance": 50
+    },
+    {
+      "name": "Brave",
+      "chance": 40
     }
   ],
   "spells": {
@@ -254,21 +262,21 @@
           "name": "Cure Wounds",
           "level": 1,
           "chance": 40,
-          "requiresCR": 1,
+          "requiresCR": 0.5,
           "prepared": true
         },
         {
           "name": "Shield of Faith",
           "level": 1,
           "chance": 30,
-          "requiresCR": 1,
+          "requiresCR": 0.5,
           "prepared": true
         },
         {
           "name": "Command",
           "level": 1,
           "chance": 25,
-          "requiresCR": 2,
+          "requiresCR": 1,
           "prepared": true
         }
       ],
@@ -277,14 +285,14 @@
           "name": "Hold Person",
           "level": 2,
           "chance": 40,
-          "requiresCR": 3,
+          "requiresCR": 2,
           "prepared": true
         },
         {
           "name": "Aid",
           "level": 2,
           "chance": 30,
-          "requiresCR": 3,
+          "requiresCR": 2,
           "prepared": true
         }
       ]

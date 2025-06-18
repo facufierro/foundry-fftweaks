@@ -12,12 +12,15 @@ namespace FFT {
 
                 const updates: any = {};
 
-                // Update abilities
+                // Update abilities with randomization
                 if (template.stats.abilities) {
                     updates["system.abilities"] = {};
                     for (const [ability, value] of Object.entries(template.stats.abilities)) {
                         if (value !== undefined) {
-                            const scaledValue = Math.max(1, Math.min(30, CRCalculator.scaleStat(value, multiplier)));
+                            // Add randomization: ±2 from base value
+                            const randomVariation = Math.floor(Math.random() * 5) - 2; // -2 to +2
+                            const baseWithVariation = value + randomVariation;
+                            const scaledValue = Math.max(1, Math.min(30, CRCalculator.scaleStat(baseWithVariation, multiplier)));
                             updates[`system.abilities.${ability}.value`] = scaledValue;
                         }
                     }
@@ -42,16 +45,22 @@ namespace FFT {
                     }
                 }
 
-                // Update AC
+                // Update AC with slight randomization
                 if (template.stats.ac) {
-                    const scaledAC = CRCalculator.scaleStat(template.stats.ac, multiplier);
+                    // Add ±1 randomization to AC
+                    const randomVariation = Math.floor(Math.random() * 3) - 1; // -1 to +1
+                    const baseWithVariation = template.stats.ac + randomVariation;
+                    const scaledAC = Math.max(10, CRCalculator.scaleStat(baseWithVariation, multiplier));
                     updates["system.attributes.ac.value"] = scaledAC;
                 }
 
-                // Update HP
+                // Update HP with randomization
                 if (template.stats.hp) {
                     if (template.stats.hp.average) {
-                        const scaledHP = CRCalculator.scaleStat(template.stats.hp.average, multiplier, true);
+                        // Add ±20% randomization to HP
+                        const randomFactor = 0.8 + (Math.random() * 0.4); // 0.8 to 1.2
+                        const randomizedHP = Math.round(template.stats.hp.average * randomFactor);
+                        const scaledHP = CRCalculator.scaleStat(randomizedHP, multiplier, true);
                         updates["system.attributes.hp.value"] = scaledHP;
                         updates["system.attributes.hp.max"] = scaledHP;
                     }
