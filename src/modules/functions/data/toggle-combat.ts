@@ -19,14 +19,13 @@ async function toggleCombat(event: MouseEvent) {
         return;
     }
 
-    let combat = game.combat;
-    if (!combat) {
-        combat = await Combat.create({ scene: canvas.scene?.id });
-    }
-
-    if (event.button === 2) { // Right-click
-        console.debug("Right-click detected.");
-        // Remove selected tokens from combat
+    // Right-click: Remove selected tokens from combat if an encounter exists
+    if (event.button === 2) {
+        if (!game.combat) {
+            console.debug("Right-click ignored: No active combat.");
+            return;
+        }
+        console.debug("Right-click detected: Removing tokens from combat.");
         for (const token of selectedTokens) {
             const combatant = token.document.combatant;
             if (combatant) {
@@ -36,20 +35,21 @@ async function toggleCombat(event: MouseEvent) {
         return;
     }
 
-    if (event.button === 0) { // Left-click
-        // Add selected tokens to combat if not already, and roll initiative
-        const toRollInitiative: Combatant[] = [];
+    // Left-click: Add selected tokens to combat if not already, roll initiative, and start combat
+    if (event.button === 0) {
+        let combat = game.combat;
+        if (!combat) {
+            combat = await Combat.create({ scene: canvas.scene?.id });
+        }
 
+        const toRollInitiative: Combatant[] = [];
         for (const token of selectedTokens) {
             const tokenDocument = token.document;
-
             if (!tokenDocument.combatant) {
                 await tokenDocument.toggleCombatant();
-
                 if (tokenDocument.disposition === -1 && tokenDocument.combatant) {
                     await tokenDocument.combatant.update({ hidden: true });
                 }
-
                 if (tokenDocument.combatant) {
                     toRollInitiative.push(tokenDocument.combatant);
                 }
@@ -60,7 +60,6 @@ async function toggleCombat(event: MouseEvent) {
             const ids = toRollInitiative.map(c => c.id);
             await game.combat.rollInitiative(ids);
 
-            // Begin the combat encounter if not already active
             if (!game.combat.started) {
                 await game.combat.startCombat();
             }
