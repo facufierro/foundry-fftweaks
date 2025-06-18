@@ -1,58 +1,39 @@
 namespace FFT {
-    interface EquipmentItem {
-        name: string;
-        quantity?: number;
-        equipped?: boolean;
-        chance?: number;
-        items?: EquipmentItem[]; // For weapon sets
-    }
-
-    interface EquipmentTemplate {
-        name: string;
-        description: string;
-        items?: EquipmentItem[]; // Legacy support
-        weaponSets?: EquipmentItem[];
-        rangedSets?: EquipmentItem[];
-        armor?: EquipmentItem[];
-        gear?: EquipmentItem[];
-    }
-
     export class EquipmentGenerator {
         private static readonly EQUIPMENT_COMPENDIUM_NAME = "fftweaks.items";
-        private static readonly LOOT_DATA_PATH = "modules/fftweaks/src/modules/creature-generator/data/";
 
-        static async applyEquipmentToActor(actor: Actor): Promise<boolean> {
+        static async applyEquipmentToActor(actor: Actor, template?: CreatureTemplate): Promise<boolean> {
             if (!actor) {
                 console.warn("EquipmentGenerator: No actor provided");
                 return false;
             }
 
-            const actorName = actor.name ? (actor.name as string).toLowerCase().replace(/\s+/g, "-") : null;
-            if (!actorName) {
-                console.warn("EquipmentGenerator: Actor has no name");
-                return false;
-            }
-
-            try {
-                const lootTemplate = await this.loadTemplate(actorName);
-                if (!lootTemplate) {
-                    console.log(`EquipmentGenerator: No loot template found for ${actorName}`);
+            // If template is provided, use it directly, otherwise load from file
+            let equipmentTemplate: EquipmentTemplate | null = null;
+            if (template?.equipment) {
+                equipmentTemplate = template.equipment;
+            } else {
+                // Legacy behavior - load from separate equipment file
+                const actorName = actor.name ? (actor.name as string).toLowerCase().replace(/\s+/g, "-") : null;
+                if (!actorName) {
+                    console.warn("EquipmentGenerator: Actor has no name");
                     return false;
                 }
 
-                // Handle new structured format or legacy format
-                let itemsToAdd: EquipmentItem[] = [];
-
-                if (lootTemplate.weaponSets || lootTemplate.rangedSets || lootTemplate.armor || lootTemplate.gear) {
-                    // New structured format
-                    itemsToAdd = this.rollForStructuredItems(lootTemplate);
-                } else if (lootTemplate.items) {
-                    // Legacy format
-                    itemsToAdd = this.rollForItems(lootTemplate.items);
+                const legacyTemplate = await this.loadLegacyTemplate(actorName);
+                if (!legacyTemplate) {
+                    console.log(`EquipmentGenerator: No equipment template found for ${actorName}`);
+                    return false;
                 }
+                equipmentTemplate = legacyTemplate;
+            }
+
+            try {
+                const itemsToAdd = this.rollForStructuredItems(equipmentTemplate);
+
                 if (itemsToAdd.length === 0) {
-                    console.log(`EquipmentGenerator: No items rolled for ${actorName}`);
-                    return true; // Not an error, just no items to add
+                    console.log(`EquipmentGenerator: No items rolled for ${actor.name}`);
+                    return true;
                 }
 
                 await this.addItemsToActor(actor, itemsToAdd);
@@ -65,14 +46,30 @@ namespace FFT {
             }
         }
 
-        private static async loadTemplate(templateName: string): Promise<EquipmentTemplate | null> {
+        private static async loadLegacyTemplate(templateName: string): Promise<EquipmentTemplate | null> {
             try {
-                const response = await fetch(`${this.LOOT_DATA_PATH}${templateName}.json`);
+                const response = await fetch(`modules/fftweaks/src/modules/creature-generator/data/${templateName}.json`);
                 if (!response.ok) {
                     return null;
                 }
-                const template: EquipmentTemplate = await response.json();
-                return template;
+                const template: any = await response.json();
+                
+                // Convert legacy format to new format
+                if (template.weaponSets || template.rangedSets || template.armor || template.gear) {
+                    return {
+                        weaponSets: template.weaponSets,
+                        rangedSets: template.rangedSets,
+                        armor: template.armor,
+                        gear: template.gear
+                    };
+                } else if (template.items) {
+                    // Legacy format - convert to gear
+                    return {
+                        gear: template.items
+                    };
+                }
+                
+                return null;
             } catch (error) {
                 console.warn(`EquipmentGenerator: Could not load template ${templateName}:`, error);
                 return null;
@@ -244,10 +241,8 @@ namespace FFT {
             let actor: Actor | null = null;
 
             if (actorName) {
-                // Find actor by name
                 actor = game.actors?.find(a => a.name && (a.name as string).toLowerCase() === actorName.toLowerCase()) || null;
             } else {
-                // Use selected token's actor
                 const selectedTokens = canvas.tokens?.controlled || [];
                 if (selectedTokens.length === 1) {
                     actor = selectedTokens[0].actor;
