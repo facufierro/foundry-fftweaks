@@ -86,6 +86,9 @@ namespace FFT {
             const actor = tokenDocument.actor;
             if (!actor) return;
 
+            // Only resize player characters
+            if (actor.type !== "character") return;
+
             const sizeScaleMap: Record<string, number> = {
                 "tiny": 1,
                 "sm": 1.5,
