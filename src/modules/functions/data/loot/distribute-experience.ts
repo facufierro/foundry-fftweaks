@@ -1,9 +1,12 @@
 async function distributeExperience(): Promise<void> {
     const controlledTokens = canvas.tokens?.controlled ?? [];
+    const allSceneTokens = canvas.tokens?.placeables ?? [];
 
-    // Separate player and hostile tokens from selection
+    // Filter for player tokens from selection
     const playerTokens = controlledTokens.filter(t => t.actor?.hasPlayerOwner);
-    const hostileTokens = controlledTokens.filter(t => {
+
+    // Get all dead hostile tokens in the scene (not just selected ones)
+    const hostileTokens = allSceneTokens.filter(t => {
         const actor = t.actor;
         if (!actor) return false;
         const isHostile = t.document.disposition === -1;
@@ -13,14 +16,13 @@ async function distributeExperience(): Promise<void> {
         return isHostile && isEnemy && isDead;
     });
 
-
     // Sanity check
     if (playerTokens.length === 0) {
         ui.notifications?.warn("No player characters selected.");
         return;
     }
 
-    // Calculate default XP from selected hostile tokens only
+    // Calculate default XP from ALL dead hostile tokens in the scene
     let defaultXP = 0;
     for (const token of hostileTokens) {
         const actor = token.actor;
@@ -28,7 +30,6 @@ async function distributeExperience(): Promise<void> {
         const xpVal = Number(foundry.utils.getProperty(actor.system, "details.xp.value")) || 0;
         defaultXP += xpVal;
     }
-
 
     new Dialog({
         title: "Distribute XP",

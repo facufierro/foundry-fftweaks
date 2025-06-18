@@ -1,0 +1,171 @@
+{
+  "name": "Guard",
+  "description": "Standard equipment for city guards with coherent weapon sets",
+  "weaponSets": [
+    {
+      "name": "Sword and Shield",
+      "chance": 40,
+      "items": [
+        {
+          "name": "Longsword",
+          "quantity": 1,
+          "equipped": true
+        },
+        {
+          "name": "Shield",
+          "quantity": 1,
+          "equipped": true
+        }
+      ]
+    },
+    {
+      "name": "Spear and Shield",
+      "chance": 30,
+      "items": [
+        {
+          "name": "Spear",
+          "quantity": 1,
+          "equipped": true
+        },
+        {
+          "name": "Shield",
+          "quantity": 1,
+          "equipped": true
+        }
+      ]
+    },
+    {
+      "name": "Polearm",
+      "chance": 20,
+      "items": [
+        {
+          "name": "Halberd",
+          "quantity": 1,
+          "equipped": true
+        }
+      ]
+    },
+    {
+      "name": "Dual Weapons",
+      "chance": 10,
+      "items": [
+        {
+          "name": "Shortsword",
+          "quantity": 1,
+          "equipped": true
+        },
+        {
+          "name": "Dagger",
+          "quantity": 1,
+          "equipped": true
+        }
+      ]
+    }
+  ],
+  "rangedSets": [
+    {
+      "name": "Light Crossbow",
+      "chance": 50,
+      "items": [
+        {
+          "name": "Light Crossbow",
+          "quantity": 1,
+          "equipped": true
+        },
+        {
+          "name": "Crossbow Bolts",
+          "quantity": 20,
+          "equipped": false
+        }
+      ]
+    },
+    {
+      "name": "Shortbow",
+      "chance": 30,
+      "items": [
+        {
+          "name": "Shortbow",
+          "quantity": 1,
+          "equipped": true
+        },
+        {
+          "name": "Arrows",
+          "quantity": 20,
+          "equipped": false
+        }
+      ]
+    },
+    {
+      "name": "Javelins",
+      "chance": 20,
+      "items": [
+        {
+          "name": "Javelin",
+          "quantity": 5,
+          "equipped": true
+        }
+      ]
+    }
+  ],
+  "armor": [
+    {
+      "name": "Chain Mail",
+      "chance": 60,
+      "equipped": true
+    },
+    {
+      "name": "Leather Armor",
+      "chance": 30,
+      "equipped": true
+    },
+    {
+      "name": "Studded Leather Armor",
+      "chance": 10,
+      "equipped": true
+    }
+  ],
+  "gear": [
+    {
+      "name": "Potion of Healing",
+      "quantity": 1,
+      "equipped": false,
+      "chance": 40
+    },
+    {
+      "name": "Rations (1 day)",
+      "quantity": 2,
+      "equipped": false,
+      "chance": 70
+    },
+    {
+      "name": "Torch",
+      "quantity": 3,
+      "equipped": false,
+      "chance": 80
+    },
+    {
+      "name": "Rope, Hempen (50 feet)",
+      "quantity": 1,
+      "equipped": false,
+      "chance": 30
+    },
+    {
+      "name": "Manacles",
+      "quantity": 1,
+      "equipped": false,
+      "chance": 25
+    },
+    {
+      "name": "Signal Whistle",
+      "quantity": 1,
+      "equipped": false,
+      "chance": 35
+    },
+    {
+      "name": "Belt Pouch",
+      "quantity": 1,
+      "equipped": false,
+      "chance": 60
+    }
+  ]
+}
