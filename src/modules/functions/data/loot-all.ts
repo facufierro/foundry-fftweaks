@@ -70,7 +70,7 @@ function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, {
             const isSelected = selection !== undefined;
             const borderColor = isSelected ? selection.color : "transparent";
             const claimedLabel = isSelected 
-                ? `<div class="item-claimed-portrait" style="position: absolute; bottom: -2px; right: -2px; width: 10px; height: 10px; border: 2px solid ${selection.color}; border-radius: 50%; overflow: hidden; z-index: 2; box-shadow: 0 1px 3px rgba(0,0,0,0.7); background: white;"><img src="${getPlayerPortrait(selection.playerId, playerTokens)}" style="width: 100%; height: 100%; object-fit: cover;" /></div>`
+                ? `<div class="item-claimed-portrait" style="position: absolute; bottom: -3px; right: -3px; width: 24px; height: 24px; border: 2px solid ${selection.color}; border-radius: 50%; overflow: hidden; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.7); background: white;"><img src="${getPlayerPortrait(selection.playerId, playerTokens)}" style="width: 100%; height: 100%; object-fit: cover;" /></div>`
                 : "";
 
             return `
@@ -78,7 +78,7 @@ function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, {
                      data-item-id="${item.id}"
                      data-npc-id="${npc.id}"
                      style="display: inline-block; margin: 0 2px; border: 3px solid ${borderColor}; border-radius: 5px; position: relative; box-shadow: ${isSelected ? `0 0 8px ${selection.color}55` : '0 2px 4px rgba(0,0,0,0.1)'};">
-                    <img src="${item.img}" width="30" height="30" style="display: block; border-radius: 2px;" />
+                    <img src="${item.img}" width="38" height="38" style="display: block; border-radius: 2px;" />
                     ${claimedLabel}
                 </div>
             `;
@@ -103,9 +103,8 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
             <div class="player-selector" 
                  data-token-id="${token.id}"
                  data-player-color="${color}"
-                 style="display: inline-block; margin: 5px; padding: 10px; border: 3px solid transparent; border-radius: 8px; cursor: pointer; text-align: center; background: rgba(0,0,0,0.1);">
-                <img src="${actor.img}" width="60" height="60" style="border-radius: 50%; display: block; margin: 0 auto 5px auto;" />
-                <div style="font-size: 12px; font-weight: bold;">${actor.name}</div>
+                 style="display: inline-block; margin: 8px; padding: 5px; border: 3px solid transparent; border-radius: 50%; cursor: pointer; background: rgba(0,0,0,0.1); width: 70px; height: 70px; overflow: hidden;">
+                <img src="${actor.img}" width="60" height="60" style="border-radius: 50%; display: block; width: 100%; height: 100%; object-fit: cover;" />
             </div>
         `;
     }).join("");
@@ -113,18 +112,13 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
     const dialog: Dialog<DialogOptions> = new Dialog({
         title: "Loot Corpses",
         content: `
-            <div style="margin-bottom: 15px;">
-                <h3>Select a Character:</h3>
-                <div id="player-selection" style="display: flex; flex-wrap: wrap; justify-content: center;">
+            <div style="margin-bottom: 20px;">
+                <div id="player-selection" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
                     ${playerIcons}
                 </div>
-                <div id="selected-player" style="text-align: center; margin-top: 10px; font-weight: bold; display: none;">
-                    Selected: <span id="selected-player-name"></span>
-                </div>
             </div>
-            <div style="border-top: 2px solid #ccc; padding-top: 15px;">
-                <h3>Click items to assign to selected character:</h3>
-                <div style="max-height: 50vh; overflow-y: auto;">
+            <div style="border-top: 2px solid #ccc; padding-top: 20px;">
+                <div style="max-height: 70vh; overflow-y: auto;">
                     ${lootSections}
                 </div>
             </div>
@@ -148,6 +142,19 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
                     word-wrap: break-word;
                     display: none;
                 }
+                /* Force buttons to bottom */
+                .dialog .dialog-buttons {
+                    position: absolute !important;
+                    bottom: 0 !important;
+                    left: 0 !important;
+                    right: 0 !important;
+                    margin: 0 !important;
+                    border-top: 1px solid #ccc !important;
+                    background: #f0f0f0 !important;
+                }
+                .dialog .dialog-content {
+                    padding-bottom: 60px !important;
+                }
             </style>
         `,
         buttons: {
@@ -155,10 +162,9 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
                 icon: '<i class="fas fa-hand-holding"></i>',
                 label: "Distribute Selected",
                 callback: async () => distributeLoot(playerTokens, deadNpcs, selectedItems)
-            },
-            cancel: { label: "Close" }
+            }
         },
-        default: "cancel",
+        default: "distribute",
         render: (html) => {
             setupItemClickHandler($(html), playerTokens, selectedItems, dialog);
             
@@ -171,6 +177,10 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
                 }
             });
         }
+    }, {
+        width: 800,
+        height: 600,
+        resizable: true
     });
 
     dialog.render(true);
@@ -294,9 +304,6 @@ function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItem
             "background": `${playerColor}33`
         });
 
-        $(html).find("#selected-player").show();
-        $(html).find("#selected-player-name").text(token.actor.name);
-
         // Enable item selection
         $(html).find(".item-selector").removeClass("disabled");
     });
@@ -348,7 +355,7 @@ function updateItemVisuals(itemElement: JQuery, selection: { playerId: string; c
         itemElement.find('.item-claimed-portrait').remove();
         
         // Add new portrait label
-        const claimedPortrait = `<div class="item-claimed-portrait" style="position: absolute; bottom: -2px; right: -2px; width: 10px; height: 10px; border: 2px solid ${selection.color}; border-radius: 50%; overflow: hidden; z-index: 2; box-shadow: 0 1px 3px rgba(0,0,0,0.7); background: white;"><img src="${getPlayerPortrait(selection.playerId, playerTokens)}" style="width: 100%; height: 100%; object-fit: cover;" /></div>`;
+        const claimedPortrait = `<div class="item-claimed-portrait" style="position: absolute; bottom: -3px; right: -3px; width: 24px; height: 24px; border: 2px solid ${selection.color}; border-radius: 50%; overflow: hidden; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.7); background: white;"><img src="${getPlayerPortrait(selection.playerId, playerTokens)}" style="width: 100%; height: 100%; object-fit: cover;" /></div>`;
         itemElement.append(claimedPortrait);
     } else {
         // Item is unclaimed - remove border, glow, and label
