@@ -69,16 +69,13 @@ function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, {
             const selection = selectedItems[item.id];
             const isSelected = selection !== undefined;
             const borderColor = isSelected ? selection.color : "transparent";
-            const tooltip = isSelected
-                ? `Claimed by ${game.users.get(selection.playerId)?.name}`
-                : "Click to assign to a selected player token";
 
             return `
                 <div class="item-selector" 
                      data-item-id="${item.id}"
                      data-npc-id="${npc.id}"
                      style="display: inline-block; margin: 0 2px; border: 2px solid ${borderColor}; border-radius: 3px;">
-                    <img src="${item.img}" width="30" height="30" data-tooltip="${tooltip}"/>
+                    <img src="${item.img}" width="30" height="30" />
                 </div>
             `;
         }).join("");
@@ -134,15 +131,18 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
                 .item-selector { cursor: pointer; transition: border 0.2s; }
                 .item-selector:hover { border-color: #ff6400 !important; }
                 .item-selector.disabled { opacity: 0.5; cursor: not-allowed; }
-                [data-tooltip]:hover:after {
-                    content: attr(data-tooltip);
+                .loot-tooltip {
                     position: absolute;
-                    background: rgba(0,0,0,0.8);
+                    background: rgba(0,0,0,0.9);
                     color: white;
-                    padding: 4px 8px;
+                    padding: 6px 10px;
                     border-radius: 4px;
                     font-size: 12px;
-                    z-index: 1000;
+                    z-index: 10000;
+                    pointer-events: none;
+                    max-width: 200px;
+                    word-wrap: break-word;
+                    display: none;
                 }
             </style>
         `,
@@ -217,6 +217,46 @@ function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItem
     let selectedPlayerId: string | null = null;
     let selectedPlayerColor: string = "#000000";
 
+    // Create tooltip element
+    const tooltip = $('<div class="loot-tooltip"></div>').appendTo('body');
+
+    // Handle tooltip showing/hiding
+    $(html).on('mouseenter', '.item-selector img', function(ev) {
+        const itemId = $(this).closest('.item-selector').data('item-id');
+        const selection = selectedItems[itemId];
+        const tooltipText = selection
+            ? `Claimed by ${playerTokens.find(t => t.actor?.id === selection.playerId)?.actor?.name || "Unknown"}`
+            : "Click to assign to selected character";
+        
+        tooltip.text(tooltipText).show();
+        
+        const mouseX = ev.pageX;
+        const mouseY = ev.pageY;
+        
+        tooltip.css({
+            left: mouseX + 10,
+            top: mouseY - 30
+        });
+    });
+
+    $(html).on('mouseleave', '.item-selector img', function() {
+        tooltip.hide();
+    });
+
+    $(html).on('mousemove', '.item-selector img', function(ev) {
+        if (tooltip.is(':visible')) {
+            tooltip.css({
+                left: ev.pageX + 10,
+                top: ev.pageY - 30
+            });
+        }
+    });
+
+    // Clean up tooltip when dialog closes
+    $(html).closest('.dialog').on('remove', function() {
+        tooltip.remove();
+    });
+
     // Handle player selection
     $(html).find(".player-selector").click((ev) => {
         const tokenId = $(ev.currentTarget).data("token-id");
@@ -274,12 +314,7 @@ function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItem
             $(ev.currentTarget).css("border-color", selectedPlayerColor);
         }
 
-        // Update tooltip
-        const selection = selectedItems[itemId];
-        const tooltip = selection
-            ? `Claimed by ${game.users.get(selection.playerId)?.name || "Unknown"}`
-            : "Click to assign to selected character";
-        $(ev.currentTarget).find("img").attr("data-tooltip", tooltip);
+        // No need to update data-tooltip attribute since we removed it
     });
 
     // Initially disable item selection until a player is chosen
