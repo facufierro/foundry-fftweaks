@@ -60,7 +60,13 @@ namespace FFT {
                     iconClass: btn.icon,
                     onClick: btn.onClick
                 });
-                rows.get(btn.row)!.push(button.element);
+                const element = button.element;
+                // Handle right-click as onClick via contextmenu
+                element.addEventListener('contextmenu', (event: MouseEvent) => {
+                    event.preventDefault();
+                    btn.onClick(event);
+                });
+                rows.get(btn.row)!.push(element);
             }
 
             [...rows.keys()].sort().forEach((rowNum) => {

@@ -1,13 +1,14 @@
 async function toggleCombat(event: MouseEvent) {
-    // Handle modifier keys that do not require tokens
-    if (event.ctrlKey && game.combat) {
-        // Ctrl+click: End the current combat
-        await game.combat.endCombat();
-        return;
-    }
+    console.debug("MouseEvent details:", {
+        button: event.button,
+        shiftKey: event.shiftKey,
+        ctrlKey: event.ctrlKey,
+        altKey: event.altKey
+    });
 
-    if (event.altKey && game.combat) {
-        // Alt+click: Delete the current combat encounter
+    // Handle modifier keys
+    if (event.shiftKey && game.combat) {
+        // Shift+click: Delete the current combat encounter
         await game.combat.delete();
         return;
     }
@@ -23,8 +24,9 @@ async function toggleCombat(event: MouseEvent) {
         combat = await Combat.create({ scene: canvas.scene?.id });
     }
 
-    if (event.shiftKey) {
-        // Shift+click: Remove selected tokens from combat
+    if (event.button === 2) { // Right-click
+        console.debug("Right-click detected.");
+        // Remove selected tokens from combat
         for (const token of selectedTokens) {
             const combatant = token.document.combatant;
             if (combatant) {
@@ -34,32 +36,34 @@ async function toggleCombat(event: MouseEvent) {
         return;
     }
 
-    // Default: Add selected tokens to combat if not already, and roll initiative
-    const toRollInitiative: Combatant[] = [];
+    if (event.button === 0) { // Left-click
+        // Add selected tokens to combat if not already, and roll initiative
+        const toRollInitiative: Combatant[] = [];
 
-    for (const token of selectedTokens) {
-        const tokenDocument = token.document;
+        for (const token of selectedTokens) {
+            const tokenDocument = token.document;
 
-        if (!tokenDocument.combatant) {
-            await tokenDocument.toggleCombatant();
+            if (!tokenDocument.combatant) {
+                await tokenDocument.toggleCombatant();
 
-            if (tokenDocument.disposition === -1 && tokenDocument.combatant) {
-                await tokenDocument.combatant.update({ hidden: true });
-            }
+                if (tokenDocument.disposition === -1 && tokenDocument.combatant) {
+                    await tokenDocument.combatant.update({ hidden: true });
+                }
 
-            if (tokenDocument.combatant) {
-                toRollInitiative.push(tokenDocument.combatant);
+                if (tokenDocument.combatant) {
+                    toRollInitiative.push(tokenDocument.combatant);
+                }
             }
         }
-    }
 
-    if (toRollInitiative.length > 0 && game.combat) {
-        const ids = toRollInitiative.map(c => c.id);
-        await game.combat.rollInitiative(ids);
+        if (toRollInitiative.length > 0 && game.combat) {
+            const ids = toRollInitiative.map(c => c.id);
+            await game.combat.rollInitiative(ids);
 
-        // Begin the combat encounter if not already active
-        if (!game.combat.started) {
-            await game.combat.startCombat();
+            // Begin the combat encounter if not already active
+            if (!game.combat.started) {
+                await game.combat.startCombat();
+            }
         }
     }
 }
