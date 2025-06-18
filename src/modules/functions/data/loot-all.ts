@@ -97,12 +97,24 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
     const playerIcons = playerTokens.map((token, index) => {
         const actor = token.actor;
         if (!actor) return "";
-        const colors = ["#ff4444", "#44ff44", "#4444ff", "#ffff44", "#ff44ff", "#44ffff"];
-        const color = colors[index % colors.length];
+        
+        // Get the user color from the actor's player owner (not GM)
+        let userColor = "#ff4444"; // fallback color
+        const ownership = actor.ownership;
+        for (const [userId, level] of Object.entries(ownership)) {
+            if (level === 3 && userId !== "default") { // OWNER level
+                const user = game.users?.get(userId);
+                if (user?.color && user.role !== 4) { // role 4 is GAMEMASTER
+                    userColor = user.color;
+                    break;
+                }
+            }
+        }
+        
         return `
             <div class="player-selector" 
                  data-token-id="${token.id}"
-                 data-player-color="${color}"
+                 data-player-color="${userColor}"
                  style="display: inline-block; margin: 8px; padding: 5px; border: 3px solid transparent; border-radius: 50%; cursor: pointer; background: rgba(0,0,0,0.1); width: 70px; height: 70px; overflow: hidden;">
                 <img src="${actor.img}" width="60" height="60" style="border-radius: 50%; display: block; width: 100%; height: 100%; object-fit: cover;" />
             </div>
