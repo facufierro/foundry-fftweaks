@@ -10,6 +10,8 @@ namespace FFT {
                 const multiplier = CRCalculator.getCRMultiplier(targetCR, template.baseCR);
                 const profBonus = CRCalculator.getProficiencyBonus(targetCR);
 
+                console.log(`StatsGenerator: Processing ${actor.name} - Base CR: ${template.baseCR}, Target CR: ${targetCR}, Type: ${template.type}, Multiplier: ${multiplier.toFixed(2)}`);
+
                 const updates: any = {};
 
                 // Update abilities with randomization
@@ -17,10 +19,11 @@ namespace FFT {
                     updates["system.abilities"] = {};
                     for (const [ability, value] of Object.entries(template.stats.abilities)) {
                         if (value !== undefined) {
-                            // Add randomization: ±2 from base value
-                            const randomVariation = Math.floor(Math.random() * 5) - 2; // -2 to +2
+                            // Add randomization: ±1 from base value
+                            const randomVariation = Math.floor(Math.random() * 3) - 1; // -1 to +1
                             const baseWithVariation = value + randomVariation;
-                            const scaledValue = Math.max(1, Math.min(30, CRCalculator.scaleStat(baseWithVariation, multiplier)));
+                            // Very conservative scaling for abilities - max +/-3 from base
+                            const scaledValue = Math.max(8, Math.min(18, Math.round(baseWithVariation + (multiplier - 1) * 2)));
                             updates[`system.abilities.${ability}.value`] = scaledValue;
                         }
                     }
@@ -45,22 +48,23 @@ namespace FFT {
                     }
                 }
 
-                // Update AC with slight randomization
+                // Set a reasonable base AC that equipment can build upon
                 if (template.stats.ac) {
-                    // Add ±1 randomization to AC
-                    const randomVariation = Math.floor(Math.random() * 3) - 1; // -1 to +1
-                    const baseWithVariation = template.stats.ac + randomVariation;
-                    const scaledAC = Math.max(10, CRCalculator.scaleStat(baseWithVariation, multiplier));
-                    updates["system.attributes.ac.value"] = scaledAC;
+                    // Just use the template AC as a base - don't scale it
+                    updates["system.attributes.ac.flat"] = template.stats.ac;
+                    updates["system.attributes.ac.calc"] = "flat";
                 }
 
-                // Update HP with randomization
+                // No need to set it manually here
+
+                // Update HP with conservative scaling
                 if (template.stats.hp) {
                     if (template.stats.hp.average) {
                         // Add ±20% randomization to HP
                         const randomFactor = 0.8 + (Math.random() * 0.4); // 0.8 to 1.2
-                        const randomizedHP = Math.round(template.stats.hp.average * randomFactor);
-                        const scaledHP = CRCalculator.scaleStat(randomizedHP, multiplier, true);
+                        const baseHPWithVariation = Math.round(template.stats.hp.average * randomFactor);
+                        // More conservative HP scaling - only scale by a small amount
+                        const scaledHP = Math.max(1, Math.round(baseHPWithVariation * Math.pow(multiplier, 0.5)));
                         updates["system.attributes.hp.value"] = scaledHP;
                         updates["system.attributes.hp.max"] = scaledHP;
                     }
@@ -110,10 +114,24 @@ namespace FFT {
                     updates["system.traits.ci.value"] = template.stats.conditionImmunities;
                 }
 
-                // Update CR
+                // Update CR - ensuring proper format for FoundryVTT D&D 5e
                 updates["system.details.cr"] = targetCR;
+                console.log(`StatsGenerator: Setting CR to ${targetCR} for ${actor.name}`);
+                
+                // Also update XP value based on CR (FoundryVTT calculates this automatically but we'll set it)
+                const xpTable: Record<number, number> = {
+                    0: 10, 0.125: 25, 0.25: 50, 0.5: 100,
+                    1: 200, 2: 450, 3: 700, 4: 1100, 5: 1800,
+                    6: 2300, 7: 2900, 8: 3900, 9: 5000, 10: 5900,
+                    11: 7200, 12: 8400, 13: 10000, 14: 11500, 15: 13000,
+                    16: 15000, 17: 18000, 18: 20000, 19: 22000, 20: 25000
+                };
+                const xpValue = xpTable[targetCR] || Math.round(targetCR * 200);
+                updates["system.details.xp.value"] = xpValue;
+                console.log(`StatsGenerator: Setting XP to ${xpValue} for CR ${targetCR}`);
 
                 // Apply all updates
+                console.log(`StatsGenerator: Applying updates to ${actor.name}:`, updates);
                 await actor.update(updates);
 
                 console.log(`StatsGenerator: Successfully updated stats for ${actor.name} (CR: ${targetCR})`);

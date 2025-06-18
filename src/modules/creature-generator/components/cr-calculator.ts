@@ -47,29 +47,36 @@ namespace FFT {
         }
 
         static getTargetCR(creatureType: CreatureType, baseCR?: number): number {
-            const partyInfo = baseCR ? { calculatedCR: baseCR } : this.calculatePartyCR();
+            const partyInfo = this.calculatePartyCR();
             const adjustment = this.CR_ADJUSTMENTS[creatureType] || 0;
             
-            return Math.max(0.125, partyInfo.calculatedCR + adjustment);
+            // Use the party's calculated CR as the base, not the template's baseCR
+            const targetCR = Math.max(0.125, partyInfo.calculatedCR + adjustment);
+            
+            console.log(`CRCalculator: Party CR: ${partyInfo.calculatedCR}, Type: ${creatureType}, Adjustment: ${adjustment}, Final CR: ${targetCR}`);
+            
+            return targetCR;
         }
 
         static getCRMultiplier(targetCR: number, baseCR: number): number {
             // Returns a multiplier for scaling stats based on CR difference
-            if (baseCR === 0) return 1;
+            if (baseCR === 0 || targetCR === baseCR) return 1;
             
             const crDifference = targetCR - baseCR;
             
-            // Each CR difference represents roughly 1.5x power increase/decrease
-            return Math.pow(1.5, crDifference);
+            // Much more conservative scaling - each CR represents roughly 1.15x power increase/decrease
+            // Cap the multiplier to prevent extreme scaling
+            const multiplier = Math.pow(1.15, crDifference);
+            return Math.max(0.5, Math.min(3.0, multiplier)); // Cap between 0.5x and 3x
         }
 
         static scaleStat(baseStat: number, multiplier: number, isHP: boolean = false): number {
             if (isHP) {
-                // HP scales more aggressively
-                return Math.round(baseStat * Math.pow(multiplier, 1.2));
+                // HP scales more aggressively but still conservative
+                return Math.round(baseStat * Math.pow(multiplier, 0.8));
             } else {
-                // Other stats scale more conservatively
-                return Math.round(baseStat * Math.pow(multiplier, 0.6));
+                // Other stats scale very conservatively
+                return Math.round(baseStat * Math.pow(multiplier, 0.3));
             }
         }
 
