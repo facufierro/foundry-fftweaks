@@ -1,0 +1,1274 @@
+{
+    "weapons": {
+        "simple": {
+            "melee": [
+                {
+                    "name": "Club",
+                    "crRange": [
+                        0,
+                        2
+                    ]
+                },
+                {
+                    "name": "Dagger",
+                    "crRange": [
+                        0,
+                        5
+                    ]
+                },
+                {
+                    "name": "Dart",
+                    "crRange": [
+                        0,
+                        3
+                    ]
+                },
+                {
+                    "name": "Handaxe",
+                    "crRange": [
+                        0,
+                        4
+                    ]
+                },
+                {
+                    "name": "Javelin",
+                    "crRange": [
+                        0,
+                        6
+                    ]
+                },
+                {
+                    "name": "Light Hammer",
+                    "crRange": [
+                        0,
+                        4
+                    ]
+                },
+                {
+                    "name": "Mace",
+                    "crRange": [
+                        0,
+                        5
+                    ]
+                },
+                {
+                    "name": "Quarterstaff",
+                    "crRange": [
+                        0,
+                        3
+                    ]
+                },
+                {
+                    "name": "Sickle",
+                    "crRange": [
+                        0,
+                        3
+                    ]
+                },
+                {
+                    "name": "Spear",
+                    "crRange": [
+                        0,
+                        8
+                    ]
+                },
+                {
+                    "name": "Unarmed Strike",
+                    "crRange": [
+                        0,
+                        2
+                    ]
+                }
+            ],
+            "ranged": [
+                {
+                    "name": "Light Crossbow",
+                    "crRange": [
+                        0,
+                        8
+                    ]
+                },
+                {
+                    "name": "Dart",
+                    "crRange": [
+                        0,
+                        3
+                    ]
+                },
+                {
+                    "name": "Shortbow",
+                    "crRange": [
+                        0,
+                        10
+                    ]
+                },
+                {
+                    "name": "Sling",
+                    "crRange": [
+                        0,
+                        4
+                    ]
+                }
+            ]
+        },
+        "martial": {
+            "melee": [
+                {
+                    "name": "Battleaxe",
+                    "crRange": [
+                        1,
+                        12
+                    ]
+                },
+                {
+                    "name": "Flail",
+                    "crRange": [
+                        2,
+                        10
+                    ]
+                },
+                {
+                    "name": "Glaive",
+                    "crRange": [
+                        3,
+                        15
+                    ]
+                },
+                {
+                    "name": "Greataxe",
+                    "crRange": [
+                        2,
+                        18
+                    ]
+                },
+                {
+                    "name": "Greatsword",
+                    "crRange": [
+                        3,
+                        20
+                    ]
+                },
+                {
+                    "name": "Halberd",
+                    "crRange": [
+                        2,
+                        16
+                    ]
+                },
+                {
+                    "name": "Lance",
+                    "crRange": [
+                        4,
+                        14
+                    ]
+                },
+                {
+                    "name": "Longsword",
+                    "crRange": [
+                        1,
+                        15
+                    ]
+                },
+                {
+                    "name": "Maul",
+                    "crRange": [
+                        3,
+                        16
+                    ]
+                },
+                {
+                    "name": "Morningstar",
+                    "crRange": [
+                        1,
+                        8
+                    ]
+                },
+                {
+                    "name": "Pike",
+                    "crRange": [
+                        2,
+                        12
+                    ]
+                },
+                {
+                    "name": "Rapier",
+                    "crRange": [
+                        2,
+                        12
+                    ]
+                },
+                {
+                    "name": "Scimitar",
+                    "crRange": [
+                        1,
+                        10
+                    ]
+                },
+                {
+                    "name": "Shortsword",
+                    "crRange": [
+                        1,
+                        12
+                    ]
+                },
+                {
+                    "name": "Trident",
+                    "crRange": [
+                        1,
+                        8
+                    ]
+                },
+                {
+                    "name": "War Pick",
+                    "crRange": [
+                        2,
+                        10
+                    ]
+                },
+                {
+                    "name": "Warhammer",
+                    "crRange": [
+                        2,
+                        12
+                    ]
+                },
+                {
+                    "name": "Whip",
+                    "crRange": [
+                        2,
+                        8
+                    ]
+                }
+            ],
+            "ranged": [
+                {
+                    "name": "Blowgun",
+                    "crRange": [
+                        0,
+                        6
+                    ]
+                },
+                {
+                    "name": "Hand Crossbow",
+                    "crRange": [
+                        2,
+                        12
+                    ]
+                },
+                {
+                    "name": "Heavy Crossbow",
+                    "crRange": [
+                        3,
+                        15
+                    ]
+                },
+                {
+                    "name": "Longbow",
+                    "crRange": [
+                        2,
+                        18
+                    ]
+                },
+                {
+                    "name": "Net",
+                    "crRange": [
+                        1,
+                        8
+                    ]
+                }
+            ]
+        },
+        "magical": {
+            "weapons": [
+                {
+                    "name": "Weapon +1",
+                    "crRange": [
+                        5,
+                        10
+                    ]
+                },
+                {
+                    "name": "Weapon +2",
+                    "crRange": [
+                        10,
+                        16
+                    ]
+                },
+                {
+                    "name": "Weapon +3",
+                    "crRange": [
+                        16,
+                        25
+                    ]
+                },
+                {
+                    "name": "Flame Tongue",
+                    "crRange": [
+                        8,
+                        15
+                    ]
+                },
+                {
+                    "name": "Frost Brand",
+                    "crRange": [
+                        10,
+                        18
+                    ]
+                },
+                {
+                    "name": "Defender",
+                    "crRange": [
+                        12,
+                        20
+                    ]
+                },
+                {
+                    "name": "Vorpal Sword",
+                    "crRange": [
+                        18,
+                        30
+                    ]
+                },
+                {
+                    "name": "Holy Avenger",
+                    "crRange": [
+                        20,
+                        30
+                    ]
+                },
+                {
+                    "name": "Sun Blade",
+                    "crRange": [
+                        15,
+                        25
+                    ]
+                }
+            ]
+        }
+    },
+    "armor": {
+        "light": [
+            {
+                "name": "Padded Armor",
+                "crRange": [
+                    0,
+                    2
+                ]
+            },
+            {
+                "name": "Leather Armor",
+                "crRange": [
+                    0,
+                    6
+                ]
+            },
+            {
+                "name": "Studded Leather Armor",
+                "crRange": [
+                    1,
+                    10
+                ]
+            }
+        ],
+        "medium": [
+            {
+                "name": "Hide Armor",
+                "crRange": [
+                    0,
+                    4
+                ]
+            },
+            {
+                "name": "Chain Shirt",
+                "crRange": [
+                    2,
+                    12
+                ]
+            },
+            {
+                "name": "Scale Mail",
+                "crRange": [
+                    3,
+                    15
+                ]
+            },
+            {
+                "name": "Breastplate",
+                "crRange": [
+                    4,
+                    18
+                ]
+            },
+            {
+                "name": "Half Plate Armor",
+                "crRange": [
+                    6,
+                    20
+                ]
+            }
+        ],
+        "heavy": [
+            {
+                "name": "Ring Mail",
+                "crRange": [
+                    1,
+                    6
+                ]
+            },
+            {
+                "name": "Chain Mail",
+                "crRange": [
+                    2,
+                    12
+                ]
+            },
+            {
+                "name": "Splint Armor",
+                "crRange": [
+                    5,
+                    18
+                ]
+            },
+            {
+                "name": "Plate Armor",
+                "crRange": [
+                    8,
+                    25
+                ]
+            }
+        ],
+        "shields": [
+            {
+                "name": "Shield",
+                "crRange": [
+                    0,
+                    20
+                ]
+            }
+        ],
+        "magical": [
+            {
+                "name": "Leather Armor +1",
+                "crRange": [
+                    3,
+                    8
+                ]
+            },
+            {
+                "name": "Studded Leather Armor +1",
+                "crRange": [
+                    4,
+                    10
+                ]
+            },
+            {
+                "name": "Chain Shirt +1",
+                "crRange": [
+                    5,
+                    12
+                ]
+            },
+            {
+                "name": "Scale Mail +1",
+                "crRange": [
+                    6,
+                    15
+                ]
+            },
+            {
+                "name": "Breastplate +1",
+                "crRange": [
+                    7,
+                    18
+                ]
+            },
+            {
+                "name": "Half Plate Armor +1",
+                "crRange": [
+                    8,
+                    20
+                ]
+            },
+            {
+                "name": "Chain Mail +1",
+                "crRange": [
+                    5,
+                    12
+                ]
+            },
+            {
+                "name": "Splint Armor +1",
+                "crRange": [
+                    8,
+                    18
+                ]
+            },
+            {
+                "name": "Plate Armor +1",
+                "crRange": [
+                    10,
+                    25
+                ]
+            },
+            {
+                "name": "Leather Armor +2",
+                "crRange": [
+                    8,
+                    15
+                ]
+            },
+            {
+                "name": "Studded Leather Armor +2",
+                "crRange": [
+                    9,
+                    16
+                ]
+            },
+            {
+                "name": "Chain Shirt +2",
+                "crRange": [
+                    10,
+                    17
+                ]
+            },
+            {
+                "name": "Scale Mail +2",
+                "crRange": [
+                    11,
+                    18
+                ]
+            },
+            {
+                "name": "Breastplate +2",
+                "crRange": [
+                    12,
+                    20
+                ]
+            },
+            {
+                "name": "Half Plate Armor +2",
+                "crRange": [
+                    13,
+                    22
+                ]
+            },
+            {
+                "name": "Chain Mail +2",
+                "crRange": [
+                    10,
+                    17
+                ]
+            },
+            {
+                "name": "Splint Armor +2",
+                "crRange": [
+                    13,
+                    20
+                ]
+            },
+            {
+                "name": "Plate Armor +2",
+                "crRange": [
+                    15,
+                    27
+                ]
+            },
+            {
+                "name": "Leather Armor +3",
+                "crRange": [
+                    15,
+                    25
+                ]
+            },
+            {
+                "name": "Studded Leather Armor +3",
+                "crRange": [
+                    16,
+                    26
+                ]
+            },
+            {
+                "name": "Chain Shirt +3",
+                "crRange": [
+                    17,
+                    27
+                ]
+            },
+            {
+                "name": "Scale Mail +3",
+                "crRange": [
+                    18,
+                    28
+                ]
+            },
+            {
+                "name": "Breastplate +3",
+                "crRange": [
+                    19,
+                    29
+                ]
+            },
+            {
+                "name": "Half Plate Armor +3",
+                "crRange": [
+                    20,
+                    30
+                ]
+            },
+            {
+                "name": "Chain Mail +3",
+                "crRange": [
+                    17,
+                    27
+                ]
+            },
+            {
+                "name": "Splint Armor +3",
+                "crRange": [
+                    20,
+                    28
+                ]
+            },
+            {
+                "name": "Plate Armor +3",
+                "crRange": [
+                    22,
+                    30
+                ]
+            },
+            {
+                "name": "Shield +1",
+                "crRange": [
+                    3,
+                    12
+                ]
+            },
+            {
+                "name": "Shield +2",
+                "crRange": [
+                    8,
+                    18
+                ]
+            },
+            {
+                "name": "Shield +3",
+                "crRange": [
+                    15,
+                    25
+                ]
+            },
+            {
+                "name": "Adamantine Armor",
+                "crRange": [
+                    10,
+                    20
+                ]
+            },
+            {
+                "name": "Mithral Armor",
+                "crRange": [
+                    8,
+                    18
+                ]
+            },
+            {
+                "name": "Dragon Scale Mail",
+                "crRange": [
+                    12,
+                    22
+                ]
+            }
+        ]
+    },
+    "accessories": {
+        "rings": [
+            {
+                "name": "Ring of Protection",
+                "crRange": [
+                    5,
+                    15
+                ]
+            },
+            {
+                "name": "Ring of Evasion",
+                "crRange": [
+                    8,
+                    18
+                ]
+            },
+            {
+                "name": "Ring of Resistance",
+                "crRange": [
+                    6,
+                    16
+                ]
+            },
+            {
+                "name": "Ring of Spell Storing",
+                "crRange": [
+                    10,
+                    20
+                ]
+            },
+            {
+                "name": "Ring of Invisibility",
+                "crRange": [
+                    12,
+                    22
+                ]
+            },
+            {
+                "name": "Ring of Regeneration",
+                "crRange": [
+                    15,
+                    25
+                ]
+            },
+            {
+                "name": "Ring of Wishes",
+                "crRange": [
+                    20,
+                    30
+                ]
+            }
+        ],
+        "cloaks": [
+            {
+                "name": "Cloak of Resistance",
+                "crRange": [
+                    3,
+                    12
+                ]
+            },
+            {
+                "name": "Cloak of Elvenkind",
+                "crRange": [
+                    6,
+                    16
+                ]
+            },
+            {
+                "name": "Cloak of Protection",
+                "crRange": [
+                    5,
+                    15
+                ]
+            },
+            {
+                "name": "Cloak of Displacement",
+                "crRange": [
+                    10,
+                    20
+                ]
+            },
+            {
+                "name": "Cloak of the Manta Ray",
+                "crRange": [
+                    8,
+                    18
+                ]
+            }
+        ],
+        "amulets": [
+            {
+                "name": "Amulet of Health",
+                "crRange": [
+                    8,
+                    18
+                ]
+            },
+            {
+                "name": "Amulet of Natural Armor",
+                "crRange": [
+                    4,
+                    14
+                ]
+            },
+            {
+                "name": "Amulet of Proof against Detection",
+                "crRange": [
+                    6,
+                    16
+                ]
+            },
+            {
+                "name": "Amulet of the Planes",
+                "crRange": [
+                    15,
+                    25
+                ]
+            }
+        ],
+        "boots": [
+            {
+                "name": "Boots of Speed",
+                "crRange": [
+                    8,
+                    18
+                ]
+            },
+            {
+                "name": "Boots of Elvenkind",
+                "crRange": [
+                    4,
+                    14
+                ]
+            },
+            {
+                "name": "Boots of Striding and Springing",
+                "crRange": [
+                    6,
+                    16
+                ]
+            },
+            {
+                "name": "Boots of Levitation",
+                "crRange": [
+                    10,
+                    20
+                ]
+            },
+            {
+                "name": "Winged Boots",
+                "crRange": [
+                    12,
+                    22
+                ]
+            }
+        ],
+        "gloves": [
+            {
+                "name": "Gauntlets of Ogre Power",
+                "crRange": [
+                    6,
+                    16
+                ]
+            },
+            {
+                "name": "Gloves of Dexterity",
+                "crRange": [
+                    8,
+                    18
+                ]
+            },
+            {
+                "name": "Gloves of Swimming and Climbing",
+                "crRange": [
+                    4,
+                    14
+                ]
+            },
+            {
+                "name": "Gloves of Missile Snaring",
+                "crRange": [
+                    10,
+                    20
+                ]
+            }
+        ]
+    },
+    "consumables": {
+        "potions": [
+            {
+                "name": "Potion of Healing",
+                "crRange": [
+                    0,
+                    5
+                ]
+            },
+            {
+                "name": "Potion of Greater Healing",
+                "crRange": [
+                    3,
+                    10
+                ]
+            },
+            {
+                "name": "Potion of Superior Healing",
+                "crRange": [
+                    8,
+                    15
+                ]
+            },
+            {
+                "name": "Potion of Supreme Healing",
+                "crRange": [
+                    15,
+                    25
+                ]
+            },
+            {
+                "name": "Potion of Cure Disease",
+                "crRange": [
+                    2,
+                    8
+                ]
+            },
+            {
+                "name": "Potion of Fire Resistance",
+                "crRange": [
+                    4,
+                    12
+                ]
+            },
+            {
+                "name": "Potion of Cold Resistance",
+                "crRange": [
+                    4,
+                    12
+                ]
+            },
+            {
+                "name": "Potion of Lightning Resistance",
+                "crRange": [
+                    4,
+                    12
+                ]
+            },
+            {
+                "name": "Potion of Acid Resistance",
+                "crRange": [
+                    4,
+                    12
+                ]
+            },
+            {
+                "name": "Potion of Poison Resistance",
+                "crRange": [
+                    3,
+                    10
+                ]
+            },
+            {
+                "name": "Potion of Invisibility",
+                "crRange": [
+                    6,
+                    16
+                ]
+            },
+            {
+                "name": "Potion of Flying",
+                "crRange": [
+                    10,
+                    20
+                ]
+            },
+            {
+                "name": "Potion of Giant Strength",
+                "crRange": [
+                    8,
+                    18
+                ]
+            }
+        ],
+        "scrolls": [
+            {
+                "name": "Spell Scroll (Cantrip)",
+                "crRange": [
+                    0,
+                    3
+                ]
+            },
+            {
+                "name": "Spell Scroll (1st Level)",
+                "crRange": [
+                    1,
+                    5
+                ]
+            },
+            {
+                "name": "Spell Scroll (2nd Level)",
+                "crRange": [
+                    3,
+                    8
+                ]
+            },
+            {
+                "name": "Spell Scroll (3rd Level)",
+                "crRange": [
+                    5,
+                    12
+                ]
+            },
+            {
+                "name": "Spell Scroll (4th Level)",
+                "crRange": [
+                    7,
+                    15
+                ]
+            },
+            {
+                "name": "Spell Scroll (5th Level)",
+                "crRange": [
+                    9,
+                    18
+                ]
+            },
+            {
+                "name": "Spell Scroll (6th Level)",
+                "crRange": [
+                    11,
+                    20
+                ]
+            },
+            {
+                "name": "Spell Scroll (7th Level)",
+                "crRange": [
+                    13,
+                    22
+                ]
+            },
+            {
+                "name": "Spell Scroll (8th Level)",
+                "crRange": [
+                    15,
+                    25
+                ]
+            },
+            {
+                "name": "Spell Scroll (9th Level)",
+                "crRange": [
+                    17,
+                    30
+                ]
+            }
+        ]
+    },
+    "gear": {
+        "adventuring": [
+            {
+                "name": "Backpack",
+                "crRange": [
+                    0,
+                    10
+                ]
+            },
+            {
+                "name": "Bedroll",
+                "crRange": [
+                    0,
+                    8
+                ]
+            },
+            {
+                "name": "Rope, Hempen (50 feet)",
+                "crRange": [
+                    0,
+                    12
+                ]
+            },
+            {
+                "name": "Rope, Silk (50 feet)",
+                "crRange": [
+                    2,
+                    15
+                ]
+            },
+            {
+                "name": "Torch",
+                "crRange": [
+                    0,
+                    6
+                ]
+            },
+            {
+                "name": "Lantern, Bullseye",
+                "crRange": [
+                    1,
+                    10
+                ]
+            },
+            {
+                "name": "Lantern, Hooded",
+                "crRange": [
+                    1,
+                    8
+                ]
+            },
+            {
+                "name": "Oil (flask)",
+                "crRange": [
+                    0,
+                    8
+                ]
+            },
+            {
+                "name": "Tinderbox",
+                "crRange": [
+                    0,
+                    6
+                ]
+            },
+            {
+                "name": "Rations (1 day)",
+                "crRange": [
+                    0,
+                    15
+                ]
+            },
+            {
+                "name": "Waterskin",
+                "crRange": [
+                    0,
+                    12
+                ]
+            },
+            {
+                "name": "Grappling Hook",
+                "crRange": [
+                    1,
+                    10
+                ]
+            },
+            {
+                "name": "Crowbar",
+                "crRange": [
+                    0,
+                    8
+                ]
+            },
+            {
+                "name": "Hammer",
+                "crRange": [
+                    0,
+                    6
+                ]
+            },
+            {
+                "name": "Piton",
+                "crRange": [
+                    0,
+                    8
+                ]
+            },
+            {
+                "name": "Thieves' Tools",
+                "crRange": [
+                    1,
+                    12
+                ]
+            },
+            {
+                "name": "Manacles",
+                "crRange": [
+                    1,
+                    10
+                ]
+            },
+            {
+                "name": "Chain (10 feet)",
+                "crRange": [
+                    2,
+                    12
+                ]
+            },
+            {
+                "name": "Lock",
+                "crRange": [
+                    1,
+                    8
+                ]
+            },
+            {
+                "name": "Mirror, Steel",
+                "crRange": [
+                    0,
+                    6
+                ]
+            },
+            {
+                "name": "Signal Whistle",
+                "crRange": [
+                    0,
+                    8
+                ]
+            },
+            {
+                "name": "Spyglass",
+                "crRange": [
+                    3,
+                    15
+                ]
+            },
+            {
+                "name": "Magnifying Glass",
+                "crRange": [
+                    1,
+                    8
+                ]
+            }
+        ],
+        "ammunition": [
+            {
+                "name": "Arrows",
+                "crRange": [
+                    0,
+                    18
+                ]
+            },
+            {
+                "name": "Bolts",
+                "crRange": [
+                    0,
+                    15
+                ]
+            },
+            {
+                "name": "Sling Bullets",
+                "crRange": [
+                    0,
+                    4
+                ]
+            },
+            {
+                "name": "Blowgun Needles",
+                "crRange": [
+                    0,
+                    6
+                ]
+            },
+            {
+                "name": "Arrows +1",
+                "crRange": [
+                    5,
+                    15
+                ]
+            },
+            {
+                "name": "Bolts +1",
+                "crRange": [
+                    5,
+                    15
+                ]
+            },
+            {
+                "name": "Arrows +2",
+                "crRange": [
+                    10,
+                    20
+                ]
+            },
+            {
+                "name": "Bolts +2",
+                "crRange": [
+                    10,
+                    20
+                ]
+            },
+            {
+                "name": "Arrows +3",
+                "crRange": [
+                    15,
+                    25
+                ]
+            },
+            {
+                "name": "Bolts +3",
+                "crRange": [
+                    15,
+                    25
+                ]
+            }
+        ]
+    }
+}
