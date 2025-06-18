@@ -29,15 +29,17 @@ namespace FFT {
             const averageLevel = Math.round(totalLevel / playerActors.length);
             const partySize = playerActors.length;
 
-            // Calculate base CR using average level
-            let baseCR = Math.max(1, Math.round(averageLevel / 4));
+            // Calculate base CR using average level (more conservative scaling)
+            let baseCR = Math.max(0.125, Math.round(averageLevel * 0.75));
             
             // Adjust for party size (standard is 4 players)
             if (partySize < 4) {
-                baseCR = Math.max(1, baseCR - 1);
+                baseCR = Math.max(0.125, baseCR - 1);
             } else if (partySize > 4) {
-                baseCR += Math.floor((partySize - 4) / 2);
+                baseCR += Math.floor((partySize - 4) / 3); // More conservative party size scaling
             }
+
+            console.log(`CRCalculator: Party - Average Level: ${averageLevel}, Size: ${partySize}, Base CR: ${baseCR}`);
 
             return {
                 averageLevel,

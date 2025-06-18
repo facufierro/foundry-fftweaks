@@ -1,10 +1,11 @@
 namespace FFT {
     export class FeaturesGenerator {
         private static readonly FEATURES_COMPENDIUM_NAME = "fftweaks.features";
+        private static featuresList: any = null;
 
         static async applyFeaturesToActor(actor: Actor, template: CreatureTemplate): Promise<boolean> {
-            if (!actor || !template.features || template.features.length === 0) {
-                console.log(`FeaturesGenerator: No features to apply for ${actor?.name || 'unknown actor'}`);
+            if (!actor) {
+                console.log(`FeaturesGenerator: No actor provided`);
                 return false;
             }
 
@@ -12,11 +13,17 @@ namespace FFT {
                 const targetCR = CRCalculator.getTargetCR(template.type, template.baseCR);
                 console.log(`FeaturesGenerator: Target CR for ${actor.name}: ${targetCR}`);
                 
-                const featuresToAdd = this.rollForFeatures(template.features, targetCR);
-                console.log(`FeaturesGenerator: Rolled ${featuresToAdd.length} features from ${template.features.length} possible features`);
+                // Load features list if not already loaded
+                if (!this.featuresList) {
+                    await this.loadFeaturesList();
+                }
+
+                // Generate features from the features list based on CR
+                const featuresToAdd = await this.generateFeaturesForCR(targetCR, template.type);
+                console.log(`FeaturesGenerator: Generated ${featuresToAdd.length} features for CR ${targetCR}`);
 
                 if (featuresToAdd.length === 0) {
-                    console.log(`FeaturesGenerator: No features rolled for ${actor.name}`);
+                    console.log(`FeaturesGenerator: No features generated for ${actor.name}`);
                     return true;
                 }
 
@@ -30,34 +37,75 @@ namespace FFT {
             }
         }
 
-        private static rollForFeatures(features: FeatureItem[], currentCR: number): FeatureItem[] {
-            const successfulFeatures: FeatureItem[] = [];
-
-            console.log(`FeaturesGenerator: Rolling for features with CR ${currentCR}`);
-
-            for (const feature of features) {
-                // Check CR requirement
-                if (feature.requiresCR && currentCR < feature.requiresCR) {
-                    console.log(`FeaturesGenerator: Skipping "${feature.name}" - requires CR ${feature.requiresCR}, current CR ${currentCR}`);
-                    continue;
+        private static async loadFeaturesList(): Promise<void> {
+            try {
+                const response = await fetch('/modules/fftweaks/src/modules/creature-generator/data/features-list.json');
+                if (!response.ok) {
+                    throw new Error(`Failed to load features list: ${response.statusText}`);
                 }
+                this.featuresList = await response.json();
+                console.log('FeaturesGenerator: Features list loaded successfully');
+            } catch (error) {
+                console.error('FeaturesGenerator: Error loading features list:', error);
+                this.featuresList = { combat: { offensive: [], defensive: [], tactical: [] }, social: { leadership: [] } };
+            }
+        }
 
-                // Add ±15% randomization to feature chances
-                const baseChance = feature.chance || 100;
-                const randomizedChance = Math.max(5, Math.min(95, baseChance + (Math.random() * 30 - 15)));
+        private static async generateFeaturesForCR(targetCR: number, creatureType: string): Promise<FeatureItem[]> {
+            const features: FeatureItem[] = [];
+            
+            // Limit number of features based on CR
+            let maxFeatures = 1; // Standard creatures get 1 feature
+            if (targetCR >= 5) maxFeatures = 2; // Higher CR can get 2
+            if (targetCR >= 10) maxFeatures = 3; // Very high CR can get 3
+
+            console.log(`FeaturesGenerator: Generating up to ${maxFeatures} features for CR ${targetCR}`);
+
+            // Select features from different categories
+            const categories = [
+                this.featuresList.combat.offensive,
+                this.featuresList.combat.defensive,
+                this.featuresList.combat.tactical,
+                this.featuresList.social.leadership
+            ];
+
+            const availableFeatures = categories.flat().filter((feature: any) => 
+                this.isFeatureAvailableForCR(feature, targetCR)
+            );
+
+            console.log(`FeaturesGenerator: ${availableFeatures.length} features available for CR ${targetCR}`);
+
+            // Randomly select features
+            for (let i = 0; i < maxFeatures && availableFeatures.length > 0; i++) {
+                // Base chance starts at 40% for first feature, decreases for additional features
+                const baseChance = 40 - (i * 15);
                 const roll = Math.random() * 100;
                 
-                console.log(`FeaturesGenerator: Rolling for "${feature.name}" - chance ${randomizedChance.toFixed(1)}%, rolled ${roll.toFixed(1)}`);
+                console.log(`FeaturesGenerator: Rolling for feature ${i + 1} - chance ${baseChance}%, rolled ${roll.toFixed(1)}`);
                 
-                if (roll <= randomizedChance) {
-                    console.log(`FeaturesGenerator: Successfully rolled for "${feature.name}"`);
-                    successfulFeatures.push(feature);
-                } else {
-                    console.log(`FeaturesGenerator: Failed roll for "${feature.name}"`);
+                if (roll <= baseChance) {
+                    const randomIndex = Math.floor(Math.random() * availableFeatures.length);
+                    const selectedFeature = availableFeatures.splice(randomIndex, 1)[0];
+                    
+                    features.push({
+                        name: selectedFeature.name,
+                        chance: 100 // Already rolled, so guarantee it gets added
+                    });
+                    
+                    console.log(`FeaturesGenerator: Selected feature "${selectedFeature.name}"`);
                 }
             }
 
-            return successfulFeatures;
+            return features;
+        }
+
+        private static isFeatureAvailableForCR(feature: any, cr: number): boolean {
+            if (!feature.crRange || feature.crRange.length !== 2) {
+                return true; // If no CR range specified, available for all CRs
+            }
+            
+            const [minCR, maxCR] = feature.crRange;
+            return cr >= minCR && cr <= maxCR;
         }
 
         private static async addFeaturesToActor(actor: Actor, featureItems: FeatureItem[]): Promise<void> {
