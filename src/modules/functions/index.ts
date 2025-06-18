@@ -7,6 +7,7 @@ namespace FFT {
         static distributeGold = distributeGold;
         static distributeExperience = distributeExperience;
         static createDefaultLevels = createDefaultLevels;
+        static lootCorpses = lootCorpses;
 
         // classes
         static runicInscription = runicInscription;
