@@ -67,13 +67,26 @@ namespace FFT {
         
         private static async findItemByName(itemName: string): Promise<Item | null> {
             try {
-                // Search in world items first
+                // Search in fftweaks.items compendium first
+                const fftweaksItemsPack = game.packs.get("fftweaks.items");
+                if (fftweaksItemsPack) {
+                    await fftweaksItemsPack.getIndex();
+                    const entry = fftweaksItemsPack.index.find((i: any) => i.name?.toLowerCase() === itemName.toLowerCase());
+                    if (entry) {
+                        const document = await fftweaksItemsPack.getDocument(entry._id!);
+                        if (document && (document as any).documentName === "Item") {
+                            return document as Item;
+                        }
+                    }
+                }
+                
+                // Search in world items
                 let item = game.items?.find((i: any) => i.name?.toLowerCase() === itemName.toLowerCase());
                 if (item) return item;
                 
-                // Search in compendiums
+                // Search in other compendiums as fallback
                 for (const pack of game.packs) {
-                    if (pack.metadata.type === "Item") {
+                    if (pack.metadata.type === "Item" && pack.collection !== "fftweaks.items") {
                         await pack.getIndex();
                         const entry = pack.index.find((i: any) => i.name?.toLowerCase() === itemName.toLowerCase());
                         if (entry) {
@@ -96,9 +109,26 @@ namespace FFT {
         
         static async findWeaponByType(weaponType: string): Promise<Item | null> {
             try {
-                // Search for weapons of specific type in compendiums
+                // Search in fftweaks.items compendium first
+                const fftweaksItemsPack = game.packs.get("fftweaks.items");
+                if (fftweaksItemsPack) {
+                    await fftweaksItemsPack.getIndex();
+                    const entries = fftweaksItemsPack.index.filter((i: any) => 
+                        i.name?.toLowerCase().includes(weaponType.toLowerCase())
+                    );
+                    
+                    if (entries.length > 0) {
+                        const randomEntry = entries[Math.floor(Math.random() * entries.length)];
+                        const document = await fftweaksItemsPack.getDocument(randomEntry._id!);
+                        if (document && (document as any).documentName === "Item" && (document as any).system?.type?.value === "weapon") {
+                            return document as Item;
+                        }
+                    }
+                }
+                
+                // Search for weapons of specific type in other compendiums
                 for (const pack of game.packs) {
-                    if (pack.metadata.type === "Item") {
+                    if (pack.metadata.type === "Item" && pack.collection !== "fftweaks.items") {
                         await pack.getIndex();
                         const entries = pack.index.filter((i: any) => 
                             i.name?.toLowerCase().includes(weaponType.toLowerCase())
@@ -124,9 +154,26 @@ namespace FFT {
         
         static async findArmorByType(armorType: string): Promise<Item | null> {
             try {
-                // Search for armor of specific type in compendiums
+                // Search in fftweaks.items compendium first
+                const fftweaksItemsPack = game.packs.get("fftweaks.items");
+                if (fftweaksItemsPack) {
+                    await fftweaksItemsPack.getIndex();
+                    const entries = fftweaksItemsPack.index.filter((i: any) => 
+                        i.name?.toLowerCase().includes(armorType.toLowerCase())
+                    );
+                    
+                    if (entries.length > 0) {
+                        const randomEntry = entries[Math.floor(Math.random() * entries.length)];
+                        const document = await fftweaksItemsPack.getDocument(randomEntry._id!);
+                        if (document && (document as any).documentName === "Item" && (document as any).system?.type?.value === "equipment") {
+                            return document as Item;
+                        }
+                    }
+                }
+                
+                // Search for armor of specific type in other compendiums
                 for (const pack of game.packs) {
-                    if (pack.metadata.type === "Item") {
+                    if (pack.metadata.type === "Item" && pack.collection !== "fftweaks.items") {
                         await pack.getIndex();
                         const entries = pack.index.filter((i: any) => 
                             i.name?.toLowerCase().includes(armorType.toLowerCase())

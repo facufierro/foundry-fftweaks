@@ -149,16 +149,29 @@ namespace FFT {
         
         private static async findFeatureByName(featureName: string): Promise<Item | null> {
             try {
-                // Search in world items first
+                // Search in fftweaks.features compendium first
+                const fftweaksFeaturesPack = game.packs.get("fftweaks.features");
+                if (fftweaksFeaturesPack) {
+                    await fftweaksFeaturesPack.getIndex();
+                    const entry = fftweaksFeaturesPack.index.find((i: any) => i.name?.toLowerCase() === featureName.toLowerCase());
+                    if (entry) {
+                        const document = await fftweaksFeaturesPack.getDocument(entry._id!);
+                        if (document && ((document as Item).type === "feat" || (document as Item).type === "feature")) {
+                            return document as Item;
+                        }
+                    }
+                }
+                
+                // Search in world items
                 let feature = game.items?.find((i: any) => 
                     i.name?.toLowerCase() === featureName.toLowerCase() && 
                     (i.type === "feat" || i.type === "feature")
                 );
                 if (feature) return feature;
                 
-                // Search in compendiums
+                // Search in other compendiums as fallback
                 for (const pack of game.packs) {
-                    if (pack.metadata.type === "Item") {
+                    if (pack.metadata.type === "Item" && pack.collection !== "fftweaks.features") {
                         await pack.getIndex();
                         const entry = pack.index.find((i: any) => i.name?.toLowerCase() === featureName.toLowerCase());
                         if (entry) {

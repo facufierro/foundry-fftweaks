@@ -38,8 +38,8 @@ namespace FFT {
                         const templateName = this.determineTemplate(actor);
                         const creatureType = this.determineCreatureType(actor);
                         
-                        await CreatureGeneratorComponent.generateCreature(
-                            actor.name || "Generated Creature",
+                        await CreatureGeneratorComponent.enhanceExistingActor(
+                            actor,
                             templateName,
                             { creatureType }
                         );
@@ -61,6 +61,11 @@ namespace FFT {
                 // Main generation function
                 generateCreature: async (actorName: string, templateName: string = "guard", options: any = {}) => {
                     return await CreatureGeneratorComponent.generateCreature(actorName, templateName, options);
+                },
+
+                // Enhance existing actor
+                enhanceActor: async (actor: Actor, templateName: string = "guard", options: any = {}) => {
+                    return await CreatureGeneratorComponent.enhanceExistingActor(actor, templateName, options);
                 },
                 
                 // Convenience functions for each creature type

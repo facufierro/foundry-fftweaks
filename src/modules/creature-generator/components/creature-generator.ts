@@ -123,6 +123,62 @@ namespace FFT {
             }
         }
         
+        static async enhanceExistingActor(
+            actor: Actor,
+            templateName: string = "guard", 
+            options: GenerationOptions = {}
+        ): Promise<Actor | null> {
+            try {
+                if (!this.initialized) {
+                    await this.initialize();
+                }
+                
+                const template = this.templates.get(templateName);
+                if (!template) {
+                    console.error(`FFTweaks | Template not found: ${templateName}`);
+                    return null;
+                }
+                
+                // Set defaults
+                const partyLevel = options.partyLevel ?? this.getAveragePartyLevel();
+                const partySize = options.partySize ?? this.getPartySize();
+                const difficulty = options.difficulty ?? "medium";
+                const creatureType = options.creatureType ?? "standard";
+                
+                // Calculate target CR
+                const crResult = CRCalculator.calculateTargetCR(partyLevel, partySize, difficulty, creatureType);
+                console.log(`FFTweaks | Target CR for ${creatureType}: ${crResult.finalCR} (base: ${crResult.targetCR}, modifier: ${crResult.modifier})`);
+                
+                // Get variant template
+                const variant = template.variants[creatureType];
+                
+                // Generate and apply stats
+                const scaledStats = StatsGenerator.generateStats(variant.stats, crResult.finalCR);
+                await this.applyStats(actor, scaledStats);
+                
+                // Generate equipment
+                await EquipmentGenerator.generateEquipment(variant.equipment, actor);
+                
+                // Generate features
+                await FeaturesGenerator.generateFeatures(variant.features, crResult.finalCR, creatureType, actor);
+                
+                // Generate spells if template has them
+                if (variant.spells) {
+                    await SpellsGenerator.generateSpells(variant.spells, crResult.finalCR, creatureType, actor);
+                }
+                
+                // Finalize CR
+                await this.finalizeCR(actor, crResult.finalCR);
+                
+                console.log(`FFTweaks | Successfully enhanced ${creatureType} ${actor.name} (CR ${crResult.finalCR})`);
+                return actor;
+                
+            } catch (error) {
+                console.error("FFTweaks | Error enhancing existing actor:", error);
+                return null;
+            }
+        }
+        
         private static async createActor(name: string, type: string, cr: number): Promise<Actor | null> {
             try {
                 const actorData: any = {

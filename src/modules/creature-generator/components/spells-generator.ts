@@ -103,15 +103,28 @@ namespace FFT {
         
         private static async findSpellByName(spellName: string): Promise<Item | null> {
             try {
-                // Search in world items first
+                // Search in fftweaks.spells compendium first
+                const fftweaksSpellsPack = game.packs.get("fftweaks.spells");
+                if (fftweaksSpellsPack) {
+                    await fftweaksSpellsPack.getIndex();
+                    const entry = fftweaksSpellsPack.index.find((i: any) => i.name?.toLowerCase() === spellName.toLowerCase());
+                    if (entry) {
+                        const document = await fftweaksSpellsPack.getDocument(entry._id!);
+                        if (document && (document as Item).type === "spell") {
+                            return document as Item;
+                        }
+                    }
+                }
+                
+                // Search in world items
                 let spell = game.items?.find((i: any) => 
                     i.name?.toLowerCase() === spellName.toLowerCase() && i.type === "spell"
                 );
                 if (spell) return spell;
                 
-                // Search in compendiums
+                // Search in other compendiums as fallback
                 for (const pack of game.packs) {
-                    if (pack.metadata.type === "Item") {
+                    if (pack.metadata.type === "Item" && pack.collection !== "fftweaks.spells") {
                         await pack.getIndex();
                         const entry = pack.index.find((i: any) => i.name?.toLowerCase() === spellName.toLowerCase());
                         if (entry) {
