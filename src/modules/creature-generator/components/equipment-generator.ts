@@ -5,10 +5,15 @@ namespace FFT {
         slot: "primary" | "secondary" | "none";
     }
 
+    export interface WeaponSetOption {
+        chance: number;
+        items: WeaponItem[];
+    }
+
     export interface EquipmentTemplate {
-        weaponSets: WeaponItem[];
-        altWeaponSets: WeaponItem[];
-        thirdWeaponSets: WeaponItem[];
+        weaponSets: WeaponSetOption[];
+        altWeaponSets: WeaponSetOption[];
+        thirdWeaponSets: WeaponSetOption[];
         armor: { name: string; chance: number }[];
         gear: { name: string; chance: number }[];
     }
@@ -50,7 +55,7 @@ namespace FFT {
          * This replaces the old auto-classification system with explicit control
          */
         public static generateEquipment(template: EquipmentTemplate): EquipmentResult {
-            console.log("🛡️ FFTweaks | Starting EXPLICIT equipment generation with direct item array format");
+            console.log("🛡️ FFTweaks | Starting EXPLICIT equipment generation with chance-based option selection");
             
             const result: EquipmentResult = {
                 weapons: {
@@ -65,20 +70,29 @@ namespace FFT {
 
             // Set 1: Primary weapon set from weaponSets
             if (template.weaponSets && template.weaponSets.length > 0) {
-                console.log(`🗡️ FFTweaks | Processing ${template.weaponSets.length} items in weapon set 1`);
-                this.processWeaponSetItems(template.weaponSets, result, 1);
+                const selectedOption1 = this.selectByChance(template.weaponSets);
+                if (selectedOption1) {
+                    console.log(`🗡️ FFTweaks | Selected weapon set 1 with ${selectedOption1.items.length} items`);
+                    this.processWeaponSetItems(selectedOption1.items, result, 1);
+                }
             }
 
             // Set 2: Alternative weapon set from altWeaponSets
             if (template.altWeaponSets && template.altWeaponSets.length > 0) {
-                console.log(`🏹 FFTweaks | Processing ${template.altWeaponSets.length} items in weapon set 2`);
-                this.processWeaponSetItems(template.altWeaponSets, result, 2);
+                const selectedOption2 = this.selectByChance(template.altWeaponSets);
+                if (selectedOption2) {
+                    console.log(`🏹 FFTweaks | Selected weapon set 2 with ${selectedOption2.items.length} items`);
+                    this.processWeaponSetItems(selectedOption2.items, result, 2);
+                }
             }
 
             // Set 3: Third weapon set from thirdWeaponSets
             if (template.thirdWeaponSets && template.thirdWeaponSets.length > 0) {
-                console.log(`⚔️ FFTweaks | Processing ${template.thirdWeaponSets.length} items in weapon set 3`);
-                this.processWeaponSetItems(template.thirdWeaponSets, result, 3);
+                const selectedOption3 = this.selectByChance(template.thirdWeaponSets);
+                if (selectedOption3) {
+                    console.log(`⚔️ FFTweaks | Selected weapon set 3 with ${selectedOption3.items.length} items`);
+                    this.processWeaponSetItems(selectedOption3.items, result, 3);
+                }
             }
 
             // Generate armor
@@ -324,22 +338,33 @@ namespace FFT {
         public static validateWeaponSets(template: EquipmentTemplate): boolean {
             console.log("🔍 FFTweaks | Validating EXPLICIT weapon set structure");
             
-            const validateSet = (sets: WeaponItem[], setName: string): boolean => {
+            const validateSet = (sets: WeaponSetOption[], setName: string): boolean => {
                 if (!sets) return true; // Empty sets are valid
                 
                 for (let i = 0; i < sets.length; i++) {
-                    const item = sets[i];
-                    if (!item.name) {
-                        console.error(`❌ FFTweaks | ${setName}[${i}] missing name`);
+                    const option = sets[i];
+                    if (option.chance === undefined || option.chance < 0) {
+                        console.error(`❌ FFTweaks | ${setName}[${i}] invalid chance: ${option.chance}`);
                         return false;
                     }
-                    if (item.quantity === undefined || item.quantity < 1) {
-                        console.error(`❌ FFTweaks | ${setName}[${i}] invalid quantity: ${item.quantity}`);
+                    if (!option.items || !Array.isArray(option.items)) {
+                        console.error(`❌ FFTweaks | ${setName}[${i}] missing or invalid items array`);
                         return false;
                     }
-                    if (!["primary", "secondary", "none"].includes(item.slot)) {
-                        console.error(`❌ FFTweaks | ${setName}[${i}] invalid slot: ${item.slot}`);
-                        return false;
+                    for (let j = 0; j < option.items.length; j++) {
+                        const item = option.items[j];
+                        if (!item.name) {
+                            console.error(`❌ FFTweaks | ${setName}[${i}].items[${j}] missing name`);
+                            return false;
+                        }
+                        if (item.quantity === undefined || item.quantity < 1) {
+                            console.error(`❌ FFTweaks | ${setName}[${i}].items[${j}] invalid quantity: ${item.quantity}`);
+                            return false;
+                        }
+                        if (!["primary", "secondary", "none"].includes(item.slot)) {
+                            console.error(`❌ FFTweaks | ${setName}[${i}].items[${j}] invalid slot: ${item.slot}`);
+                            return false;
+                        }
                     }
                 }
                 return true;

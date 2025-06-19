@@ -29,19 +29,28 @@ namespace FFT {
     
     export interface Equipment {
         weaponSets: Array<{
-            name: string;
-            quantity: number;
-            slot: "primary" | "secondary" | "none";
+            chance: number;
+            items: Array<{
+                name: string;
+                quantity: number;
+                slot: "primary" | "secondary" | "none";
+            }>;
         }>;
         altWeaponSets: Array<{
-            name: string;
-            quantity: number;
-            slot: "primary" | "secondary" | "none";
+            chance: number;
+            items: Array<{
+                name: string;
+                quantity: number;
+                slot: "primary" | "secondary" | "none";
+            }>;
         }>;
         thirdWeaponSets: Array<{
-            name: string;
-            quantity: number;
-            slot: "primary" | "secondary" | "none";
+            chance: number;
+            items: Array<{
+                name: string;
+                quantity: number;
+                slot: "primary" | "secondary" | "none";
+            }>;
         }>;
         armor: Array<{
             name: string;
