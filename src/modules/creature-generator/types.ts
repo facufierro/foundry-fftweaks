@@ -30,13 +30,18 @@ namespace FFT {
     export interface Equipment {
         weaponSets: Array<{
             name: string;
-            items: string[];
-            chance: number;
+            quantity: number;
+            slot: "primary" | "secondary" | "none";
         }>;
-        rangedSets: Array<{
+        altWeaponSets: Array<{
             name: string;
-            items: string[];
-            chance: number;
+            quantity: number;
+            slot: "primary" | "secondary" | "none";
+        }>;
+        thirdWeaponSets: Array<{
+            name: string;
+            quantity: number;
+            slot: "primary" | "secondary" | "none";
         }>;
         armor: Array<{
             name: string;

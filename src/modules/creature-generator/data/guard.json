@@ -32,23 +32,23 @@
       },
       "equipment": {
         "weaponSets": [
-          {
-            "name": "Spear and Shield",
-            "items": ["Spear", "Shield"],
-            "chance": 60
-          },
-          {
-            "name": "Club",
-            "items": ["Club"],
-            "chance": 40
-          }
+          { "name": "Spear", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Club", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Club", "quantity": 1, "slot": "primary" },
+          { "name": "Club", "quantity": 1, "slot": "secondary" }
         ],
-        "rangedSets": [
-          {
-            "name": "Light Crossbow",
-            "items": ["Light Crossbow", "Bolts"],
-            "chance": 30
-          }
+        "altWeaponSets": [
+          { "name": "Light Crossbow", "quantity": 1, "slot": "primary" },
+          { "name": "Bolts", "quantity": 20, "slot": "none" },
+          { "name": "Sling", "quantity": 1, "slot": "primary" },
+          { "name": "Sling Bullets", "quantity": 20, "slot": "none" }
+        ],
+        "thirdWeaponSets": [
+          { "name": "Dagger", "quantity": 1, "slot": "primary" },
+          { "name": "Dagger", "quantity": 1, "slot": "primary" },
+          { "name": "Dagger", "quantity": 1, "slot": "secondary" }
         ],
         "armor": [
           {
@@ -100,28 +100,25 @@
       },
       "equipment": {
         "weaponSets": [
-          {
-            "name": "Spear and Shield",
-            "items": ["Spear", "Shield"],
-            "chance": 50
-          },
-          {
-            "name": "Longsword and Shield",
-            "items": ["Longsword", "Shield"],
-            "chance": 35
-          },
-          {
-            "name": "Mace and Shield",
-            "items": ["Mace", "Shield"],
-            "chance": 15
-          }
+          { "name": "Spear", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Longsword", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Mace", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Greatsword", "quantity": 1, "slot": "primary" }
         ],
-        "rangedSets": [
-          {
-            "name": "Light Crossbow",
-            "items": ["Light Crossbow", "Bolts"],
-            "chance": 50
-          }
+        "altWeaponSets": [
+          { "name": "Light Crossbow", "quantity": 1, "slot": "primary" },
+          { "name": "Bolts", "quantity": 20, "slot": "none" },
+          { "name": "Javelin", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Javelin", "quantity": 5, "slot": "none" }
+        ],
+        "thirdWeaponSets": [
+          { "name": "Dagger", "quantity": 1, "slot": "primary" },
+          { "name": "Dagger", "quantity": 1, "slot": "primary" },
+          { "name": "Dagger", "quantity": 1, "slot": "secondary" }
         ],
         "armor": [
           {
@@ -198,33 +195,27 @@
       },
       "equipment": {
         "weaponSets": [
-          {
-            "name": "Longsword and Shield",
-            "items": ["Longsword", "Shield"],
-            "chance": 60
-          },
-          {
-            "name": "Battleaxe and Shield",
-            "items": ["Battleaxe", "Shield"],
-            "chance": 25
-          },
-          {
-            "name": "Warhammer and Shield",
-            "items": ["Warhammer", "Shield"],
-            "chance": 15
-          }
+          { "name": "Longsword", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Battleaxe", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Warhammer", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Greatsword", "quantity": 1, "slot": "primary" }
         ],
-        "rangedSets": [
-          {
-            "name": "Heavy Crossbow",
-            "items": ["Heavy Crossbow", "Bolts"],
-            "chance": 60
-          },
-          {
-            "name": "Javelin Set",
-            "items": ["Javelin", "Javelin", "Javelin", "Javelin", "Javelin"],
-            "chance": 40
-          }
+        "altWeaponSets": [
+          { "name": "Heavy Crossbow", "quantity": 1, "slot": "primary" },
+          { "name": "Bolts", "quantity": 20, "slot": "none" },
+          { "name": "Javelin", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Javelin", "quantity": 5, "slot": "none" }
+        ],
+        "thirdWeaponSets": [
+          { "name": "Handaxe", "quantity": 1, "slot": "primary" },
+          { "name": "Handaxe", "quantity": 1, "slot": "primary" },
+          { "name": "Handaxe", "quantity": 1, "slot": "secondary" },
+          { "name": "Quarterstaff", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" }
         ],
         "armor": [
           {
@@ -313,38 +304,29 @@
       },
       "equipment": {
         "weaponSets": [
-          {
-            "name": "Longsword and Shield",
-            "items": ["Longsword", "Shield"],
-            "chance": 70
-          },
-          {
-            "name": "Greatsword",
-            "items": ["Greatsword"],
-            "chance": 20
-          },
-          {
-            "name": "Warhammer and Shield",
-            "items": ["Warhammer", "Shield"],
-            "chance": 10
-          }
+          { "name": "Longsword", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Greatsword", "quantity": 1, "slot": "primary" },
+          { "name": "Warhammer", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Maul", "quantity": 1, "slot": "primary" }
         ],
-        "rangedSets": [
-          {
-            "name": "Heavy Crossbow",
-            "items": ["Heavy Crossbow", "Bolts"],
-            "chance": 50
-          },
-          {
-            "name": "Javelin Set",
-            "items": ["Javelin", "Javelin", "Javelin", "Javelin", "Javelin"],
-            "chance": 30
-          },
-          {
-            "name": "Handaxe Set",
-            "items": ["Handaxe", "Handaxe"],
-            "chance": 20
-          }
+        "altWeaponSets": [
+          { "name": "Heavy Crossbow", "quantity": 1, "slot": "primary" },
+          { "name": "Bolts", "quantity": 20, "slot": "none" },
+          { "name": "Javelin", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Javelin", "quantity": 5, "slot": "none" },
+          { "name": "Handaxe", "quantity": 1, "slot": "primary" },
+          { "name": "Handaxe", "quantity": 1, "slot": "secondary" }
+        ],
+        "thirdWeaponSets": [
+          { "name": "Quarterstaff", "quantity": 1, "slot": "primary" },
+          { "name": "Shield", "quantity": 1, "slot": "secondary" },
+          { "name": "Maul", "quantity": 1, "slot": "primary" },
+          { "name": "Hand Crossbow", "quantity": 1, "slot": "primary" },
+          { "name": "Hand Crossbow", "quantity": 1, "slot": "secondary" },
+          { "name": "Bolts", "quantity": 20, "slot": "none" }
         ],
         "armor": [
           {
