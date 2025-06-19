@@ -43,6 +43,12 @@ namespace FFT {
                             templateName,
                             { creatureType }
                         );
+                        
+                        // Auto-select the placed token so the HUD appears (with delay)
+                        setTimeout(() => {
+                            const placedToken = canvas.tokens?.get(tokenDocument.id);
+                            if (placedToken) placedToken.control();
+                        }, 200);
                     }
                     
                 } catch (error) {
@@ -50,6 +56,7 @@ namespace FFT {
                 }
             });
         }
+
         
         private static setupConsoleAPI(): void {
             // Expose API to global FFT namespace

@@ -2,47 +2,147 @@ namespace FFT {
     export class EquipmentGenerator {
         static async generateEquipment(templateEquipment: Equipment, actor: Actor): Promise<void> {
             try {
-                const selectedEquipment: Item[] = [];
+                const selectedEquipment: any[] = [];
                 
-                // Generate weapon sets
-                const weaponSet = this.selectRandomItem(templateEquipment.weaponSets);
+                // Generate weapon sets - ensure proper weapon set assignment
+                const weaponSet = EquipmentGenerator.selectRandomItem(templateEquipment.weaponSets);
                 if (weaponSet) {
+                    let weaponCount = 0;
+                    let shieldCount = 0;
+                    
                     for (const itemName of weaponSet.items) {
-                        const item = await this.findItemByName(itemName);
-                        if (item) selectedEquipment.push(item);
+                        const item = await EquipmentGenerator.findItemByName(itemName);
+                        if (item) {
+                            let itemData = item.toObject();
+                            const system = itemData.system as any;
+                            const itemType = system?.type?.value;
+                            const baseType = system?.type?.baseItem; // Also check baseItem for D&D 5e
+                            const isWeapon = itemType === "weapon" || system?.actionType || system?.damage?.parts?.length > 0;
+                            
+                            console.log(`FFTweaks | Processing item: ${itemName}`);
+                            console.log(`FFTweaks | - type.value: ${itemType}`);
+                            console.log(`FFTweaks | - type.baseItem: ${baseType}`);
+                            console.log(`FFTweaks | - actionType: ${system?.actionType}`);
+                            console.log(`FFTweaks | - has damage: ${!!system?.damage?.parts?.length}`);
+                            console.log(`FFTweaks | - isWeapon: ${isWeapon}`);
+                            
+                            // Configure weapon set and slot assignment
+                            if (isWeapon) {
+                                weaponCount++;
+                                // Assign weapon to weapon set 1
+                                itemData = foundry.utils.mergeObject(itemData, { 
+                                    system: { 
+                                        equipped: true,
+                                        weaponSet: 1,
+                                        activation: { type: "action", cost: 1 }
+                                    } 
+                                }, { inplace: false });
+                                console.log(`FFTweaks | Equipped weapon: ${itemName} to weapon set 1`);
+                            } else if (system?.armor?.type === "shield" || itemName.toLowerCase().includes("shield")) {
+                                shieldCount++;
+                                // Assign shield to weapon set 1 (same as weapon)
+                                itemData = foundry.utils.mergeObject(itemData, { 
+                                    system: { 
+                                        equipped: true,
+                                        weaponSet: 1
+                                    } 
+                                }, { inplace: false });
+                                console.log(`FFTweaks | Equipped shield: ${itemName} to weapon set 1`);
+                            } else {
+                                // Other equipment (like ammunition)
+                                itemData = foundry.utils.mergeObject(itemData, { system: { equipped: true } }, { inplace: false });
+                                console.log(`FFTweaks | Equipped other item: ${itemName}`);
+                            }
+                            
+                            selectedEquipment.push(itemData);
+                        } else {
+                            console.warn(`FFTweaks | Could not find item: ${itemName}`);
+                        }
                     }
+                    
+                    console.log(`FFTweaks | Added weapon set: ${weaponSet.name} (${weaponCount} weapons, ${shieldCount} shields)`);
                 }
                 
-                // Generate ranged sets
-                const rangedSet = this.selectRandomItem(templateEquipment.rangedSets);
+                // Generate ranged sets (add to weapon set 2)
+                const rangedSet = EquipmentGenerator.selectRandomItem(templateEquipment.rangedSets);
                 if (rangedSet) {
                     for (const itemName of rangedSet.items) {
-                        const item = await this.findItemByName(itemName);
-                        if (item) selectedEquipment.push(item);
+                        const item = await EquipmentGenerator.findItemByName(itemName);
+                        if (item) {
+                            let itemData = item.toObject();
+                            const system = itemData.system as any;
+                            const itemType = system?.type?.value;
+                            const baseType = system?.type?.baseItem;
+                            const isWeapon = itemType === "weapon" || system?.actionType || system?.damage?.parts?.length > 0;
+                            
+                            console.log(`FFTweaks | Processing ranged item: ${itemName}`);
+                            console.log(`FFTweaks | - type.value: ${itemType}`);
+                            console.log(`FFTweaks | - type.baseItem: ${baseType}`);
+                            console.log(`FFTweaks | - actionType: ${system?.actionType}`);
+                            console.log(`FFTweaks | - isWeapon: ${isWeapon}`);
+                            
+                            if (isWeapon) {
+                                // Assign ranged weapon to weapon set 2
+                                itemData = foundry.utils.mergeObject(itemData, { 
+                                    system: { 
+                                        equipped: true,
+                                        weaponSet: 2,
+                                        activation: { type: "action", cost: 1 }
+                                    } 
+                                }, { inplace: false });
+                                console.log(`FFTweaks | Equipped ranged weapon: ${itemName} to weapon set 2`);
+                            } else {
+                                // Ammunition and other gear - set quantity based on type
+                                let quantity = 1;
+                                if (itemName.toLowerCase().includes("bolt") || itemName.toLowerCase().includes("arrow")) {
+                                    quantity = 20;
+                                } else if (itemName.toLowerCase().includes("javelin")) {
+                                    quantity = 1; // Javelins are tracked individually
+                                } else if (itemName.toLowerCase().includes("dart") || itemName.toLowerCase().includes("dagger")) {
+                                    quantity = 5;
+                                }
+                                
+                                itemData = foundry.utils.mergeObject(itemData, { 
+                                    system: { 
+                                        equipped: true,
+                                        quantity: quantity
+                                    } 
+                                }, { inplace: false });
+                                console.log(`FFTweaks | Equipped ammunition: ${itemName} (quantity: ${quantity})`);
+                            }
+                            
+                            selectedEquipment.push(itemData);
+                        } else {
+                            console.warn(`FFTweaks | Could not find ranged item: ${itemName}`);
+                        }
                     }
                 }
-                
-                // Generate armor
-                const armorItem = this.selectRandomItem(templateEquipment.armor);
+                // Generate armor (always equipped)
+                const armorItem = EquipmentGenerator.selectRandomItem(templateEquipment.armor);
                 if (armorItem) {
-                    const item = await this.findItemByName(armorItem.name);
-                    if (item) selectedEquipment.push(item);
+                    const item = await EquipmentGenerator.findItemByName(armorItem.name);
+                    if (item) {
+                        let itemData = item.toObject();
+                        itemData = foundry.utils.mergeObject(itemData, { system: { equipped: true } }, { inplace: false });
+                        selectedEquipment.push(itemData);
+                    }
                 }
-                
                 // Generate gear
                 for (const gearItem of templateEquipment.gear) {
                     if (Math.random() * 100 < gearItem.chance) {
-                        const item = await this.findItemByName(gearItem.name);
-                        if (item) selectedEquipment.push(item);
+                        const item = await EquipmentGenerator.findItemByName(gearItem.name);
+                        if (item) {
+                            let itemData = item.toObject();
+                            itemData = foundry.utils.mergeObject(itemData, { system: { equipped: false } }, { inplace: false });
+                            selectedEquipment.push(itemData);
+                        }
                     }
                 }
-                
                 // Add equipment to actor
                 if (selectedEquipment.length > 0) {
-                    await actor.createEmbeddedDocuments("Item", selectedEquipment.map(item => item.toObject()));
+                    await actor.createEmbeddedDocuments("Item", selectedEquipment);
                     console.log(`FFTweaks | Generated ${selectedEquipment.length} equipment items for ${actor.name}`);
                 }
-                
             } catch (error) {
                 console.error("FFTweaks | Error generating equipment:", error);
             }

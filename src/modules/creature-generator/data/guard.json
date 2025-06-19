@@ -46,7 +46,7 @@
         "rangedSets": [
           {
             "name": "Light Crossbow",
-            "items": ["Light Crossbow", "Crossbow Bolts (20)"],
+            "items": ["Light Crossbow", "Bolts"],
             "chance": 30
           }
         ],
@@ -119,7 +119,7 @@
         "rangedSets": [
           {
             "name": "Light Crossbow",
-            "items": ["Light Crossbow", "Crossbow Bolts (20)"],
+            "items": ["Light Crossbow", "Bolts"],
             "chance": 50
           }
         ],
@@ -217,23 +217,23 @@
         "rangedSets": [
           {
             "name": "Heavy Crossbow",
-            "items": ["Heavy Crossbow", "Crossbow Bolts (20)"],
+            "items": ["Heavy Crossbow", "Bolts"],
             "chance": 60
           },
           {
-            "name": "Javelin",
-            "items": ["Javelin", "Javelin", "Javelin"],
+            "name": "Javelin Set",
+            "items": ["Javelin", "Javelin", "Javelin", "Javelin", "Javelin"],
             "chance": 40
           }
         ],
         "armor": [
           {
             "name": "Chain Mail",
-            "chance": 80
+            "chance": 70
           },
           {
             "name": "Scale Mail",
-            "chance": 20
+            "chance": 30
           }
         ],
         "gear": [
@@ -250,30 +250,29 @@
             "chance": 25
           },
           {
-            "name": "Healing Potion",
+            "name": "Potion of Healing",
             "chance": 20
           }
         ]
       },
       "features": [
         {
-          "name": "Action Surge",
-          "description": "On its turn, the guard can take one additional action.",
-          "minCR": 2,
-          "chance": 100,
-          "guaranteed": true
-        },
-        {
-          "name": "Second Wind",
-          "description": "The guard can use a bonus action to regain 1d10 + 4 hit points. Once used, this feature can't be used again until after a short or long rest.",
-          "minCR": 1,
-          "chance": 80
-        },
-        {
-          "name": "Protection",
-          "description": "When a creature the guard can see attacks a target other than the guard that is within 5 feet of the guard, the guard can use its reaction to impose disadvantage on the attack roll.",
-          "minCR": 1,
+          "name": "Pack Tactics",
+          "description": "The guard has advantage on an attack roll against a creature if at least one of the guard's allies is within 5 feet of the creature and the ally isn't incapacitated.",
+          "minCR": 0,
           "chance": 40
+        },
+        {
+          "name": "Sentinel",
+          "description": "When the guard hits a creature with an opportunity attack, the creature's speed becomes 0 for the rest of the turn.",
+          "minCR": 1,
+          "chance": 35
+        },
+        {
+          "name": "Shield Master",
+          "description": "The guard can use a bonus action to try to shove a creature within 5 feet of it with its shield.",
+          "minCR": 2,
+          "chance": 25
         }
       ],
       "spells": null
@@ -281,25 +280,26 @@
     "boss": {
       "stats": {
         "abilities": {
-          "str": 17,
-          "dex": 14,
+          "str": 16,
+          "dex": 13,
           "con": 16,
           "int": 12,
-          "wis": 13,
-          "cha": 14
+          "wis": 14,
+          "cha": 13
         },
         "hitDie": {
-          "faces": 10,
-          "number": 6
+          "faces": 8,
+          "number": 8
         },
         "skills": {
           "prc": 4,
           "itm": 3,
-          "ath": 3
+          "ins": 2
         },
         "saves": {
           "str": 3,
-          "con": 3
+          "con": 3,
+          "wis": 2
         },
         "speed": {
           "walk": 30
@@ -316,29 +316,34 @@
           {
             "name": "Longsword and Shield",
             "items": ["Longsword", "Shield"],
-            "chance": 50
+            "chance": 70
           },
           {
             "name": "Greatsword",
             "items": ["Greatsword"],
-            "chance": 30
+            "chance": 20
           },
           {
-            "name": "Battleaxe and Shield",
-            "items": ["Battleaxe", "Shield"],
-            "chance": 20
+            "name": "Warhammer and Shield",
+            "items": ["Warhammer", "Shield"],
+            "chance": 10
           }
         ],
         "rangedSets": [
           {
             "name": "Heavy Crossbow",
-            "items": ["Heavy Crossbow", "Crossbow Bolts (20)"],
-            "chance": 70
+            "items": ["Heavy Crossbow", "Bolts"],
+            "chance": 50
           },
           {
-            "name": "Longbow",
-            "items": ["Longbow", "Arrows (20)"],
+            "name": "Javelin Set",
+            "items": ["Javelin", "Javelin", "Javelin", "Javelin", "Javelin"],
             "chance": 30
+          },
+          {
+            "name": "Handaxe Set",
+            "items": ["Handaxe", "Handaxe"],
+            "chance": 20
           }
         ],
         "armor": [
@@ -347,7 +352,7 @@
             "chance": 60
           },
           {
-            "name": "Splint Armor",
+            "name": "Chain Mail",
             "chance": 40
           }
         ],
@@ -365,41 +370,39 @@
             "chance": 30
           },
           {
-            "name": "Healing Potion",
-            "chance": 60
+            "name": "Potion of Healing",
+            "chance": 40
           },
           {
-            "name": "Potion of Heroism",
-            "chance": 25
+            "name": "Potion of Greater Healing",
+            "chance": 20
           }
         ]
       },
       "features": [
         {
-          "name": "Legendary Actions",
-          "description": "The guard captain can take 3 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature's turn. The guard captain regains spent legendary actions at the start of its turn.",
-          "minCR": 4,
-          "chance": 100,
-          "guaranteed": true
+          "name": "Pack Tactics",
+          "description": "The guard has advantage on an attack roll against a creature if at least one of the guard's allies is within 5 feet of the creature and the ally isn't incapacitated.",
+          "minCR": 0,
+          "chance": 60
+        },
+        {
+          "name": "Sentinel",
+          "description": "When the guard hits a creature with an opportunity attack, the creature's speed becomes 0 for the rest of the turn.",
+          "minCR": 1,
+          "chance": 50
+        },
+        {
+          "name": "Shield Master",
+          "description": "The guard can use a bonus action to try to shove a creature within 5 feet of it with its shield.",
+          "minCR": 2,
+          "chance": 40
         },
         {
           "name": "Action Surge",
-          "description": "On its turn, the guard can take one additional action.",
-          "minCR": 2,
-          "chance": 100,
-          "guaranteed": true
-        },
-        {
-          "name": "Indomitable",
-          "description": "The guard can reroll a saving throw that it fails. If it does so, it must use the new roll, and it can't use this feature again until it finishes a long rest.",
+          "description": "The guard can take one additional action on its turn. This feature recharges after a short or long rest.",
           "minCR": 3,
-          "chance": 80
-        },
-        {
-          "name": "Inspiring Surge",
-          "description": "When the guard uses Action Surge, it can choose one creature within 60 feet of it that is allied with it. That creature can make one melee or ranged weapon attack with its reaction.",
-          "minCR": 3,
-          "chance": 60
+          "chance": 30
         }
       ],
       "spells": null
