@@ -17,7 +17,12 @@ namespace FFT {
                             const system = itemData.system as any;
                             const itemType = system?.type?.value;
                             const baseType = system?.type?.baseItem; // Also check baseItem for D&D 5e
-                            const isWeapon = itemType === "weapon" || system?.actionType || system?.damage?.parts?.length > 0;
+                            // D&D 5e weapon types: simpleM, simpleR, martialM, martialR, etc.
+                            const isWeapon = itemType === "weapon" || 
+                                           itemType?.includes("M") || // Melee weapons (simpleM, martialM)
+                                           itemType?.includes("R") || // Ranged weapons (simpleR, martialR)
+                                           system?.actionType || 
+                                           system?.damage?.parts?.length > 0;
                             
                             console.log(`FFTweaks | Processing item: ${itemName}`);
                             console.log(`FFTweaks | - type.value: ${itemType}`);
@@ -73,7 +78,12 @@ namespace FFT {
                             const system = itemData.system as any;
                             const itemType = system?.type?.value;
                             const baseType = system?.type?.baseItem;
-                            const isWeapon = itemType === "weapon" || system?.actionType || system?.damage?.parts?.length > 0;
+                            // D&D 5e weapon types: simpleM, simpleR, martialM, martialR, etc.
+                            const isWeapon = itemType === "weapon" || 
+                                           itemType?.includes("M") || // Melee weapons (simpleM, martialM)
+                                           itemType?.includes("R") || // Ranged weapons (simpleR, martialR)
+                                           system?.actionType || 
+                                           system?.damage?.parts?.length > 0;
                             
                             console.log(`FFTweaks | Processing ranged item: ${itemName}`);
                             console.log(`FFTweaks | - type.value: ${itemType}`);
