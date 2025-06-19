@@ -182,6 +182,8 @@ namespace FFT {
 
                     itemsToCreate.push(itemData);
                     console.log(`📦 FFTweaks | Will add ${invItem.name} x${invItem.quantity} (equipped: ${isInSet1})`);
+                    console.log(`🔍 FFTweaks | Set1 assignments:`, selectedLoadout.sets.set1);
+                    console.log(`🔍 FFTweaks | Checking item ${invItem.name} against set1:`, selectedLoadout.sets.set1.map(a => `${a.item}:${a.slot}`));
                 }
             }
 
@@ -208,16 +210,68 @@ namespace FFT {
                     itemsToCreate.push(itemData);
                     console.log(`🎒 FFTweaks | Will add ${gearName} to inventory`);
                 }
-            }
-
-            // Create all items at once
+            }            // Create all items at once
             if (itemsToCreate.length > 0) {
                 const createdItems = await actor.createEmbeddedDocuments("Item", itemsToCreate);
                 console.log(`✅ FFTweaks | Created ${createdItems.length} items for ${actor.name}`);
-
+                
                 // Set flags to prevent auto-reorganization
                 await this.markActorAsLoadoutBased(actor, equipment, selectedLoadout, setAssignments);
+                
+                // Apply loadout-based weapon set assignments to Argon HUD
+                setTimeout(() => {
+                    this.applyLoadoutToArgonHUD(actor, selectedLoadout);
+                }, 500);
             }
+        }
+
+        /**
+         * Apply loadout-based weapon set assignments directly to Argon HUD
+         */
+        private static async applyLoadoutToArgonHUD(actor: Actor, selectedLoadout: Loadout): Promise<void> {
+            console.log(`🎯 FFTweaks | Applying loadout to Argon HUD for ${actor.name}`);
+            
+            const hudRoot = document.querySelector(".extended-combat-hud");
+            if (!hudRoot) {
+                console.log("🎯 FFTweaks | No Argon HUD found");
+                return;
+            }
+            
+            const weaponSets = hudRoot.querySelectorAll(".weapon-set");
+            if (weaponSets.length === 0) {
+                console.log("🎯 FFTweaks | No weapon sets found in HUD");
+                return;
+            }
+            
+            // Apply assignments for each set
+            const sets = [selectedLoadout.sets.set1, selectedLoadout.sets.set2, selectedLoadout.sets.set3];
+            for (let i = 0; i < Math.min(sets.length, weaponSets.length); i++) {
+                const setElement = weaponSets[i] as HTMLElement;
+                const setAssignments = sets[i];
+                const setNumber = i + 1;
+                
+                // Clear the set first
+                const primarySlot = setElement.querySelector(".set-primary") as HTMLElement;
+                const secondarySlot = setElement.querySelector(".set-secondary") as HTMLElement;
+                if (primarySlot) primarySlot.style.backgroundImage = "";
+                if (secondarySlot) secondarySlot.style.backgroundImage = "";
+                
+                // Apply each assignment
+                for (const assignment of setAssignments) {
+                    if (assignment.slot === "none") continue;
+                    
+                    const item = actor.items.find((i: any) => i.name === assignment.item);
+                    if (!item || !item.img) continue;
+                    
+                    const slot = assignment.slot === "primary" ? primarySlot : secondarySlot;
+                    if (slot) {
+                        slot.style.backgroundImage = `url("${item.img}")`;
+                        console.log(`🎯 FFTweaks | Set ${setNumber} ${assignment.slot}: ${assignment.item} (${item.img})`);
+                    }
+                }
+            }
+            
+            console.log(`✅ FFTweaks | Applied loadout to Argon HUD weapon sets`);
         }
 
         /**

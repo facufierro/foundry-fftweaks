@@ -117,6 +117,13 @@ namespace FFT {
 
         private static async reorganizeWeaponSets(actor: any): Promise<void> {
             try {
+                // Check if this actor uses the loadout system - if so, skip auto-reorganization
+                const useLoadoutSystem = actor.getFlag("fftweaks", "useLoadoutSystem");
+                if (useLoadoutSystem) {
+                    console.log(`🔒 FFTweaks | Skipping auto-reorganization for ${actor.name} - uses LOADOUT system`);
+                    return;
+                }
+                
                 // Wait for HUD to be rendered
                 await new Promise(resolve => setTimeout(resolve, 300));
                 
