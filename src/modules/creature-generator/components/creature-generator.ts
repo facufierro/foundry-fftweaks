@@ -101,8 +101,10 @@ namespace FFT {
                 await this.applyStats(actor, scaledStats);
                 
                 // Generate equipment
-                const equipment = EquipmentGenerator.generateEquipment(variant.equipment);
-                await EquipmentGenerator.applyEquipmentToActor(actor, equipment);
+                const equipmentResult = EquipmentGenerator.generateEquipment(variant.equipment);
+                if (equipmentResult.selectedLoadout) {
+                    await EquipmentGenerator.applyEquipmentToActor(actor, equipmentResult.equipment, equipmentResult.selectedLoadout);
+                }
                 
                 // Generate features
                 await FeaturesGenerator.generateFeatures(variant.features, crResult.finalCR, creatureType, actor);
@@ -158,8 +160,10 @@ namespace FFT {
                 await this.applyStats(actor, scaledStats);
                 
                 // Generate equipment
-                const equipment = EquipmentGenerator.generateEquipment(variant.equipment);
-                await EquipmentGenerator.applyEquipmentToActor(actor, equipment);
+                const equipmentResult = EquipmentGenerator.generateEquipment(variant.equipment);
+                if (equipmentResult.selectedLoadout) {
+                    await EquipmentGenerator.applyEquipmentToActor(actor, equipmentResult.equipment, equipmentResult.selectedLoadout);
+                }
                 
                 // Generate features
                 await FeaturesGenerator.generateFeatures(variant.features, crResult.finalCR, creatureType, actor);

@@ -1,19 +1,26 @@
 namespace FFT {
-    export interface WeaponItem {
+    export interface InventoryItem {
         name: string;
         quantity: number;
+    }
+
+    export interface SetAssignment {
+        item: string;
         slot: "primary" | "secondary" | "none";
     }
 
-    export interface WeaponSetOption {
+    export interface Loadout {
         chance: number;
-        items: WeaponItem[];
+        inventory: InventoryItem[];
+        sets: {
+            set1: SetAssignment[];
+            set2: SetAssignment[];
+            set3: SetAssignment[];
+        };
     }
 
     export interface EquipmentTemplate {
-        weaponSets: WeaponSetOption[];
-        altWeaponSets: WeaponSetOption[];
-        thirdWeaponSets: WeaponSetOption[];
+        loadouts: Loadout[];
         armor: { name: string; chance: number }[];
         gear: { name: string; chance: number }[];
     }
@@ -51,11 +58,11 @@ namespace FFT {
         }
 
         /**
-         * Generates equipment for a creature based on explicit template structure
-         * This replaces the old auto-classification system with explicit control
+         * Generates equipment for a creature based on loadout system
+         * Each loadout defines complete inventory and set assignments
          */
-        public static generateEquipment(template: EquipmentTemplate): EquipmentResult {
-            console.log("🛡️ FFTweaks | Starting EXPLICIT equipment generation with chance-based option selection");
+        public static generateEquipment(template: EquipmentTemplate): { equipment: EquipmentResult, selectedLoadout: Loadout | null } {
+            console.log("🛡️ FFTweaks | Starting LOADOUT-based equipment generation");
             
             const result: EquipmentResult = {
                 weapons: {
@@ -68,30 +75,26 @@ namespace FFT {
                 gear: []
             };
 
-            // Set 1: Primary weapon set from weaponSets
-            if (template.weaponSets && template.weaponSets.length > 0) {
-                const selectedOption1 = this.selectByChance(template.weaponSets);
-                if (selectedOption1) {
-                    console.log(`🗡️ FFTweaks | Selected weapon set 1 with ${selectedOption1.items.length} items`);
-                    this.processWeaponSetItems(selectedOption1.items, result, 1);
-                }
-            }
+            let selectedLoadout: Loadout | null = null;
 
-            // Set 2: Alternative weapon set from altWeaponSets
-            if (template.altWeaponSets && template.altWeaponSets.length > 0) {
-                const selectedOption2 = this.selectByChance(template.altWeaponSets);
-                if (selectedOption2) {
-                    console.log(`🏹 FFTweaks | Selected weapon set 2 with ${selectedOption2.items.length} items`);
-                    this.processWeaponSetItems(selectedOption2.items, result, 2);
-                }
-            }
-
-            // Set 3: Third weapon set from thirdWeaponSets
-            if (template.thirdWeaponSets && template.thirdWeaponSets.length > 0) {
-                const selectedOption3 = this.selectByChance(template.thirdWeaponSets);
-                if (selectedOption3) {
-                    console.log(`⚔️ FFTweaks | Selected weapon set 3 with ${selectedOption3.items.length} items`);
-                    this.processWeaponSetItems(selectedOption3.items, result, 3);
+            // Select a loadout
+            if (template.loadouts && template.loadouts.length > 0) {
+                selectedLoadout = this.selectByChance(template.loadouts);
+                if (selectedLoadout) {
+                    console.log(`🎒 FFTweaks | Selected loadout with ${selectedLoadout.inventory.length} inventory items`);
+                    
+                    // Process inventory to find ammunition
+                    for (const invItem of selectedLoadout.inventory) {
+                        if (this.isAmmunition(invItem.name)) {
+                            result.ammunition.push({ name: invItem.name, quantity: invItem.quantity });
+                            console.log(`🏹 FFTweaks | Added ammunition: ${invItem.name} x${invItem.quantity}`);
+                        }
+                    }
+                    
+                    // Process set assignments
+                    this.processSetAssignments(selectedLoadout.sets.set1, result, 1);
+                    this.processSetAssignments(selectedLoadout.sets.set2, result, 2);
+                    this.processSetAssignments(selectedLoadout.sets.set3, result, 3);
                 }
             }
 
@@ -114,107 +117,76 @@ namespace FFT {
                 }
             }
 
-            console.log("✅ FFTweaks | EXPLICIT equipment generation complete:", result);
-            return result;
+            console.log("✅ FFTweaks | LOADOUT equipment generation complete:", result);
+            return { equipment: result, selectedLoadout };
         }
 
         /**
-         * Process items from a weapon set and assign them to appropriate slots
+         * Process set assignments for a specific set
          */
-        private static processWeaponSetItems(items: WeaponItem[], result: EquipmentResult, setNumber: 1 | 2 | 3): void {
+        private static processSetAssignments(assignments: SetAssignment[], result: EquipmentResult, setNumber: 1 | 2 | 3): void {
             const setKey = setNumber === 1 ? 'set1' : setNumber === 2 ? 'set2' : 'set3';
             
-            for (const item of items) {
-                switch (item.slot) {
+            for (const assignment of assignments) {
+                switch (assignment.slot) {
                     case "primary":
-                        result.weapons[setKey].primary = item.name;
-                        console.log(`🗡️ FFTweaks | Set ${setNumber} primary: ${item.name} x${item.quantity}`);
+                        result.weapons[setKey].primary = assignment.item;
+                        console.log(`🗡️ FFTweaks | Set ${setNumber} primary: ${assignment.item}`);
                         break;
                     case "secondary":
-                        result.weapons[setKey].secondary = item.name;
-                        console.log(`🛡️ FFTweaks | Set ${setNumber} secondary: ${item.name} x${item.quantity}`);
+                        result.weapons[setKey].secondary = assignment.item;
+                        console.log(`🛡️ FFTweaks | Set ${setNumber} secondary: ${assignment.item}`);
                         break;
                     case "none":
-                        // This is ammunition or extra items
-                        result.ammunition.push({ name: item.name, quantity: item.quantity });
-                        console.log(`🏹 FFTweaks | Added ammunition: ${item.name} x${item.quantity}`);
+                        // This shouldn't happen in set assignments, but handle it gracefully
+                        console.log(`⚠️ FFTweaks | Set ${setNumber} item with no slot: ${assignment.item}`);
                         break;
                 }
             }
         }
 
         /**
-         * Applies equipment to a Foundry VTT actor using EXPLICIT set assignment
-         * NO AUTO-CLASSIFICATION - uses template instructions exactly
+         * Check if an item is ammunition
          */
-        public static async applyEquipmentToActor(actor: Actor, equipment: EquipmentResult): Promise<void> {
-            console.log(`🎭 FFTweaks | Applying EXPLICIT equipment to actor: ${actor.name}`);
+        private static isAmmunition(itemName: string): boolean {
+            const ammunitionTypes = ['bolts', 'arrows', 'sling bullets', 'bullets', 'darts'];
+            return ammunitionTypes.some(ammo => itemName.toLowerCase().includes(ammo));
+        }
+        /**
+         * Applies equipment to a Foundry VTT actor using LOADOUT system
+         * Creates inventory items and assigns them to weapon sets
+         */
+        public static async applyEquipmentToActor(actor: Actor, equipment: EquipmentResult, selectedLoadout: Loadout): Promise<void> {
+            console.log(`🎭 FFTweaks | Applying LOADOUT equipment to actor: ${actor.name}`);
             
             const itemsToCreate: any[] = [];
             const setAssignments: { itemName: string; set: number; slot: 'primary' | 'secondary' }[] = [];
             
-            // Process weapon sets and collect items to create
-            const sets = [
-                { set: equipment.weapons.set1, setNumber: 1 },
-                { set: equipment.weapons.set2, setNumber: 2 },
-                { set: equipment.weapons.set3, setNumber: 3 }
-            ];
-
-            for (const { set, setNumber } of sets) {
-                // Primary weapon
-                if (set.primary) {
-                    const item = await this.findItemByName(set.primary);
-                    if (item) {
-                        const itemData = item.toObject() as any;
-                        // Mark for explicit set assignment
-                        itemData.flags = itemData.flags || {};
-                        itemData.flags.fftweaks = { 
-                            explicitSet: setNumber, 
-                            explicitSlot: 'primary',
-                            noAutoClassify: true 
-                        };
-                        itemData.system.equipped = true;
-                        itemsToCreate.push(itemData);
-                        setAssignments.push({ itemName: set.primary, set: setNumber, slot: 'primary' });
-                        console.log(`🗡️ FFTweaks | Will equip ${set.primary} in set ${setNumber} primary`);
-                    }
-                }
-                
-                // Secondary weapon/shield
-                if (set.secondary) {
-                    const item = await this.findItemByName(set.secondary);
-                    if (item) {
-                        const itemData = item.toObject() as any;
-                        // Mark for explicit set assignment
-                        itemData.flags = itemData.flags || {};
-                        itemData.flags.fftweaks = { 
-                            explicitSet: setNumber, 
-                            explicitSlot: 'secondary',
-                            noAutoClassify: true 
-                        };
-                        itemData.system.equipped = true;
-                        itemsToCreate.push(itemData);
-                        setAssignments.push({ itemName: set.secondary, set: setNumber, slot: 'secondary' });
-                        console.log(`🛡️ FFTweaks | Will equip ${set.secondary} in set ${setNumber} secondary`);
-                    }
-                }
-            }
-
-            // Add ammunition (not equipped in sets, just added to inventory)
-            for (const ammoSpec of equipment.ammunition) {
-                const item = await this.findItemByName(ammoSpec.name);
+            // Create all inventory items from the loadout
+            for (const invItem of selectedLoadout.inventory) {
+                const item = await this.findItemByName(invItem.name);
                 if (item) {
                     const itemData = item.toObject() as any;
-                    itemData.system.quantity = ammoSpec.quantity;
+                    itemData.system.quantity = invItem.quantity;
                     itemData.flags = itemData.flags || {};
                     itemData.flags.fftweaks = { 
-                        isAmmunition: true,
+                        fromLoadout: true,
                         noAutoClassify: true 
                     };
+                    
+                    // Only equip items that are assigned to set 1 (default active set)
+                    const isInSet1 = selectedLoadout.sets.set1.some(assignment => 
+                        assignment.item === invItem.name && assignment.slot !== 'none'
+                    );
+                    itemData.system.equipped = isInSet1;
+                    
                     itemsToCreate.push(itemData);
-                    console.log(`🏹 FFTweaks | Will add ${ammoSpec.name} x${ammoSpec.quantity} to inventory`);
+                    console.log(`📦 FFTweaks | Will add ${invItem.name} x${invItem.quantity} (equipped: ${isInSet1})`);
                 }
             }
+
+            // Track set assignments for HUD integration
+            this.collectSetAssignments(selectedLoadout.sets, setAssignments);
 
             // Add armor
             for (const armorName of equipment.armor) {
@@ -244,47 +216,46 @@ namespace FFT {
                 console.log(`✅ FFTweaks | Created ${createdItems.length} items for ${actor.name}`);
                 
                 // Set flags to prevent auto-reorganization
-                await this.markActorAsExplicit(actor, equipment, setAssignments);
+                await this.markActorAsLoadoutBased(actor, equipment, selectedLoadout, setAssignments);
             }
         }
 
         /**
-         * Marks actor as using explicit weapon sets to prevent auto-classification
+         * Collect set assignments for tracking
          */
-        private static async markActorAsExplicit(
+        private static collectSetAssignments(sets: { set1: SetAssignment[], set2: SetAssignment[], set3: SetAssignment[] }, setAssignments: { itemName: string; set: number; slot: 'primary' | 'secondary' }[]): void {
+            [sets.set1, sets.set2, sets.set3].forEach((setItems, index) => {
+                const setNumber = index + 1;
+                setItems.forEach(assignment => {
+                    if (assignment.slot === 'primary' || assignment.slot === 'secondary') {
+                        setAssignments.push({
+                            itemName: assignment.item,
+                            set: setNumber,
+                            slot: assignment.slot
+                        });
+                    }
+                });
+            });
+        }
+
+        /**
+         * Marks actor as using loadout-based weapon sets
+         */
+        private static async markActorAsLoadoutBased(
             actor: Actor, 
             equipment: EquipmentResult, 
+            selectedLoadout: Loadout,
             setAssignments: { itemName: string; set: number; slot: 'primary' | 'secondary' }[]
         ): Promise<void> {
-            console.log("🔒 FFTweaks | Marking actor as using EXPLICIT weapon sets");
+            console.log("🔒 FFTweaks | Marking actor as using LOADOUT-based weapon sets");
             
-            // Mark this actor as having explicitly organized weapon sets
-            await (actor as any).setFlag("fftweaks", "explicitWeaponSets", true);
+            // Mark this actor as having loadout-based organization
+            await (actor as any).setFlag("fftweaks", "useLoadoutSystem", true);
             await (actor as any).setFlag("fftweaks", "weaponSetData", equipment);
+            await (actor as any).setFlag("fftweaks", "selectedLoadout", selectedLoadout);
             await (actor as any).setFlag("fftweaks", "setAssignments", setAssignments);
             
-            // Store weapon set configuration to prevent auto-reorganization
-            const setConfiguration = {
-                set1: { 
-                    primary: equipment.weapons.set1.primary, 
-                    secondary: equipment.weapons.set1.secondary 
-                },
-                set2: { 
-                    primary: equipment.weapons.set2.primary, 
-                    secondary: equipment.weapons.set2.secondary 
-                },
-                set3: { 
-                    primary: equipment.weapons.set3.primary, 
-                    secondary: equipment.weapons.set3.secondary 
-                }
-            };
-            
-            await (actor as any).setFlag("fftweaks", "setConfiguration", setConfiguration);
-            
-            console.log("📍 FFTweaks | EXPLICIT weapon set configuration:", setConfiguration);
-            console.log("📍 FFTweaks | Set assignments:", setAssignments);
-            
-            console.log("✅ FFTweaks | Actor marked as EXPLICIT - auto-classification DISABLED");
+            console.log("✅ FFTweaks | Actor marked as LOADOUT-based - auto-classification DISABLED");
         }
 
         /**
@@ -333,52 +304,56 @@ namespace FFT {
         }
 
         /**
-         * Debug function to validate weapon set structure
+         * Debug function to validate loadout structure
          */
         public static validateWeaponSets(template: EquipmentTemplate): boolean {
-            console.log("🔍 FFTweaks | Validating EXPLICIT weapon set structure");
+            console.log("🔍 FFTweaks | Validating LOADOUT structure");
             
-            const validateSet = (sets: WeaponSetOption[], setName: string): boolean => {
-                if (!sets) return true; // Empty sets are valid
+            if (!template.loadouts || !Array.isArray(template.loadouts)) {
+                console.error("❌ FFTweaks | Missing or invalid loadouts array");
+                return false;
+            }
+            
+            for (let i = 0; i < template.loadouts.length; i++) {
+                const loadout = template.loadouts[i];
+                if (loadout.chance === undefined || loadout.chance < 0) {
+                    console.error(`❌ FFTweaks | loadouts[${i}] invalid chance: ${loadout.chance}`);
+                    return false;
+                }
+                if (!loadout.inventory || !Array.isArray(loadout.inventory)) {
+                    console.error(`❌ FFTweaks | loadouts[${i}] missing or invalid inventory`);
+                    return false;
+                }
+                if (!loadout.sets || !loadout.sets.set1 || !loadout.sets.set2 || !loadout.sets.set3) {
+                    console.error(`❌ FFTweaks | loadouts[${i}] missing or invalid sets`);
+                    return false;
+                }
                 
-                for (let i = 0; i < sets.length; i++) {
-                    const option = sets[i];
-                    if (option.chance === undefined || option.chance < 0) {
-                        console.error(`❌ FFTweaks | ${setName}[${i}] invalid chance: ${option.chance}`);
+                // Validate inventory items
+                for (let j = 0; j < loadout.inventory.length; j++) {
+                    const item = loadout.inventory[j];
+                    if (!item.name || item.quantity === undefined || item.quantity < 1) {
+                        console.error(`❌ FFTweaks | loadouts[${i}].inventory[${j}] invalid item`);
                         return false;
                     }
-                    if (!option.items || !Array.isArray(option.items)) {
-                        console.error(`❌ FFTweaks | ${setName}[${i}] missing or invalid items array`);
-                        return false;
-                    }
-                    for (let j = 0; j < option.items.length; j++) {
-                        const item = option.items[j];
-                        if (!item.name) {
-                            console.error(`❌ FFTweaks | ${setName}[${i}].items[${j}] missing name`);
-                            return false;
-                        }
-                        if (item.quantity === undefined || item.quantity < 1) {
-                            console.error(`❌ FFTweaks | ${setName}[${i}].items[${j}] invalid quantity: ${item.quantity}`);
-                            return false;
-                        }
-                        if (!["primary", "secondary", "none"].includes(item.slot)) {
-                            console.error(`❌ FFTweaks | ${setName}[${i}].items[${j}] invalid slot: ${item.slot}`);
+                }
+                
+                // Validate set assignments
+                const sets = [loadout.sets.set1, loadout.sets.set2, loadout.sets.set3];
+                for (let setIndex = 0; setIndex < sets.length; setIndex++) {
+                    const setAssignments = sets[setIndex];
+                    for (let k = 0; k < setAssignments.length; k++) {
+                        const assignment = setAssignments[k];
+                        if (!assignment.item || !["primary", "secondary", "none"].includes(assignment.slot)) {
+                            console.error(`❌ FFTweaks | loadouts[${i}].sets.set${setIndex + 1}[${k}] invalid assignment`);
                             return false;
                         }
                     }
                 }
-                return true;
-            };
-
-            const valid = validateSet(template.weaponSets, "weaponSets") &&
-                         validateSet(template.altWeaponSets, "altWeaponSets") &&
-                         validateSet(template.thirdWeaponSets, "thirdWeaponSets");
-
-            if (valid) {
-                console.log("✅ FFTweaks | EXPLICIT weapon set structure is valid");
             }
-            
-            return valid;
+
+            console.log("✅ FFTweaks | LOADOUT structure is valid");
+            return true;
         }
 
         /**
