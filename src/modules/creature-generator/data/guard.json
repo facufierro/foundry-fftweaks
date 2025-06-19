@@ -19,16 +19,16 @@
         "skills": {
           "prc": 2
         },
-        "saves": {},
+        "saves": { },
         "speed": {
           "walk": 30
         },
-        "senses": {},
-        "languages": ["Common"],
-        "resistances": [],
-        "immunities": [],
-        "vulnerabilities": [],
-        "conditionImmunities": []
+        "senses": { },
+        "languages": [ "Common" ],
+        "resistances": [ ],
+        "immunities": [ ],
+        "vulnerabilities": [ ],
+        "conditionImmunities": [ ]
       },
       "equipment": {
         "loadouts": [
@@ -45,10 +45,10 @@
                 { "item": "Shield", "slot": "secondary" }
               ],
               "set2": [
-                { "item": "Dagger", "slot": "primary" }
+                { "item": "Dagger", "slot": "primary" },
+                { "item": "Dagger", "slot": "secondary" }
               ],
               "set3": [
-                { "item": "Dagger", "slot": "primary" }
               ]
             }
           },
@@ -78,7 +78,7 @@
             "inventory": [
               { "name": "Club", "quantity": 2 },
               { "name": "Sling", "quantity": 1 },
-              { "name": "Sling Bullets", "quantity": 20 }
+              { "name": "Bullets", "quantity": 20 }
             ],
             "sets": {
               "set1": [
@@ -87,9 +87,11 @@
               ],
               "set2": [
                 { "item": "Sling", "slot": "primary" },
-                { "item": "Sling Bullets", "slot": "none" }
+                { "item": "Bullets", "slot": "none" }
               ],
-              "set3": []
+              "set3": [
+                { "item": "Club", "slot": "primary" }
+              ]
             }
           }
         ],
@@ -110,7 +112,7 @@
           }
         ]
       },
-      "features": [],
+      "features": [ ],
       "spells": null
     },
     "standard": {
@@ -130,16 +132,16 @@
         "skills": {
           "prc": 2
         },
-        "saves": {},
+        "saves": { },
         "speed": {
           "walk": 30
         },
-        "senses": {},
-        "languages": ["Common"],
-        "resistances": [],
-        "immunities": [],
-        "vulnerabilities": [],
-        "conditionImmunities": []
+        "senses": { },
+        "languages": [ "Common" ],
+        "resistances": [ ],
+        "immunities": [ ],
+        "vulnerabilities": [ ],
+        "conditionImmunities": [ ]
       },
       "equipment": {
         "loadouts": [
@@ -295,12 +297,12 @@
         "speed": {
           "walk": 30
         },
-        "senses": {},
-        "languages": ["Common"],
-        "resistances": [],
-        "immunities": [],
-        "vulnerabilities": [],
-        "conditionImmunities": []
+        "senses": { },
+        "languages": [ "Common" ],
+        "resistances": [ ],
+        "immunities": [ ],
+        "vulnerabilities": [ ],
+        "conditionImmunities": [ ]
       },
       "equipment": {
         "loadouts": [
@@ -471,12 +473,12 @@
         "speed": {
           "walk": 30
         },
-        "senses": {},
-        "languages": ["Common"],
-        "resistances": [],
-        "immunities": [],
-        "vulnerabilities": [],
-        "conditionImmunities": []
+        "senses": { },
+        "languages": [ "Common" ],
+        "resistances": [ ],
+        "immunities": [ ],
+        "vulnerabilities": [ ],
+        "conditionImmunities": [ ]
       },
       "equipment": {
         "loadouts": [

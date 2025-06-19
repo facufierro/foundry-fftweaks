@@ -45,7 +45,7 @@ namespace FFT {
 
             const totalChance = items.reduce((sum, item) => sum + item.chance, 0);
             const roll = Math.random() * totalChance;
-            
+
             let currentSum = 0;
             for (const item of items) {
                 currentSum += item.chance;
@@ -53,7 +53,7 @@ namespace FFT {
                     return item;
                 }
             }
-            
+
             return items[items.length - 1]; // Fallback to last item
         }
 
@@ -63,7 +63,7 @@ namespace FFT {
          */
         public static generateEquipment(template: EquipmentTemplate): { equipment: EquipmentResult, selectedLoadout: Loadout | null } {
             console.log("🛡️ FFTweaks | Starting LOADOUT-based equipment generation");
-            
+
             const result: EquipmentResult = {
                 weapons: {
                     set1: { primary: null, secondary: null },
@@ -82,7 +82,7 @@ namespace FFT {
                 selectedLoadout = this.selectByChance(template.loadouts);
                 if (selectedLoadout) {
                     console.log(`🎒 FFTweaks | Selected loadout with ${selectedLoadout.inventory.length} inventory items`);
-                    
+
                     // Process inventory to find ammunition
                     for (const invItem of selectedLoadout.inventory) {
                         if (this.isAmmunition(invItem.name)) {
@@ -90,7 +90,7 @@ namespace FFT {
                             console.log(`🏹 FFTweaks | Added ammunition: ${invItem.name} x${invItem.quantity}`);
                         }
                     }
-                    
+
                     // Process set assignments
                     this.processSetAssignments(selectedLoadout.sets.set1, result, 1);
                     this.processSetAssignments(selectedLoadout.sets.set2, result, 2);
@@ -126,7 +126,7 @@ namespace FFT {
          */
         private static processSetAssignments(assignments: SetAssignment[], result: EquipmentResult, setNumber: 1 | 2 | 3): void {
             const setKey = setNumber === 1 ? 'set1' : setNumber === 2 ? 'set2' : 'set3';
-            
+
             for (const assignment of assignments) {
                 switch (assignment.slot) {
                     case "primary":
@@ -158,10 +158,10 @@ namespace FFT {
          */
         public static async applyEquipmentToActor(actor: Actor, equipment: EquipmentResult, selectedLoadout: Loadout): Promise<void> {
             console.log(`🎭 FFTweaks | Applying LOADOUT equipment to actor: ${actor.name}`);
-            
+
             const itemsToCreate: any[] = [];
             const setAssignments: { itemName: string; set: number; slot: 'primary' | 'secondary' }[] = [];
-            
+
             // Create all inventory items from the loadout
             for (const invItem of selectedLoadout.inventory) {
                 const item = await this.findItemByName(invItem.name);
@@ -169,17 +169,17 @@ namespace FFT {
                     const itemData = item.toObject() as any;
                     itemData.system.quantity = invItem.quantity;
                     itemData.flags = itemData.flags || {};
-                    itemData.flags.fftweaks = { 
+                    itemData.flags.fftweaks = {
                         fromLoadout: true,
-                        noAutoClassify: true 
+                        noAutoClassify: true
                     };
-                    
+
                     // Only equip items that are assigned to set 1 (default active set)
-                    const isInSet1 = selectedLoadout.sets.set1.some(assignment => 
+                    const isInSet1 = selectedLoadout.sets.set1.some(assignment =>
                         assignment.item === invItem.name && assignment.slot !== 'none'
                     );
                     itemData.system.equipped = isInSet1;
-                    
+
                     itemsToCreate.push(itemData);
                     console.log(`📦 FFTweaks | Will add ${invItem.name} x${invItem.quantity} (equipped: ${isInSet1})`);
                 }
@@ -214,7 +214,7 @@ namespace FFT {
             if (itemsToCreate.length > 0) {
                 const createdItems = await actor.createEmbeddedDocuments("Item", itemsToCreate);
                 console.log(`✅ FFTweaks | Created ${createdItems.length} items for ${actor.name}`);
-                
+
                 // Set flags to prevent auto-reorganization
                 await this.markActorAsLoadoutBased(actor, equipment, selectedLoadout, setAssignments);
             }
@@ -242,19 +242,19 @@ namespace FFT {
          * Marks actor as using loadout-based weapon sets
          */
         private static async markActorAsLoadoutBased(
-            actor: Actor, 
-            equipment: EquipmentResult, 
+            actor: Actor,
+            equipment: EquipmentResult,
             selectedLoadout: Loadout,
             setAssignments: { itemName: string; set: number; slot: 'primary' | 'secondary' }[]
         ): Promise<void> {
             console.log("🔒 FFTweaks | Marking actor as using LOADOUT-based weapon sets");
-            
+
             // Mark this actor as having loadout-based organization
             await (actor as any).setFlag("fftweaks", "useLoadoutSystem", true);
             await (actor as any).setFlag("fftweaks", "weaponSetData", equipment);
             await (actor as any).setFlag("fftweaks", "selectedLoadout", selectedLoadout);
             await (actor as any).setFlag("fftweaks", "setAssignments", setAssignments);
-            
+
             console.log("✅ FFTweaks | Actor marked as LOADOUT-based - auto-classification DISABLED");
         }
 
@@ -275,11 +275,11 @@ namespace FFT {
                         }
                     }
                 }
-                
+
                 // Search in world items
                 let item = game.items?.find((i: any) => i.name?.toLowerCase() === itemName.toLowerCase());
                 if (item) return item;
-                
+
                 // Search in other compendiums as fallback
                 for (const pack of game.packs) {
                     if (pack.metadata.type === "Item" && pack.collection !== "fftweaks.items") {
@@ -293,10 +293,10 @@ namespace FFT {
                         }
                     }
                 }
-                
+
                 console.warn(`FFTweaks | Item not found: ${itemName}`);
                 return null;
-                
+
             } catch (error) {
                 console.error(`FFTweaks | Error finding item ${itemName}:`, error);
                 return null;
@@ -308,12 +308,12 @@ namespace FFT {
          */
         public static validateWeaponSets(template: EquipmentTemplate): boolean {
             console.log("🔍 FFTweaks | Validating LOADOUT structure");
-            
+
             if (!template.loadouts || !Array.isArray(template.loadouts)) {
                 console.error("❌ FFTweaks | Missing or invalid loadouts array");
                 return false;
             }
-            
+
             for (let i = 0; i < template.loadouts.length; i++) {
                 const loadout = template.loadouts[i];
                 if (loadout.chance === undefined || loadout.chance < 0) {
@@ -328,7 +328,7 @@ namespace FFT {
                     console.error(`❌ FFTweaks | loadouts[${i}] missing or invalid sets`);
                     return false;
                 }
-                
+
                 // Validate inventory items
                 for (let j = 0; j < loadout.inventory.length; j++) {
                     const item = loadout.inventory[j];
@@ -337,7 +337,7 @@ namespace FFT {
                         return false;
                     }
                 }
-                
+
                 // Validate set assignments
                 const sets = [loadout.sets.set1, loadout.sets.set2, loadout.sets.set3];
                 for (let setIndex = 0; setIndex < sets.length; setIndex++) {
