@@ -8,7 +8,9 @@ namespace FFT {
         static distributeExperience = distributeExperience;
         static createDefaultLevels = createDefaultLevels;
         static lootCorpses = lootCorpses;
-        static generateEquipment = (actorName?: string) => EquipmentGenerator.generateEquipment(actorName);
+        static generateEquipment = (actorName?: string) => {
+            console.warn("FFTweaks | generateEquipment function requires an actor parameter. Use FFT.CreatureGenerator API instead.");
+        };
 
         // classes
         static runicInscription = runicInscription;

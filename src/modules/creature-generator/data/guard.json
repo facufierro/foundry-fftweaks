@@ -1,0 +1,408 @@
+{
+  "name": "Guard",
+  "type": "humanoid",
+  "variants": {
+    "minion": {
+      "stats": {
+        "abilities": {
+          "str": 13,
+          "dex": 12,
+          "con": 12,
+          "int": 10,
+          "wis": 11,
+          "cha": 10
+        },
+        "hitDie": {
+          "faces": 8,
+          "number": 2
+        },
+        "skills": {
+          "prc": 2
+        },
+        "saves": {},
+        "speed": {
+          "walk": 30
+        },
+        "senses": {},
+        "languages": ["Common"],
+        "resistances": [],
+        "immunities": [],
+        "vulnerabilities": [],
+        "conditionImmunities": []
+      },
+      "equipment": {
+        "weaponSets": [
+          {
+            "name": "Spear and Shield",
+            "items": ["Spear", "Shield"],
+            "chance": 60
+          },
+          {
+            "name": "Club",
+            "items": ["Club"],
+            "chance": 40
+          }
+        ],
+        "rangedSets": [
+          {
+            "name": "Light Crossbow",
+            "items": ["Light Crossbow", "Crossbow Bolts (20)"],
+            "chance": 30
+          }
+        ],
+        "armor": [
+          {
+            "name": "Leather Armor",
+            "chance": 100
+          }
+        ],
+        "gear": [
+          {
+            "name": "Manacles",
+            "chance": 25
+          },
+          {
+            "name": "Horn",
+            "chance": 15
+          }
+        ]
+      },
+      "features": [],
+      "spells": null
+    },
+    "standard": {
+      "stats": {
+        "abilities": {
+          "str": 13,
+          "dex": 12,
+          "con": 12,
+          "int": 10,
+          "wis": 11,
+          "cha": 10
+        },
+        "hitDie": {
+          "faces": 8,
+          "number": 2
+        },
+        "skills": {
+          "prc": 2
+        },
+        "saves": {},
+        "speed": {
+          "walk": 30
+        },
+        "senses": {},
+        "languages": ["Common"],
+        "resistances": [],
+        "immunities": [],
+        "vulnerabilities": [],
+        "conditionImmunities": []
+      },
+      "equipment": {
+        "weaponSets": [
+          {
+            "name": "Spear and Shield",
+            "items": ["Spear", "Shield"],
+            "chance": 50
+          },
+          {
+            "name": "Longsword and Shield",
+            "items": ["Longsword", "Shield"],
+            "chance": 35
+          },
+          {
+            "name": "Mace and Shield",
+            "items": ["Mace", "Shield"],
+            "chance": 15
+          }
+        ],
+        "rangedSets": [
+          {
+            "name": "Light Crossbow",
+            "items": ["Light Crossbow", "Crossbow Bolts (20)"],
+            "chance": 50
+          }
+        ],
+        "armor": [
+          {
+            "name": "Chain Shirt",
+            "chance": 70
+          },
+          {
+            "name": "Leather Armor",
+            "chance": 30
+          }
+        ],
+        "gear": [
+          {
+            "name": "Manacles",
+            "chance": 30
+          },
+          {
+            "name": "Horn",
+            "chance": 20
+          },
+          {
+            "name": "50 feet of Rope",
+            "chance": 15
+          }
+        ]
+      },
+      "features": [
+        {
+          "name": "Pack Tactics",
+          "description": "The guard has advantage on an attack roll against a creature if at least one of the guard's allies is within 5 feet of the creature and the ally isn't incapacitated.",
+          "minCR": 0,
+          "chance": 25
+        },
+        {
+          "name": "Sentinel",
+          "description": "When the guard hits a creature with an opportunity attack, the creature's speed becomes 0 for the rest of the turn.",
+          "minCR": 1,
+          "chance": 20
+        }
+      ],
+      "spells": null
+    },
+    "elite": {
+      "stats": {
+        "abilities": {
+          "str": 15,
+          "dex": 13,
+          "con": 14,
+          "int": 11,
+          "wis": 12,
+          "cha": 11
+        },
+        "hitDie": {
+          "faces": 8,
+          "number": 4
+        },
+        "skills": {
+          "prc": 3,
+          "itm": 2
+        },
+        "saves": {
+          "str": 2,
+          "con": 2
+        },
+        "speed": {
+          "walk": 30
+        },
+        "senses": {},
+        "languages": ["Common"],
+        "resistances": [],
+        "immunities": [],
+        "vulnerabilities": [],
+        "conditionImmunities": []
+      },
+      "equipment": {
+        "weaponSets": [
+          {
+            "name": "Longsword and Shield",
+            "items": ["Longsword", "Shield"],
+            "chance": 60
+          },
+          {
+            "name": "Battleaxe and Shield",
+            "items": ["Battleaxe", "Shield"],
+            "chance": 25
+          },
+          {
+            "name": "Warhammer and Shield",
+            "items": ["Warhammer", "Shield"],
+            "chance": 15
+          }
+        ],
+        "rangedSets": [
+          {
+            "name": "Heavy Crossbow",
+            "items": ["Heavy Crossbow", "Crossbow Bolts (20)"],
+            "chance": 60
+          },
+          {
+            "name": "Javelin",
+            "items": ["Javelin", "Javelin", "Javelin"],
+            "chance": 40
+          }
+        ],
+        "armor": [
+          {
+            "name": "Chain Mail",
+            "chance": 80
+          },
+          {
+            "name": "Scale Mail",
+            "chance": 20
+          }
+        ],
+        "gear": [
+          {
+            "name": "Manacles",
+            "chance": 40
+          },
+          {
+            "name": "Horn",
+            "chance": 30
+          },
+          {
+            "name": "50 feet of Rope",
+            "chance": 25
+          },
+          {
+            "name": "Healing Potion",
+            "chance": 20
+          }
+        ]
+      },
+      "features": [
+        {
+          "name": "Action Surge",
+          "description": "On its turn, the guard can take one additional action.",
+          "minCR": 2,
+          "chance": 100,
+          "guaranteed": true
+        },
+        {
+          "name": "Second Wind",
+          "description": "The guard can use a bonus action to regain 1d10 + 4 hit points. Once used, this feature can't be used again until after a short or long rest.",
+          "minCR": 1,
+          "chance": 80
+        },
+        {
+          "name": "Protection",
+          "description": "When a creature the guard can see attacks a target other than the guard that is within 5 feet of the guard, the guard can use its reaction to impose disadvantage on the attack roll.",
+          "minCR": 1,
+          "chance": 40
+        }
+      ],
+      "spells": null
+    },
+    "boss": {
+      "stats": {
+        "abilities": {
+          "str": 17,
+          "dex": 14,
+          "con": 16,
+          "int": 12,
+          "wis": 13,
+          "cha": 14
+        },
+        "hitDie": {
+          "faces": 10,
+          "number": 6
+        },
+        "skills": {
+          "prc": 4,
+          "itm": 3,
+          "ath": 3
+        },
+        "saves": {
+          "str": 3,
+          "con": 3
+        },
+        "speed": {
+          "walk": 30
+        },
+        "senses": {},
+        "languages": ["Common"],
+        "resistances": [],
+        "immunities": [],
+        "vulnerabilities": [],
+        "conditionImmunities": []
+      },
+      "equipment": {
+        "weaponSets": [
+          {
+            "name": "Longsword and Shield",
+            "items": ["Longsword", "Shield"],
+            "chance": 50
+          },
+          {
+            "name": "Greatsword",
+            "items": ["Greatsword"],
+            "chance": 30
+          },
+          {
+            "name": "Battleaxe and Shield",
+            "items": ["Battleaxe", "Shield"],
+            "chance": 20
+          }
+        ],
+        "rangedSets": [
+          {
+            "name": "Heavy Crossbow",
+            "items": ["Heavy Crossbow", "Crossbow Bolts (20)"],
+            "chance": 70
+          },
+          {
+            "name": "Longbow",
+            "items": ["Longbow", "Arrows (20)"],
+            "chance": 30
+          }
+        ],
+        "armor": [
+          {
+            "name": "Plate Armor",
+            "chance": 60
+          },
+          {
+            "name": "Splint Armor",
+            "chance": 40
+          }
+        ],
+        "gear": [
+          {
+            "name": "Manacles",
+            "chance": 50
+          },
+          {
+            "name": "Horn",
+            "chance": 40
+          },
+          {
+            "name": "50 feet of Rope",
+            "chance": 30
+          },
+          {
+            "name": "Healing Potion",
+            "chance": 60
+          },
+          {
+            "name": "Potion of Heroism",
+            "chance": 25
+          }
+        ]
+      },
+      "features": [
+        {
+          "name": "Legendary Actions",
+          "description": "The guard captain can take 3 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature's turn. The guard captain regains spent legendary actions at the start of its turn.",
+          "minCR": 4,
+          "chance": 100,
+          "guaranteed": true
+        },
+        {
+          "name": "Action Surge",
+          "description": "On its turn, the guard can take one additional action.",
+          "minCR": 2,
+          "chance": 100,
+          "guaranteed": true
+        },
+        {
+          "name": "Indomitable",
+          "description": "The guard can reroll a saving throw that it fails. If it does so, it must use the new roll, and it can't use this feature again until it finishes a long rest.",
+          "minCR": 3,
+          "chance": 80
+        },
+        {
+          "name": "Inspiring Surge",
+          "description": "When the guard uses Action Surge, it can choose one creature within 60 feet of it that is allied with it. That creature can make one melee or ranged weapon attack with its reaction.",
+          "minCR": 3,
+          "chance": 60
+        }
+      ],
+      "spells": null
+    }
+  }
+}
