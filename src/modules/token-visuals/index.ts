@@ -23,23 +23,31 @@ namespace FFT {
                 const actorSlug = actor.name.split(" ")[0].slugify();
                 console.log(`[FFT] Updating token image for: ${actor.name} (${actorSlug})`);
 
-                const hudRoot = document.querySelector(".extended-combat-hud");
-                const activeSet = hudRoot?.querySelector(".weapon-set.active");
+                // Use BG3 hotbar and detect the active weapon set
+                const hudRoot = document.getElementById("bg3-hotbar-container");
+                const weaponContainer = hudRoot?.querySelector(".bg3-weapon-container") as HTMLElement;
+                let activeSetIndex = "0";
+                if (weaponContainer) {
+                    activeSetIndex = weaponContainer.getAttribute("data-active-set") || "0";
+                }
+                const activeSet = hudRoot?.querySelector(`.bg3-weapon-set[data-container-index='${activeSetIndex}']`);
                 if (!activeSet) {
-                    console.warn("[FFT] No active weapon set found in HUD.");
+                    console.warn(`[FFT] No active weapon set found in BG3 hotbar (index ${activeSetIndex}).`);
                     return;
                 }
 
-                const extractSlotItem = (slotClass: string): string | null => {
-                    const slot = activeSet.querySelector(`.set-${slotClass}`) as HTMLElement;
-                    const bg = slot?.style.backgroundImage;
-                    if (!bg || bg === 'url("")' || bg === "") {
-                        console.log(`[FFT] Slot "${slotClass}" background image is empty.`);
+                const extractSlotItem = (slotIndex: number): string | null => {
+                    // Find the hotbar cell for the slot
+                    const slot = activeSet.querySelector(`.hotbar-cell[data-slot='${slotIndex}-0']`) as HTMLElement;
+                    const img = slot?.querySelector("img.hotbar-item") as HTMLImageElement;
+                    if (!img || !img.src) {
+                        console.log(`[FFT] Slot ${slotIndex} image is empty.`);
                         return "none";
                     }
-                    const match = bg?.match(/\/([^\/]+\.webp)/);
+                    // Extract the filename from the image src
+                    const match = img.src.match(/\/([^\/]+\.webp)/);
                     const imgPath = match?.[1];
-                    console.log(`[FFT] Slot "${slotClass}" background image: ${bg}`);
+                    console.log(`[FFT] Slot ${slotIndex} image src: ${img?.src}`);
                     console.log(`[FFT] Extracted image filename: ${imgPath}`);
 
                     if (!imgPath) {
@@ -52,7 +60,7 @@ namespace FFT {
                     );
 
                     if (!itemMatch) {
-                        console.warn(`[FFT] No equipped item found for image ${imgPath} in slot ${slotClass}`);
+                        console.warn(`[FFT] No equipped item found for image ${imgPath} in slot ${slotIndex}`);
                         return "none";
                     }
 
@@ -61,8 +69,8 @@ namespace FFT {
                     return base?.slugify?.() ?? "none";
                 };
 
-                const right = extractSlotItem("primary");
-                const left = extractSlotItem("secondary");
+                const right = extractSlotItem(0); // primary weapon slot
+                const left = extractSlotItem(1);  // secondary/shield slot
 
                 const rightFinal = right && right !== "" ? right : "none";
                 const leftFinal = left && left !== "" ? left : "none";
