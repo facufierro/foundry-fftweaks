@@ -1,6 +1,7 @@
 namespace FFT {
     export class TargetPickerModule {
         private static isProcessingTargets = false;
+        private static isRestartingActivity = false;
 
         static initialize() {
             // Register module setting for tutorial guide
@@ -19,7 +20,12 @@ namespace FFT {
             Hooks.on("dnd5e.preUseItem", this.handleItemUsage.bind(this));
             Hooks.on("dnd5e.preUseActivity", this.handleActivityUsage.bind(this));
             
-            console.log("[FFT Target Picker] Hooks registered for dnd5e.preUseItem and dnd5e.preUseActivity");
+            // Additional hooks to ensure we can properly cancel activities
+            Hooks.on("dnd5e.preRollAttack", this.handlePreRollAttack.bind(this));
+            Hooks.on("dnd5e.preRollDamage", this.handlePreRollDamage.bind(this));
+            Hooks.on("dnd5e.activityConsumption", this.handleActivityConsumption.bind(this));
+            
+            console.log("[FFT Target Picker] Hooks registered for dnd5e activity interception");
         }
 
         /**
@@ -138,15 +144,17 @@ namespace FFT {
                 return true;
             }
 
+            // Immediately set processing flag to block all related hooks
+            this.isProcessingTargets = true;
+            console.log("[FFT Target Picker] Set processing flag, blocking activity");
+
             // Clear existing targets before picking new ones
             game.user?.targets.forEach(t => t.setTarget(false, { releaseOthers: true }));
 
             console.log("[FFT Target Picker] Starting target selection...");
             
-            // We need to prevent the activity from continuing and handle target selection separately
+            // Defer target selection to next tick to ensure the activity is fully blocked
             setTimeout(async () => {
-                this.isProcessingTargets = true;
-                
                 const success = await FFT.TargetPicker.pickTargets(
                     token,
                     targetInfo.count,
@@ -156,18 +164,64 @@ namespace FFT {
 
                 if (success && game.user?.targets.size >= targetInfo.count) {
                     console.log("[FFT Target Picker] Target selection successful, restarting activity");
+                    // Set restart flag to allow the activity to proceed normally
+                    this.isRestartingActivity = true;
+                    
                     // Restart the activity with targets selected
-                    await activity.use(config, options);
+                    try {
+                        await activity.use(config, options);
+                    } catch (error) {
+                        console.error("[FFT Target Picker] Error restarting activity:", error);
+                        ui.notifications.error("Failed to restart activity after target selection");
+                    }
+                    
+                    this.isRestartingActivity = false;
                 } else {
                     console.log("[FFT Target Picker] Target selection failed or cancelled");
                     ui.notifications.info("Target selection cancelled or insufficient targets");
                 }
                 
                 this.isProcessingTargets = false;
-            }, 50);
+                console.log("[FFT Target Picker] Cleared processing flag");
+            }, 10);
 
-            // Return false to prevent the original activity from continuing
+            // Always return false to prevent the original activity from continuing
             return false;
+        }
+
+        /**
+         * Handle pre-roll attack to prevent attacks while targeting
+         */
+        static handlePreRollAttack(item: any, config: any) {
+            if (this.isProcessingTargets && !this.isRestartingActivity) {
+                console.log("[FFT Target Picker] Blocking attack roll during target selection");
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Handle pre-roll damage to prevent damage while targeting
+         */
+        static handlePreRollDamage(item: any, config: any) {
+            if (this.isProcessingTargets && !this.isRestartingActivity) {
+                console.log("[FFT Target Picker] Blocking damage roll during target selection");
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Handle activity consumption to prevent resource consumption while targeting
+         */
+        static handleActivityConsumption(activity: any, usage: any) {
+            // Only block if we're in the initial target selection phase
+            // Don't block when we're restarting the activity after target selection
+            if (this.isProcessingTargets && !this.isRestartingActivity) {
+                console.log("[FFT Target Picker] Blocking activity consumption during target selection");
+                return false;
+            }
+            return true;
         }
 
         /**
