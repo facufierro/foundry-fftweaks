@@ -33,10 +33,18 @@ namespace FFT {
                 const extractSlotItem = (slotClass: string): string | null => {
                     const slot = activeSet.querySelector(`.set-${slotClass}`) as HTMLElement;
                     const bg = slot?.style.backgroundImage;
+                    if (!bg || bg === 'url("")' || bg === "") {
+                        console.log(`[FFT] Slot "${slotClass}" background image is empty.`);
+                        return "none";
+                    }
                     const match = bg?.match(/\/([^\/]+\.webp)/);
                     const imgPath = match?.[1];
                     console.log(`[FFT] Slot "${slotClass}" background image: ${bg}`);
                     console.log(`[FFT] Extracted image filename: ${imgPath}`);
+
+                    if (!imgPath) {
+                        return "none";
+                    }
 
                     const itemMatch = actor.items.find(i =>
                         i.img.includes(imgPath) &&
