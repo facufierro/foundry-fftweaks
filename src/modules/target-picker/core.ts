@@ -232,5 +232,12 @@ namespace FFT {
 
             return await picker.promise;
         }
+
+        /**
+         * Clear all currently selected targets
+         */
+        static clearAllTargets(): void {
+            game.user?.targets.forEach(t => t.setTarget(false, { releaseOthers: true }));
+        }
     }
 }
