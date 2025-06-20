@@ -13,7 +13,7 @@ namespace FFT {
             });
 
             // Hook to cancel activity usage (newer D&D 5e system)
-            Hooks.on("dnd5e.preUseActivity", (activity, config, options) => {
+            Hooks.on("dnd5e.preUseActivity", async (activity, config, options) => {
                 console.log("Activity use intercepted:", activity.name, activity.type);
                 console.log("Activity target:", activity.target);
                 
@@ -40,8 +40,54 @@ namespace FFT {
                 if (requiresTargeting) {
                     console.log("Intercepting activity that requires targeting:", activity.type, 
                                isAttackActivity ? "(attack activity)" : `affects: ${affectsType}`);
-                    // Cancel activities that require target selection
-                    return false;
+                    
+                    // Get the actor and token
+                    const actor = activity.item.actor;
+                    const token = actor?.getActiveTokens()?.[0];
+                    
+                    if (!token) {
+                        ui.notifications.warn("No token found for this actor");
+                        return false;
+                    }
+
+                    // Clear existing targets and start target picker
+                    game.user?.targets.forEach(t => t.setTarget(false, { releaseOthers: true }));
+                    
+                    // Start target selection
+                    const success = await FFT.TargetPicker.pickTargets(token, 1);
+                    
+                    if (success && game.user?.targets.size > 0) {
+                        console.log("Targets selected, proceeding with activity");
+                        
+                        // Trigger the appropriate activity method based on type
+                        setTimeout(async () => {
+                            try {
+                                if (activity.type === "attack") {
+                                    await activity.rollAttack(config || {});
+                                } else if (activity.type === "damage") {
+                                    await activity.rollDamage(config || {});
+                                } else if (activity.type === "save") {
+                                    await activity.rollDamage(config || {});
+                                } else if (activity.type === "heal") {
+                                    await activity.rollDamage(config || {});
+                                } else {
+                                    // For other activity types, try to trigger rollDamage if it has damage parts
+                                    if (activity.damage?.parts?.length > 0) {
+                                        await activity.rollDamage(config || {});
+                                    } else {
+                                        console.log("No suitable method found for activity type:", activity.type);
+                                    }
+                                }
+                            } catch (error) {
+                                console.error("Error executing activity:", error);
+                            }
+                        }, 100); // Small delay to ensure targeting is complete
+                        
+                        return false; // Still cancel the original activity
+                    } else {
+                        console.log("No targets selected, canceling activity");
+                        return false;
+                    }
                 } else {
                     const reason = isTemplateSpell ? `(template: ${templateType})` : `affects: ${affectsType || "none/self"}`;
                     console.log("Allowing activity that doesn't require targeting:", activity.type, reason);
