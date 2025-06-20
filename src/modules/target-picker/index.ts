@@ -14,6 +14,12 @@ namespace FFT {
                     console.log("Target picker is already active, skipping:", activity.name);
                     return true; // Allow the activity to proceed
                 }
+
+                // Filter: only intercept attacks OR activities with target count >= 1
+                if (activity.type !== "attack" && (!activity.target?.affects?.count || activity.target.affects.count < 1)) {
+                    console.log("Activity doesn't need targeting, allowing to proceed:", activity.name);
+                    return true; // Allow the activity to proceed normally
+                }
                 
                 // Set flag before starting target picker to prevent recursion
                 this.isTargetPickerActivity = true;
@@ -32,8 +38,9 @@ namespace FFT {
             try {
                 // Get the actor token
                 const token = activity.actor?.token?.object || canvas.tokens?.controlled?.[0];
-                // Simple target picker - pick 1 target for now
-                const success = await TargetPicker.pickTargets(token, 1, {
+                // Simple target picker - determine target count
+                const targetCount = activity.type === "attack" ? 1 : (activity.target?.affects?.count || 1);
+                const success = await TargetPicker.pickTargets(token, targetCount, {
                     normal: activity.range?.value || 30
                 });
 
