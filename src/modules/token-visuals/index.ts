@@ -64,8 +64,10 @@ namespace FFT {
                 const right = extractSlotItem("primary");
                 const left = extractSlotItem("secondary");
 
-                const suffix = [right ?? "none", left ?? "none"].join("_");
-                const imageFile = `${actorSlug}_${suffix}.webp`;
+                const rightFinal = right && right !== "" ? right : "none";
+                const leftFinal = left && left !== "" ? left : "none";
+                const suffix = `${rightFinal}-${leftFinal}`;
+                const imageFile = `${actorSlug}-${suffix}.webp`;
                 const folderPath = `assets/fftweaks/tokens/Players/${actorSlug}`;
                 const imagePath = `${folderPath}/${imageFile}`;
 
