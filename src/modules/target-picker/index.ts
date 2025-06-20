@@ -4,22 +4,54 @@
 
 namespace FFT {
     export class TargetPickerModule {
-        static lastActivity: any = null;
+        static isTargetPickerActivity: boolean = false;
 
         static initialize() {
 
             Hooks.on("dnd5e.preUseActivity", (activity, config, options) => {
                 console.log("Activity use intercepted:", activity.name, activity.type);
-                this.lastActivity = activity;
-                return this.requiresTargeting(activity);
-
+                if (this.isTargetPickerActivity) {
+                    console.log("Target picker is already active, skipping:", activity.name);
+                    return true; // Allow the activity to proceed
+                }
+                
+                // Set flag before starting target picker to prevent recursion
+                this.isTargetPickerActivity = true;
+                this.startTargetPicker(activity);
+                return false; // Cancel the original activity
             });
 
-            Hooks.on("dnd5e.preActivityConsumption", (activity, usageConfig, messageConfig) => {
-                console.log("Activity consumption intercepted:", activity.name, activity.type);
-                return this.requiresTargeting(activity);
-            });
+            // Hooks.on("dnd5e.preActivityConsumption", (activity, usageConfig, messageConfig) => {
+            //     console.log("Activity consumption intercepted:", activity.name, activity.type);
+            //     return this.requiresTargeting(activity);
+            // });
         }
+
+
+        static async startTargetPicker(activity: any) {
+            try {
+                // Get the actor token
+                const token = activity.actor?.token?.object || canvas.tokens?.controlled?.[0];
+                // Simple target picker - pick 1 target for now
+                const success = await TargetPicker.pickTargets(token, 1, {
+                    normal: activity.range?.value || 30
+                });
+
+                if (success) {
+                    console.log("Target picking successful");
+                    await this.useActivity(activity);
+                } else {
+                    console.log("Target picking cancelled");
+                    // Reset flag if cancelled
+                    this.isTargetPickerActivity = false;
+                }
+            } catch (error) {
+                console.error("Error in target picker:", error);
+                // Reset flag on error
+                this.isTargetPickerActivity = false;
+            }
+        }
+
         static requiresTargeting(activity: any): boolean {
             console.log(activity);
             // Cancel the activity and trigger target picker
@@ -31,6 +63,7 @@ namespace FFT {
             try {
                 const result = await activity.use(options.usage || {}, options.dialog || {}, options.message || {});
                 console.log("Activity used successfully:", result);
+                this.isTargetPickerActivity = false; // Reset the flag
                 return result;
             } catch (error) {
                 console.error("Failed to use activity:", error);
@@ -38,36 +71,5 @@ namespace FFT {
             }
         }
 
-        static async startTargetPicker(activity: any) {
-            try {
-                // Use the stored last activity
-                const activityToUse = this.lastActivity;
-                if (!activityToUse) {
-                    console.warn("No stored activity found");
-                    return;
-                }
-
-                // Get the actor token
-                const token = activityToUse.actor?.token?.object || canvas.tokens?.controlled?.[0];
-                if (!token) {
-                    console.warn("No token found for targeting");
-                    return;
-                }
-
-                // Simple target picker - pick 1 target for now
-                const success = await TargetPicker.pickTargets(token, 1, {
-                    normal: activityToUse.range?.value || 30
-                });
-
-                if (success) {
-                    console.log("Targets picked, using stored activity...");
-                    await this.useActivity(activityToUse);
-                } else {
-                    console.log("Target picking cancelled");
-                }
-            } catch (error) {
-                console.error("Error in target picker:", error);
-            }
-        }
     }
 }

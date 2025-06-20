@@ -126,10 +126,8 @@ namespace FFT {
         }
 
         private init() {
-            // Clear existing targets if option is set
-            if (this.options.clearExistingTargets) {
-                game.user?.targets.forEach(t => t.setTarget(false, { releaseOthers: true }));
-            }
+            // Clear existing targets
+            game.user?.targets.forEach(t => t.setTarget(false, { releaseOthers: true }));
 
             // Create UI element
             const element = document.createElement("div");
@@ -157,16 +155,13 @@ namespace FFT {
             }
 
             // Show range display if enabled and ranges provided
-            if (this.options.showRangeDisplay && (this.ranges.normal || this.ranges.long)) {
-                const tokenSizeOffset = Math.max(
-                    this.token.document.width,
-                    this.token.document.height
-                ) * 0.5 * (canvas.scene?.dimensions.distance || 5);
+            const tokenSizeOffset = Math.max(
+                this.token.document.width,
+                this.token.document.height
+            ) * 0.5 * (canvas.scene?.dimensions.distance || 5);
 
-                FFT.RangeDisplay.showRangeRings(this.ranges.normal, this.ranges.long, this.token, tokenSizeOffset);
-                FFT.RangeDisplay.showRangeFinder(this.ranges.normal, this.token);
-            }
-
+            FFT.RangeDisplay.showRangeRings(this.ranges.normal, this.ranges.long, this.token, tokenSizeOffset);
+            FFT.RangeDisplay.showRangeFinder(this.ranges.normal, this.token);
             this.update();
         }
 
@@ -185,10 +180,8 @@ namespace FFT {
 
         private end(success: boolean) {
             // Clean up range display
-            if (this.options.showRangeDisplay) {
-                FFT.RangeDisplay.clearRanges(true);
-                FFT.RangeDisplay.clearRangeFinders();
-            }
+            FFT.RangeDisplay.clearRanges(true);
+            FFT.RangeDisplay.clearRangeFinders();
 
             // Revert to select tool
             (document.querySelector(".control.tool") as HTMLElement)?.click();
