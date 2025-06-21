@@ -65,20 +65,36 @@ namespace FFT {
                             game.user?.targets.forEach(tok => tok.setTarget(false, { releaseOthers: true }));
                             t.setTarget(true, { releaseOthers: true });
                             if (first) {
-                                // First use: let dialog appear, store config
+                                // First use: let dialog appear, store full config
                                 const result = await activity.use();
                                 if (result && typeof result === "object") {
+                                    firstConfig = result;
                                     firstUsage = result.usage ?? {};
                                     firstMessage = result.message ?? {};
                                 }
                                 first = false;
                             } else {
-                                // Subsequent uses: skip dialog, reuse config, do not consume resources
-                                await activity.use(
-                                    { ...firstUsage, consume: false },
-                                    { skip: true },
-                                    firstMessage || {}
-                                );
+                                // For subsequent uses, try to use a Forward activity if available
+                                let usedForward = false;
+                                const item = activity.item;
+                                if (item && item.system?.activities) {
+                                    // Find a Forward activity on the same item
+                                    const forward = Array.from(item.system.activities.values()).find(a => (a as any).type === "forward");
+                                    if (forward && typeof (forward as any).use === "function") {
+                                        await (forward as any).use();
+                                        usedForward = true;
+                                    }
+                                }
+                                if (!usedForward) {
+                                    // Fallback: deep clone the config and skip dialog
+                                    const nextConfig = foundry.utils.deepClone(firstConfig);
+                                    nextConfig.consume = false;
+                                    await activity.use(
+                                        nextConfig,
+                                        { skip: true },
+                                        firstMessage || {}
+                                    );
+                                }
                             }
                         }
                     }
