@@ -104,8 +104,9 @@ namespace FFT {
         }
 
         private init() {
-            // Clear existing targets
-            game.user?.targets.forEach(t => t.setTarget(false, { releaseOthers: true }));
+            // Deselect all tokens at the start (selection only)
+            canvas.tokens?.placeables.forEach(t => t.setTarget(false, { releaseOthers: false }));
+            // Do not target the player's token at the start
 
             // Create UI element
             const element = document.createElement("div");
@@ -167,6 +168,12 @@ namespace FFT {
             // Revert to select tool
             (document.querySelector(".control.tool") as HTMLElement)?.click();
             (document.querySelector('.control.tool[data-tool="select"]') as HTMLElement)?.click();
+
+            // After picking, clear all controlled tokens and select only the player's token
+            if (this.token) {
+                canvas.tokens?.placeables.forEach(t => t.release()); // Unselect all
+                this.token.control({ releaseOthers: false }); // Select only the player's token
+            }
 
             // Clean up
             activeTargetPicker = null;
