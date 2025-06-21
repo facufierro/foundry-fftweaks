@@ -7,11 +7,14 @@ namespace FFT {
      */
     export class ActivityInterceptor {
         private static isTargetPickerActivity: boolean = false;
+        private static suppressInterceptor: boolean = false;
 
         /**
          * Handle the dnd5e.preUseActivity hook event
          */
         static onPreUseActivity(activity: any, config: any, options: any): boolean {
+            if (this.suppressInterceptor) return true;
+
             console.log("Activity use intercepted:", activity.name, activity.type);
             
             if (this.isTargetPickerActivity) {
@@ -53,6 +56,7 @@ namespace FFT {
                 if (selection && typeof selection === "object") {
                     console.log("Target picking successful", selection);
                     // Repeat activity for each target/count
+                    this.suppressInterceptor = true;
                     for (const [tokenId, count] of Object.entries(selection)) {
                         const t = canvas.tokens.get(tokenId);
                         if (!t) continue;
@@ -63,6 +67,7 @@ namespace FFT {
                             await this.executeActivity(activity);
                         }
                     }
+                    this.suppressInterceptor = false;
                     this.resetFlag();
                 } else {
                     console.log("Target picking cancelled");
@@ -70,6 +75,7 @@ namespace FFT {
                 }
             } catch (error) {
                 console.error("Error in target picker:", error);
+                this.suppressInterceptor = false;
                 this.resetFlag();
             }
         }
