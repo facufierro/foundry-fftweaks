@@ -23,25 +23,20 @@ namespace FFT {
     export class TargetPicker {
         private ranges: any;
         private token: any;
-        private resolve: ((value: boolean) => void) | null = null;
-        private _targetCount: number;
+        private resolve: ((value: Record<string, number>|false) => void) | null = null;
         private _maxTargets: number;
         private options: TargetPickerOptions;
         private element: HTMLElement | null = null;
-        private targetHook: number | null = null;
         private moveListener: ((event: MouseEvent) => void) | null = null;
-        private clickListener: ((event: MouseEvent) => void) | null = null;
         private keyupListener: ((event: KeyboardEvent) => void) | null = null;
-        public promise: Promise<boolean>;
+        private _selected: Record<string, number> = {};
+        public promise: Promise<Record<string, number>|false>;
 
         constructor({ token, targets, ranges = {}, options = {} }: TargetPickerConfig) {
-            // End any existing target picker
             if (activeTargetPicker) activeTargetPicker.end(false);
             activeTargetPicker = this;
-
             this.ranges = ranges;
             this.token = token;
-            this._targetCount = game.user?.targets.size || 0;
             this._maxTargets = targets;
             this.options = {
                 clearExistingTargets: true,
@@ -50,79 +45,62 @@ namespace FFT {
                 followCursor: true,
                 ...options
             };
-
-            // Activate target tool
-            const targetTool = document.querySelector('.control.tool[data-tool="target"]') as HTMLElement;
-            targetTool?.click();
-
-            // Create promise for async handling
             this.promise = new Promise((resolve) => {
                 this.resolve = resolve;
             });
-
-            // Hook into target events
-            this.targetHook = Hooks.on("targetToken", () => {
-                this.checkComplete();
-            });
-
-            // Set up event listeners
             this.setupEventListeners();
             this.init();
         }
 
         private setupEventListeners() {
             this.moveListener = (event: MouseEvent) => {
-                if (this.options.followCursor) {
-                    this.update(event);
-                }
+                if (this.options.followCursor) this.update(event);
             };
-
-            this.clickListener = (event: MouseEvent) => {
-                if (event.which === 3) { // Right click
-                    this.end(false);
-                }
-            };
-
-            this.keyupListener = (event: KeyboardEvent) => {
-                if (!this.options.allowManualTargetAdjustment) return;
-
-                if (event.key === "+" || event.key === "=") {
-                    this.maxTargets++;
-                }
-                if (event.key === "-" || event.key === "_") {
-                    if (this.maxTargets > 1) this.maxTargets--;
-                }
-            };
-
             document.addEventListener("mousemove", this.moveListener);
-            document.addEventListener("mouseup", this.clickListener);
-            document.addEventListener("keyup", this.keyupListener);
+            document.addEventListener("keyup", this.keyupListener = (event: KeyboardEvent) => {
+                if (!this.options.allowManualTargetAdjustment) return;
+                if (event.key === "+" || event.key === "=") this._maxTargets++;
+                if ((event.key === "-" || event.key === "_") && this._maxTargets > 1) this._maxTargets--;
+                this.update();
+            });
+            // Token click handler (listen on canvas.app.view)
+            canvas.app.view.addEventListener("mousedown", this.onCanvasClickBound = this.onCanvasClick.bind(this));
         }
 
-        private checkComplete() {
-            this.targetCount = game.user?.targets.size || 0;
-            if (this.targetCount >= this.maxTargets) {
-                this.end(true);
+        private onCanvasClickBound: ((event: MouseEvent) => void) | null = null;
+
+        private onCanvasClick(event: MouseEvent) {
+            // Only respond to left/right click
+            if (event.button !== 0 && event.button !== 2) return;
+            // Get mouse position relative to canvas
+            const pos = event;
+            const rect = canvas.app.view.getBoundingClientRect() as DOMRect;
+            // Find token under mouse
+            const tokens = canvas.tokens.placeables;
+            for (const token of tokens) {
+                const bounds = token.getBounds();
+                if (bounds.contains(pos.clientX - rect.left, pos.clientY - rect.top)) {
+                    const id = token.id;
+                    if (event.button === 2) { // Right click: decrement
+                        if (this._selected[id]) {
+                            this._selected[id]--;
+                            if (this._selected[id] <= 0) delete this._selected[id];
+                        }
+                    } else { // Left click: increment
+                        const total = this.totalSelected();
+                        if (total < this._maxTargets) {
+                            this._selected[id] = (this._selected[id] || 0) + 1;
+                        }
+                    }
+                    this.update();
+                    if (this.totalSelected() >= this._maxTargets) this.end(true);
+                    break;
+                }
             }
         }
 
-        set targetCount(count: number) {
-            this._targetCount = count;
-            this.update();
-        }
-
-        get targetCount(): number {
-            return this._targetCount;
-        }
-
-        set maxTargets(count: number) {
-            this._maxTargets = count;
-            this.update();
-            this.checkComplete();
-        }
-
-        get maxTargets(): number {
-            return this._maxTargets;
+        private totalSelected(): number {
+            return Object.values(this._selected).reduce((a, b) => a + b, 0);
         }
 
         private init() {
@@ -150,7 +128,7 @@ namespace FFT {
             this.element = element;
 
             // End immediately if no targets needed or already at target count
-            if (!this.maxTargets || this.targetCount >= this.maxTargets) {
+            if (!this._maxTargets || this.totalSelected() >= this._maxTargets) {
                 return this.end(true);
             }
 
@@ -169,13 +147,16 @@ namespace FFT {
             if (!this.element) return;
 
             if (event && this.options.followCursor) {
-                const clientX = event.clientX;
-                const clientY = event.clientY;
-                this.element.style.left = clientX + 20 + "px";
-                this.element.style.top = clientY + "px";
+                this.element.style.left = event.clientX + 20 + "px";
+                this.element.style.top = event.clientY + "px";
             }
 
-            this.element.innerText = `${this.targetCount}/${this.maxTargets} Targets`;
+            // Show per-token counts
+            const tokens = Object.entries(this._selected).map(([id, count]) => {
+                const t = canvas.tokens.get(id);
+                return t ? `${t.name} x${count}` : `Unknown x${count}`;
+            });
+            this.element.innerText = `${this.totalSelected()}/${this._maxTargets} Targets\n` + tokens.join("\n");
         }
 
         private end(success: boolean) {
@@ -189,21 +170,13 @@ namespace FFT {
 
             // Clean up
             activeTargetPicker = null;
-            this.resolve?.(success);
+            if (this.resolve) this.resolve(success ? this._selected : false);
             this.element?.remove();
-
-            // Remove event listeners
-            if (this.targetHook !== null) {
-                Hooks.off("targetToken", this.targetHook);
-            }
-            if (this.moveListener) {
-                document.removeEventListener("mousemove", this.moveListener);
-            }
-            if (this.clickListener) {
-                document.removeEventListener("mouseup", this.clickListener);
-            }
-            if (this.keyupListener) {
-                document.removeEventListener("keyup", this.keyupListener);
+            document.removeEventListener("mousemove", this.moveListener!);
+            document.removeEventListener("keyup", this.keyupListener!);
+            if (this.onCanvasClickBound) {
+                canvas.app.view.removeEventListener("mousedown", this.onCanvasClickBound);
+                this.onCanvasClickBound = null;
             }
         }
 
@@ -215,14 +188,8 @@ namespace FFT {
             targetCount: number,
             ranges: any = {},
             options: TargetPickerOptions = {}
-        ): Promise<boolean> {
-            const picker = new TargetPicker({
-                token,
-                targets: targetCount,
-                ranges,
-                options
-            });
-
+        ): Promise<Record<string, number>|false> {
+            const picker = new TargetPicker({ token, targets: targetCount, ranges, options });
             return await picker.promise;
         }
 

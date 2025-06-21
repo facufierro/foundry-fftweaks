@@ -48,11 +48,22 @@ namespace FFT {
                 const targetCount = this.getTargetCount(activity);
                 const range = this.getActivityRange(activity);
 
-                const success = await TargetPicker.pickTargets(token, targetCount, { normal: range });
-
-                if (success) {
-                    console.log("Target picking successful");
-                    await this.executeActivity(activity);
+                // Await a map of tokenId -> count
+                const selection = await TargetPicker.pickTargets(token, targetCount, { normal: range });
+                if (selection && typeof selection === "object") {
+                    console.log("Target picking successful", selection);
+                    // Repeat activity for each target/count
+                    for (const [tokenId, count] of Object.entries(selection)) {
+                        const t = canvas.tokens.get(tokenId);
+                        if (!t) continue;
+                        for (let i = 0; i < count; i++) {
+                            // Set only this token as the user's target
+                            game.user?.targets.forEach(tok => tok.setTarget(false, { releaseOthers: true }));
+                            t.setTarget(true, { releaseOthers: true });
+                            await this.executeActivity(activity);
+                        }
+                    }
+                    this.resetFlag();
                 } else {
                     console.log("Target picking cancelled");
                     this.resetFlag();
