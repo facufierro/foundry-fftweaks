@@ -7,11 +7,14 @@ namespace FFT {
      */
     export class ActivityInterceptor {
         private static isTargetPickerActivity: boolean = false;
+        private static suppressInterceptor: boolean = false;
 
         /**
          * Handle the dnd5e.preUseActivity hook event
          */
         static onPreUseActivity(activity: any, config: any, options: any): boolean {
+            if (this.suppressInterceptor) return true;
+
             console.log("Activity use intercepted:", activity.name, activity.type);
             
             if (this.isTargetPickerActivity) {
@@ -47,18 +50,63 @@ namespace FFT {
                 const token = this.getActorToken(activity);
                 const targetCount = this.getTargetCount(activity);
                 const range = this.getActivityRange(activity);
-
-                const success = await TargetPicker.pickTargets(token, targetCount, { normal: range });
-
-                if (success) {
-                    console.log("Target picking successful");
-                    await this.executeActivity(activity);
+                const selection = await TargetPicker.pickTargets(token, targetCount, { normal: range });
+                if (selection && typeof selection === "object") {
+                    console.log("Target picking successful", selection);
+                    this.suppressInterceptor = true;
+                    let firstConfig = null;
+                    let firstMessage = null;
+                    let firstUsage = null;
+                    let first = true;
+                    for (const [tokenId, count] of Object.entries(selection)) {
+                        const t = canvas.tokens.get(tokenId);
+                        if (!t) continue;
+                        for (let i = 0; i < count; i++) {
+                            game.user?.targets.forEach(tok => tok.setTarget(false, { releaseOthers: true }));
+                            t.setTarget(true, { releaseOthers: true });
+                            if (first) {
+                                // First use: let dialog appear, store full config
+                                const result = await activity.use();
+                                if (result && typeof result === "object") {
+                                    firstConfig = result;
+                                    firstUsage = result.usage ?? {};
+                                    firstMessage = result.message ?? {};
+                                }
+                                first = false;
+                            } else {
+                                // For subsequent uses, try to use a Forward activity if available
+                                let usedForward = false;
+                                const item = activity.item;
+                                if (item && item.system?.activities) {
+                                    // Find a Forward activity on the same item
+                                    const forward = Array.from(item.system.activities.values()).find(a => (a as any).type === "forward");
+                                    if (forward && typeof (forward as any).use === "function") {
+                                        await (forward as any).use();
+                                        usedForward = true;
+                                    }
+                                }
+                                if (!usedForward) {
+                                    // Fallback: deep clone the config and skip dialog
+                                    const nextConfig = foundry.utils.deepClone(firstConfig);
+                                    nextConfig.consume = false;
+                                    await activity.use(
+                                        nextConfig,
+                                        { skip: true },
+                                        firstMessage || {}
+                                    );
+                                }
+                            }
+                        }
+                    }
+                    this.suppressInterceptor = false;
+                    this.resetFlag();
                 } else {
                     console.log("Target picking cancelled");
                     this.resetFlag();
                 }
             } catch (error) {
                 console.error("Error in target picker:", error);
+                this.suppressInterceptor = false;
                 this.resetFlag();
             }
         }
