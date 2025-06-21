@@ -50,21 +50,36 @@ namespace FFT {
                 const token = this.getActorToken(activity);
                 const targetCount = this.getTargetCount(activity);
                 const range = this.getActivityRange(activity);
-
-                // Await a map of tokenId -> count
                 const selection = await TargetPicker.pickTargets(token, targetCount, { normal: range });
                 if (selection && typeof selection === "object") {
                     console.log("Target picking successful", selection);
-                    // Repeat activity for each target/count
                     this.suppressInterceptor = true;
+                    let firstConfig = null;
+                    let firstMessage = null;
+                    let firstUsage = null;
+                    let first = true;
                     for (const [tokenId, count] of Object.entries(selection)) {
                         const t = canvas.tokens.get(tokenId);
                         if (!t) continue;
                         for (let i = 0; i < count; i++) {
-                            // Set only this token as the user's target
                             game.user?.targets.forEach(tok => tok.setTarget(false, { releaseOthers: true }));
                             t.setTarget(true, { releaseOthers: true });
-                            await this.executeActivity(activity);
+                            if (first) {
+                                // First use: let dialog appear, store config
+                                const result = await activity.use();
+                                if (result && typeof result === "object") {
+                                    firstUsage = result.usage ?? {};
+                                    firstMessage = result.message ?? {};
+                                }
+                                first = false;
+                            } else {
+                                // Subsequent uses: skip dialog, reuse config, do not consume resources
+                                await activity.use(
+                                    { ...firstUsage, consume: false },
+                                    { skip: true },
+                                    firstMessage || {}
+                                );
+                            }
                         }
                     }
                     this.suppressInterceptor = false;
