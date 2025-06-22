@@ -51,53 +51,62 @@ namespace FFT {
                     console.log("Target picking successful", selection);
                     this.suppressInterceptor = true;
 
-                    let firstConfig: any = null;
-                    let firstMessage: any = null;
-                    let first = true;
-
+                    // Build a flat array of targets, repeating as needed
+                    const targets: any[] = [];
                     for (const [tokenId, count] of Object.entries(selection)) {
                         const t = canvas.tokens.get(tokenId);
                         if (!t) continue;
-
                         for (let i = 0; i < count; i++) {
-                            // Clear all targets and set the current one
-                            game.user?.targets.forEach(tok => tok.setTarget(false, { releaseOthers: true }));
-                            t.setTarget(true, { releaseOthers: true });
-
-                            if (first) {
-                                // Use the activity for the first target and store the config/message
-                                const result = await activity.use();
-                                if (result && typeof result === "object") {
-                                    firstConfig = result;
-                                    firstMessage = result.message ?? {};
-                                }
-                                first = false;
-                            } else {
-                                // Try to use a 'forward' activity if available
-                                let usedForward = false;
-                                const item = activity.item;
-                                if (item && item.system?.activities) {
-                                    const forward = Array.from(item.system.activities.values()).find(
-                                        (a: any) => (a as any).type === "forward"
-                                    );
-                                    if (forward && typeof (forward as any).use === "function") {
-                                        await (forward as any).use();
-                                        usedForward = true;
-                                    }
-                                }
-                                // If no 'forward', repeat the activity with the first config
-                                if (!usedForward) {
-                                    const nextConfig = foundry.utils.deepClone(firstConfig);
-                                    nextConfig.consume = false;
-                                    await activity.use(
-                                        nextConfig,
-                                        { skip: true },
-                                        firstMessage || {}
-                                    );
-                                }
-                            }
+                            targets.push(t);
                         }
                     }
+
+                    // For each target in order, use the corresponding activity
+                    for (let i = 0; i < targets.length; i++) {
+                        const t = targets[i];
+                        // Clear all targets
+                        console.debug(`[FFT] Clearing all targets before targeting:`, t.name, t.id);
+                        game.user?.targets.forEach(tok => tok.setTarget(false, { releaseOthers: true }));
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        // Set only the current token as target
+                        console.debug(`[FFT] Setting target:`, t.name, t.id);
+                        await t.setTarget(true, { releaseOthers: true });
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                        // Force UI update (use Hooks.call for compatibility)
+                        Hooks.call("targetToken", t, true);
+                        const currentTargets = Array.from(game.user?.targets ?? []).map(tok => `${tok.name} (${tok.id})`);
+                        console.debug(`[FFT] Current user targets before activity.use():`, currentTargets);
+                        // Use the correct activity for this target
+                        if (i === 0) {
+                            // First use: normal activity
+                            console.debug(`[FFT] Using activity:`, activity.name, `on target:`, t.name, t.id);
+                            const result = await activity.use();
+                            console.debug(`[FFT] Result of activity.use() for target`, t.name, t.id, ':', result);
+                        } else {
+                            // Subsequent uses: try forward activity first
+                            let usedForward = false;
+                            const item = activity.item;
+                            if (item && item.system?.activities) {
+                                const forward = Array.from(item.system.activities.values()).find(
+                                    (a: any) => (a as any).type === "forward"
+                                );
+                                if (forward && typeof (forward as any).use === "function") {
+                                    console.debug(`[FFT] Using forward activity for target:`, t.name, t.id);
+                                    await (forward as any).use();
+                                    usedForward = true;
+                                }
+                            }
+                            if (!usedForward) {
+                                console.debug(`[FFT] No forward activity, using main activity again for target:`, t.name, t.id);
+                                await activity.use();
+                            }
+                        }
+                        await new Promise(resolve => setTimeout(resolve, 600));
+                    }
+
+                    // Optionally, clear all targets after use
+                    game.user?.targets.forEach(tok => tok.setTarget(false, { releaseOthers: true }));
+
                     this.suppressInterceptor = false;
                     this.resetFlag();
                 } else {
