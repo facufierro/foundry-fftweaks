@@ -1,5 +1,4 @@
 namespace FFT {
-
     let activeTargetPicker: TargetPicker | null = null;
 
     export interface TargetPickerOptions {
@@ -27,6 +26,7 @@ namespace FFT {
         private keyupListener: ((event: KeyboardEvent) => void) | null = null;
         private _selected: Record<string, number> = {};
         public promise: Promise<Record<string, number>|false>;
+        private onCanvasClickBound: ((event: MouseEvent) => void) | null = null;
 
         constructor({ token, targets, ranges = {}, options = {} }: TargetPickerConfig) {
             if (activeTargetPicker) activeTargetPicker.end(false);
@@ -62,15 +62,13 @@ namespace FFT {
             canvas.app.view.addEventListener("mousedown", this.onCanvasClickBound = this.onCanvasClick.bind(this));
         }
 
-        private onCanvasClickBound: ((event: MouseEvent) => void) | null = null;
-
         private onCanvasClick(event: MouseEvent) {
             if (event.button !== 0 && event.button !== 2) return;
             const pos = event;
             const rect = canvas.app.view.getBoundingClientRect() as DOMRect;
             const tokens = canvas.tokens.placeables;
             let hitToken = false;
-            
+
             for (const token of tokens) {
                 const bounds = token.getBounds();
                 if (bounds.contains(pos.clientX - rect.left, pos.clientY - rect.top)) {
@@ -92,7 +90,7 @@ namespace FFT {
                     break;
                 }
             }
-            
+
             if (!hitToken && event.button === 2) {
                 this.end(false);
             }
