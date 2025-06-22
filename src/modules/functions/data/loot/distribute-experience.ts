@@ -65,7 +65,16 @@ async function distributeExperience(): Promise<void> {
 
                     for (let i = 0; i < shuffledTokens.length; i++) {
                         const token = shuffledTokens[i];
-                        const actor = token.actor;
+                        let actor = token.actor;
+                        // For DnD5e wild shape/polymorph, use the original actor if available
+                        let originalActorId: string | undefined;
+                        if (actor && typeof actor.flags === 'object' && actor.flags && typeof actor.flags["dnd5e"] === 'object' && actor.flags["dnd5e"]) {
+                            originalActorId = (actor.flags["dnd5e"] as any).originalActor;
+                        }
+                        if (originalActorId && game.actors) {
+                            const originalActor = game.actors.get(originalActorId);
+                            if (originalActor) actor = originalActor;
+                        }
                         if (!actor) continue;
 
                         const extra = i < remainder ? 1 : 0;
