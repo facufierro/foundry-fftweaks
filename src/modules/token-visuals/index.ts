@@ -64,9 +64,11 @@ namespace FFT {
                         return "none";
                     }
 
-                    const base = itemMatch.system?.type?.baseItem;
-                    console.log(`[FFT] Matched item: ${itemMatch.name}, baseItem: ${base}`);
-                    return base?.slugify?.() ?? "none";
+                    // Use the base weapon type for the image filename
+                    const baseItem = itemMatch.system?.type?.baseItem;
+                    const baseWeaponType = baseItem?.slugify?.() ?? "none";
+                    console.log(`[FFT] Matched item: ${itemMatch.name}, baseItem: ${baseItem}, slugified: ${baseWeaponType}`);
+                    return baseWeaponType;
                 };
 
                 const right = extractSlotItem(0); // primary weapon slot
