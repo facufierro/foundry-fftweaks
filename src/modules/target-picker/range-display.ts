@@ -1,8 +1,4 @@
 namespace FFT {
-    /**
-     * Range Display Functions for Target Picker
-     * Handles 3D range rings and range finders
-     */
     export class RangeDisplay {
         private static isTargetPicker = false;
         private static rangeRings = {
@@ -10,9 +6,6 @@ namespace FFT {
             long: null as any
         };
 
-        /**
-         * Clear existing range rings
-         */
         static clearRanges(force = false) {
             if (!(game as any).Levels3DPreview?._active) return;
             if (this.isTargetPicker && !force) return;
@@ -27,9 +20,6 @@ namespace FFT {
             }
         }
 
-        /**
-         * Show range rings around a token
-         */
         static showRangeRings(normal: number, long: number, object: any, tokenSizeOffset = 0) {
             if (!(game as any).Levels3DPreview?._active) return;
             
@@ -53,16 +43,12 @@ namespace FFT {
             }
         }
 
-        /**
-         * Show range finder to all visible tokens
-         */
         static async showRangeFinder(range: number, object: any) {
             if (!(game as any).Levels3DPreview?._active || !range) return;
             
             const levels3d = (game as any).Levels3DPreview;
             const RangeFinder = levels3d.CONFIG.entityClass.RangeFinder;
             
-            // Clear existing range finders
             levels3d.rangeFinders.forEach((rf: any) => {
                 rf.destroy();
             });
@@ -90,18 +76,12 @@ namespace FFT {
             }
         }
 
-        /**
-         * Clear all range finders
-         */
         static clearRangeFinders() {
             if (!(game as any).Levels3DPreview?._active) return;
             (game as any).Levels3DPreview.rangeFinders.forEach((rf: any) => { rf.destroy(); });
             this.isTargetPicker = false;
         }
 
-        /**
-         * Check if Levels 3D Preview is available for range display
-         */
         static isRangeDisplayAvailable(): boolean {
             return !!(game as any).Levels3DPreview?._active;
         }

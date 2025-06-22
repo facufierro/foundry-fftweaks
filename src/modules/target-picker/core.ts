@@ -1,8 +1,4 @@
 namespace FFT {
-    /**
-     * Core Target Picker functionality
-     * A simple, focused target selection system for Foundry VTT
-     */
 
     let activeTargetPicker: TargetPicker | null = null;
 
@@ -63,30 +59,26 @@ namespace FFT {
                 if ((event.key === "-" || event.key === "_") && this._maxTargets > 1) this._maxTargets--;
                 this.update();
             });
-            // Token click handler (listen on canvas.app.view)
             canvas.app.view.addEventListener("mousedown", this.onCanvasClickBound = this.onCanvasClick.bind(this));
         }
 
         private onCanvasClickBound: ((event: MouseEvent) => void) | null = null;
 
         private onCanvasClick(event: MouseEvent) {
-            // Only respond to left/right click
             if (event.button !== 0 && event.button !== 2) return;
-            // Get mouse position relative to canvas
             const pos = event;
             const rect = canvas.app.view.getBoundingClientRect() as DOMRect;
-            // Find token under mouse
             const tokens = canvas.tokens.placeables;
             for (const token of tokens) {
                 const bounds = token.getBounds();
                 if (bounds.contains(pos.clientX - rect.left, pos.clientY - rect.top)) {
                     const id = token.id;
-                    if (event.button === 2) { // Right click: decrement
+                    if (event.button === 2) {
                         if (this._selected[id]) {
                             this._selected[id]--;
                             if (this._selected[id] <= 0) delete this._selected[id];
                         }
-                    } else { // Left click: increment
+                    } else {
                         const total = this.totalSelected();
                         if (total < this._maxTargets) {
                             this._selected[id] = (this._selected[id] || 0) + 1;
@@ -104,11 +96,8 @@ namespace FFT {
         }
 
         private init() {
-            // Deselect all tokens at the start (selection only)
             canvas.tokens?.placeables.forEach(t => t.setTarget(false, { releaseOthers: false }));
-            // Do not target the player's token at the start
 
-            // Create UI element
             const element = document.createElement("div");
             element.classList.add("target-picker-display");
             element.style.cssText = `
@@ -128,12 +117,10 @@ namespace FFT {
             document.body.appendChild(element);
             this.element = element;
 
-            // End immediately if no targets needed or already at target count
             if (!this._maxTargets || this.totalSelected() >= this._maxTargets) {
                 return this.end(true);
             }
 
-            // Show range display if enabled and ranges provided
             const tokenSizeOffset = Math.max(
                 this.token.document.width,
                 this.token.document.height
@@ -152,7 +139,6 @@ namespace FFT {
                 this.element.style.top = event.clientY + "px";
             }
 
-            // Show per-token counts
             const tokens = Object.entries(this._selected).map(([id, count]) => {
                 const t = canvas.tokens.get(id);
                 return t ? `${t.name} x${count}` : `Unknown x${count}`;
@@ -161,21 +147,17 @@ namespace FFT {
         }
 
         private end(success: boolean) {
-            // Clean up range display
             FFT.RangeDisplay.clearRanges(true);
             FFT.RangeDisplay.clearRangeFinders();
 
-            // Revert to select tool
             (document.querySelector(".control.tool") as HTMLElement)?.click();
             (document.querySelector('.control.tool[data-tool="select"]') as HTMLElement)?.click();
 
-            // After picking, clear all controlled tokens and select only the player's token
             if (this.token) {
-                canvas.tokens?.placeables.forEach(t => t.release()); // Unselect all
-                this.token.control({ releaseOthers: false }); // Select only the player's token
+                canvas.tokens?.placeables.forEach(t => t.release());
+                this.token.control({ releaseOthers: false });
             }
 
-            // Clean up
             activeTargetPicker = null;
             if (this.resolve) this.resolve(success ? this._selected : false);
             this.element?.remove();
@@ -187,9 +169,6 @@ namespace FFT {
             }
         }
 
-        /**
-         * Static method for easy target picking
-         */
         static async pickTargets(
             token: any,
             targetCount: number,
@@ -200,9 +179,6 @@ namespace FFT {
             return await picker.promise;
         }
 
-        /**
-         * Clear all currently selected targets
-         */
         static clearAllTargets(): void {
             game.user?.targets.forEach(t => t.setTarget(false, { releaseOthers: true }));
         }
