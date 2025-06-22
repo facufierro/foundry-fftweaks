@@ -40,6 +40,8 @@ async function toggleCombat(event: MouseEvent) {
         let combat = game.combat;
         if (!combat) {
             combat = await Combat.create({ scene: canvas.scene?.id });
+            // Set the new combat as the active encounter
+            await combat.update({ active: true });
         }
 
         const toRollInitiative: Combatant[] = [];
