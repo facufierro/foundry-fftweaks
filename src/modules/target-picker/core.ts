@@ -69,9 +69,12 @@ namespace FFT {
             const pos = event;
             const rect = canvas.app.view.getBoundingClientRect() as DOMRect;
             const tokens = canvas.tokens.placeables;
+            let hitToken = false;
+            
             for (const token of tokens) {
                 const bounds = token.getBounds();
                 if (bounds.contains(pos.clientX - rect.left, pos.clientY - rect.top)) {
+                    hitToken = true;
                     const id = token.id;
                     if (event.button === 2) {
                         if (this._selected[id]) {
@@ -88,6 +91,10 @@ namespace FFT {
                     if (this.totalSelected() >= this._maxTargets) this.end(true);
                     break;
                 }
+            }
+            
+            if (!hitToken && event.button === 2) {
+                this.end(false);
             }
         }
 
