@@ -3,25 +3,43 @@
         "name": "Heal\nClick: Full Heal\nAlt+Click: Heal 1\nCtrl+Click: Heal 5\nShift+Click: Heal 10",
         "icon": "fas fa-heart",
         "row": 1,
-        "script": "FFT.Functions.healSelected"
+        "keyBindings": {
+            "default": "FFT.Functions.fullHealSelected",
+            "alt": "FFT.Functions.heal1Selected",
+            "ctrl": "FFT.Functions.heal5Selected",
+            "shift": "FFT.Functions.heal10Selected"
+        }
     },
     "hurt": {
         "name": "Hurt\nClick: Kill\nAlt+Click: Hurt 1\nCtrl+Click: Hurt 5\nShift+Click: Hurt 10",
         "icon": "fas fa-heart-crack",
         "row": 1,
-        "script": "FFT.Functions.hurtSelected"
+        "keyBindings": {
+            "default": "FFT.Functions.killSelected",
+            "alt": "FFT.Functions.hurt1Selected",
+            "ctrl": "FFT.Functions.hurt5Selected",
+            "shift": "FFT.Functions.hurt10Selected"
+        }
     },
     "rest": {
         "name": "Rest\nClick: Long Rest\nShift+Click: Short Rest",
         "icon": "fas fa-bed",
         "row": 1,
-        "script": "FFT.Functions.restSelected"
+        "keyBindings": {
+            "default": "FFT.Functions.longRestSelected",
+            "shift": "FFT.Functions.shortRestSelected"
+        }
     },
     "combat": {
         "name": "Toggle Combat\nClick: Add & Roll Initiative\nShift+Click: Delete Encounter\nAlt+Click: Reset Combat\nRight-Click: Remove from Combat",
         "icon": "fas fa-swords",
         "row": 2,
-        "script": "FFT.Functions.toggleCombat"
+        "keyBindings": {
+            "default": "FFT.Functions.addTokensToCombat",
+            "shift": "FFT.Functions.deleteCombatEncounter",
+            "alt": "FFT.Functions.resetCombatEncounter",
+            "rightClick": "FFT.Functions.removeTokensFromCombat"
+        }
     },
     "money": {
         "name": "Add gold",
