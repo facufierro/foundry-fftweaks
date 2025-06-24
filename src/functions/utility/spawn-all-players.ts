@@ -1,5 +1,5 @@
 /**
- * Spawns all assigned player character tokens in a line at the specified location
+ * Spawns all assigned player character tokens in a square formation at the specified location
  * Uses each user's officially assigned character (user.character property)
  * @param x - X coordinate on the canvas
  * @param y - Y coordinate on the canvas
@@ -50,12 +50,56 @@ async function spawnAllPlayersAtLocation(x: number, y: number, spacing: number =
         return;
     }
 
-    // Calculate total number of tokens to position
+    // Calculate total number of tokens to position (only those with assigned characters)
     const totalTokens = teleportExisting ? mainCharacters.length : charactersToSpawn.length;
 
-    // Calculate starting position (center the line on the clicked point)
-    const totalWidth = (totalTokens - 1) * spacing;
+    // Calculate square formation dimensions
+    const gridCols = Math.ceil(Math.sqrt(totalTokens));
+    const gridRows = Math.ceil(totalTokens / gridCols);
+    
+    // Calculate starting position (center the square on the clicked point)
+    const totalWidth = (gridCols - 1) * spacing;
+    const totalHeight = (gridRows - 1) * spacing;
     const startX = x - (totalWidth / 2);
+    const startY = y - (totalHeight / 2);
+
+    // Helper function to check if a position is occupied by any token
+    const isPositionOccupied = (checkX: number, checkY: number, gridSize: number) => {
+        const tolerance = gridSize * 0.1; // 10% tolerance for grid alignment
+        return canvas.scene?.tokens.some(token => 
+            Math.abs(token.x - checkX) < tolerance && Math.abs(token.y - checkY) < tolerance
+        ) || false;
+    };
+
+    // Helper function to find next available position
+    const findAvailablePosition = (preferredX: number, preferredY: number, gridSize: number) => {
+        const snappedX = Math.round(preferredX / gridSize) * gridSize;
+        const snappedY = Math.round(preferredY / gridSize) * gridSize;
+        
+        // If preferred position is free, use it
+        if (!isPositionOccupied(snappedX, snappedY, gridSize)) {
+            return { x: snappedX, y: snappedY };
+        }
+        
+        // Search in expanding spiral for free space
+        for (let radius = 1; radius <= 10; radius++) {
+            for (let dx = -radius; dx <= radius; dx++) {
+                for (let dy = -radius; dy <= radius; dy++) {
+                    // Only check positions on the perimeter of the current radius
+                    if (Math.abs(dx) === radius || Math.abs(dy) === radius) {
+                        const testX = snappedX + (dx * gridSize);
+                        const testY = snappedY + (dy * gridSize);
+                        if (!isPositionOccupied(testX, testY, gridSize)) {
+                            return { x: testX, y: testY };
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Fallback to original position if no free space found
+        return { x: snappedX, y: snappedY };
+    };
 
     // Handle existing tokens (teleport if requested)
     if (teleportExisting && existingTokens.length > 0) {
@@ -65,15 +109,19 @@ async function spawnAllPlayersAtLocation(x: number, y: number, spacing: number =
         for (const actor of mainCharacters) {
             const existingToken = existingTokens.find(token => token.actorId === actor.id);
             if (existingToken) {
-                const tokenX = startX + (tokenIndex * spacing);
+                // Calculate grid position
+                const row = Math.floor(tokenIndex / gridCols);
+                const col = tokenIndex % gridCols;
+                const tokenX = startX + (col * spacing);
+                const tokenY = startY + (row * spacing);
+                
                 const gridSize = canvas.grid?.size || 100;
-                const snappedX = Math.round(tokenX / gridSize) * gridSize;
-                const snappedY = Math.round(y / gridSize) * gridSize;
+                const position = findAvailablePosition(tokenX, tokenY, gridSize);
                 
                 tokenUpdates.push({
                     _id: existingToken.id,
-                    x: snappedX,
-                    y: snappedY
+                    x: position.x,
+                    y: position.y
                 });
                 tokenIndex++;
             }
@@ -90,6 +138,7 @@ async function spawnAllPlayersAtLocation(x: number, y: number, spacing: number =
 
     // Create tokens for characters that need spawning
     const newTokenUpdates = [];
+    const occupiedPositions = new Set(); // Track positions we're about to occupy
     let spawnIndex = teleportExisting ? 0 : 0;
     
     for (const actor of mainCharacters) {
@@ -105,16 +154,37 @@ async function spawnAllPlayersAtLocation(x: number, y: number, spacing: number =
             continue;
         }
         
-        const tokenX = startX + (spawnIndex * spacing);
+        // Calculate grid position
+        const row = Math.floor(spawnIndex / gridCols);
+        const col = spawnIndex % gridCols;
+        const tokenX = startX + (col * spacing);
+        const tokenY = startY + (row * spacing);
+        
         const gridSize = canvas.grid?.size || 100;
-        const snappedX = Math.round(tokenX / gridSize) * gridSize;
-        const snappedY = Math.round(y / gridSize) * gridSize;
+        let position = findAvailablePosition(tokenX, tokenY, gridSize);
+        
+        // Check if we're about to place another token at this position
+        const positionKey = `${position.x},${position.y}`;
+        let attempts = 0;
+        while (occupiedPositions.has(positionKey) && attempts < 20) {
+            // Find alternative position by offsetting slightly
+            const offsetX = tokenX + ((attempts % 4 - 1.5) * gridSize);
+            const offsetY = tokenY + (Math.floor(attempts / 4 - 1.5) * gridSize);
+            position = findAvailablePosition(offsetX, offsetY, gridSize);
+            const newPositionKey = `${position.x},${position.y}`;
+            if (!occupiedPositions.has(newPositionKey)) {
+                break;
+            }
+            attempts++;
+        }
+        
+        occupiedPositions.add(`${position.x},${position.y}`);
         
         newTokenUpdates.push({
             name: actor.name,
             actorId: actor.id,
-            x: snappedX,
-            y: snappedY,
+            x: position.x,
+            y: position.y,
             width: actor.prototypeToken.width,
             height: actor.prototypeToken.height,
             texture: {
