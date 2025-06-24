@@ -364,23 +364,6 @@ async function prepareReplacementData(
 }
 
 /**
- * Convenience function to replace items for selected tokens
- */
-async function replaceItemsForSelectedTokens(options: Omit<ItemReplacementOptions, 'actorIds'> = {}): Promise<ItemReplacementResult[]> {
-    const selectedTokens = canvas.tokens?.controlled || [];
-    if (!selectedTokens.length) {
-        ui.notifications?.warn("FFTweaks | No tokens selected.");
-        return [];
-    }
-
-    const actorIds = selectedTokens
-        .map(token => token.actor?.id)
-        .filter(Boolean) as string[];
-
-    return replaceItemsFromCompendiums({ ...options, actorIds });
-}
-
-/**
  * Convenience function to replace items for all player characters
  */
 async function replaceItemsForAllPlayers(options: Omit<ItemReplacementOptions, 'actorIds'> = {}): Promise<ItemReplacementResult[]> {

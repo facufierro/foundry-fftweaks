@@ -67,5 +67,14 @@
         "icon": "fas fa-treasure-chest",
         "row": 3,
         "script": "FFT.Functions.lootCorpses"
+    },
+    "itemReplacer": {
+        "name": "Item Replacer\nClick: Replace items (selected tokens or dialog)\nCtrl+Click: Replace for all players",
+        "icon": "fas fa-exchange-alt",
+        "row": 3,
+        "keyBindings": {
+            "default": "FFT.Functions.replaceItemsFromCompendiums",
+            "ctrl": "FFT.Functions.replaceItemsForAllPlayers"
+        }
     }
 }

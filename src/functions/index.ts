@@ -25,7 +25,6 @@ namespace FFT {
 
         // Item management functions
         static replaceItemsFromCompendiums = replaceItemsFromCompendiums;
-        static replaceItemsForSelectedTokens = replaceItemsForSelectedTokens;
         static replaceItemsForAllPlayers = replaceItemsForAllPlayers;
 
         // classes
