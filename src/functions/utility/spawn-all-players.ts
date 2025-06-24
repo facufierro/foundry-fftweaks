@@ -1,5 +1,6 @@
 /**
- * Spawns all main player tokens in a line at the specified location
+ * Spawns all assigned player character tokens in a line at the specified location
+ * Uses each user's officially assigned character (user.character property)
  * @param x - X coordinate on the canvas
  * @param y - Y coordinate on the canvas
  * @param spacing - Spacing between tokens (default: 120)
@@ -13,22 +14,28 @@ async function spawnAllPlayersAtLocation(x: number, y: number, spacing: number =
         return;
     }
 
-    // Get main character for each player
-    const mainCharacters = players.map(player => {
-        // Find the main character (first owned character or character marked as main)
-        const ownedActors = game.actors?.filter(actor => 
-            actor.ownership[player.id] === 3 // OWNER permission level
-        ) || [];
-        
-        // Prefer character type actors
-        const characterActors = ownedActors.filter(actor => actor.type === "character");
-        return characterActors.length > 0 ? characterActors[0] : ownedActors[0];
-    }).filter(actor => actor != null);
+    // Get the assigned character for each player
+    const playerCharacterPairs = players.map(player => ({
+        player,
+        character: player.character
+    }));
 
-    if (mainCharacters.length === 0) {
-        ui.notifications?.warn("No main characters found for players.");
+    // Separate players with and without assigned characters
+    const playersWithCharacters = playerCharacterPairs.filter(pair => pair.character != null);
+    const playersWithoutCharacters = playerCharacterPairs.filter(pair => pair.character == null);
+
+    // Warn about players without assigned characters
+    if (playersWithoutCharacters.length > 0) {
+        const playerNames = playersWithoutCharacters.map(pair => pair.player.name).join(", ");
+        ui.notifications?.warn(`Some players don't have assigned characters: ${playerNames}`);
+    }
+
+    if (playersWithCharacters.length === 0) {
+        ui.notifications?.warn("No players have assigned characters to spawn.");
         return;
     }
+
+    const mainCharacters = playersWithCharacters.map(pair => pair.character);
 
     // Calculate starting position (center the line on the clicked point)
     const totalWidth = (mainCharacters.length - 1) * spacing;
@@ -81,32 +88,22 @@ async function spawnAllPlayersAtLocation(x: number, y: number, spacing: number =
 async function waitForCanvasClickToSpawnPlayers(): Promise<void> {
     ui.notifications?.info("Click on the map to spawn all player tokens at that location.");
     
-    // Create a one-time click handler using FoundryVTT's Hook system
-    let hookId: number;
-    
-    const handleCanvasClick = async (event: any) => {
-        // Remove the hook after first use
-        Hooks.off("canvasReady", hookId);
+    // Create a one-time click handler
+    const handleCanvasClick = async (event: PointerEvent) => {
+        // Remove the event listener after first use
+        canvasElement.removeEventListener("click", handleCanvasClick);
         
-        // Get the click position in canvas coordinates
-        const transform = canvas.stage?.worldTransform;
-        if (!transform) return;
-        
-        // Calculate world coordinates from screen coordinates
-        const rect = (canvas.app?.view as HTMLCanvasElement)?.getBoundingClientRect();
-        if (!rect) return;
-        
-        const x = (event.clientX - rect.left - transform.tx) / transform.a;
-        const y = (event.clientY - rect.top - transform.ty) / transform.d;
+        // Get the click position in world coordinates
+        const worldPos = canvas.canvasCoordinatesFromClient({x: event.clientX, y: event.clientY});
         
         // Spawn players at the clicked location
-        await spawnAllPlayersAtLocation(x, y);
+        await spawnAllPlayersAtLocation(worldPos.x, worldPos.y);
     };
     
     // Add a one-time click listener to the canvas view
     const canvasElement = canvas.app?.view as HTMLCanvasElement;
     if (canvasElement) {
-        canvasElement.addEventListener("click", handleCanvasClick, { once: true });
+        canvasElement.addEventListener("click", handleCanvasClick);
     } else {
         ui.notifications?.error("Canvas not available");
     }
