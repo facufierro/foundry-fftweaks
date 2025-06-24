@@ -34,5 +34,17 @@
         "icon": "fas fa-book",
         "row": 2,
         "script": "FFT.Functions.distributeExperience"
+    },
+    "selectAllPlayers": {
+        "name": "Select All Players\nClick: Select all player tokens on scene",
+        "icon": "fas fa-users",
+        "row": 3,
+        "script": "FFT.Functions.selectAllPlayers"
+    },
+    "lootCorpses": {
+        "name": "Loot Corpses\nClick: Open loot dialog for dead enemies",
+        "icon": "fas fa-treasure-chest",
+        "row": 3,
+        "script": "FFT.Functions.lootCorpses"
     }
 }
