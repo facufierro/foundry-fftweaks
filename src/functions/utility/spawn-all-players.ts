@@ -20,15 +20,8 @@ async function spawnAllPlayersAtLocation(x: number, y: number, spacing: number =
         character: player.character
     }));
 
-    // Separate players with and without assigned characters
+    // Get only players with assigned characters
     const playersWithCharacters = playerCharacterPairs.filter(pair => pair.character != null);
-    const playersWithoutCharacters = playerCharacterPairs.filter(pair => pair.character == null);
-
-    // Warn about players without assigned characters
-    if (playersWithoutCharacters.length > 0) {
-        const playerNames = playersWithoutCharacters.map(pair => pair.player.name).join(", ");
-        ui.notifications?.warn(`Some players don't have assigned characters: ${playerNames}`);
-    }
 
     if (playersWithCharacters.length === 0) {
         ui.notifications?.warn("No players have assigned characters to spawn.");
@@ -37,14 +30,25 @@ async function spawnAllPlayersAtLocation(x: number, y: number, spacing: number =
 
     const mainCharacters = playersWithCharacters.map(pair => pair.character);
 
+    // Filter out characters that already have tokens on the current scene
+    const charactersToSpawn = mainCharacters.filter(actor => {
+        const existingToken = canvas.scene?.tokens.find(token => token.actorId === actor.id);
+        return !existingToken;
+    });
+
+    if (charactersToSpawn.length === 0) {
+        ui.notifications?.info("All player characters already have tokens on this scene.");
+        return;
+    }
+
     // Calculate starting position (center the line on the clicked point)
-    const totalWidth = (mainCharacters.length - 1) * spacing;
+    const totalWidth = (charactersToSpawn.length - 1) * spacing;
     const startX = x - (totalWidth / 2);
 
-    // Create tokens for each main character
+    // Create tokens for each character that needs spawning
     const tokenUpdates = [];
-    for (let i = 0; i < mainCharacters.length; i++) {
-        const actor = mainCharacters[i];
+    for (let i = 0; i < charactersToSpawn.length; i++) {
+        const actor = charactersToSpawn[i];
         const tokenX = startX + (i * spacing);
         
         // Get the grid size for proper positioning
@@ -75,7 +79,6 @@ async function spawnAllPlayersAtLocation(x: number, y: number, spacing: number =
     // Create all tokens at once
     try {
         await canvas.scene?.createEmbeddedDocuments("Token", tokenUpdates);
-        ui.notifications?.info(`Spawned ${tokenUpdates.length} player tokens.`);
     } catch (error) {
         console.error("FFTweaks | Error spawning player tokens:", error);
         ui.notifications?.error("Failed to spawn player tokens.");
