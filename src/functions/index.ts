@@ -2,6 +2,8 @@ namespace FFT {
     export class Functions {
         // Core functions
         static selectAllPlayers = selectAllPlayers;
+        static waitForCanvasClickToSpawnPlayers = waitForCanvasClickToSpawnPlayers;
+        static spawnAllPlayersAtLocation = spawnAllPlayersAtLocation;
         static distributeGold = distributeGold;
         static distributeExperience = distributeExperience;
         static createDefaultLevels = createDefaultLevels;
