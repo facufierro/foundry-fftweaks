@@ -54,15 +54,27 @@
         "script": "FFT.Functions.distributeExperience"
     },
     "selectAllPlayers": {
-        "name": "Select All Players\nClick: Select all player tokens on scene",
+        "name": "Select All Players\nClick: Select all player tokens on scene\nShift+Click: Spawn all players at clicked location",
         "icon": "fas fa-users",
         "row": 3,
-        "script": "FFT.Functions.selectAllPlayers"
+        "keyBindings": {
+            "default": "FFT.Functions.selectAllPlayers",
+            "shift": "FFT.Functions.waitForCanvasClickToSpawnPlayers"
+        }
     },
     "lootCorpses": {
         "name": "Loot Corpses\nClick: Open loot dialog for dead enemies",
         "icon": "fas fa-treasure-chest",
         "row": 3,
         "script": "FFT.Functions.lootCorpses"
+    },
+    "itemReplacer": {
+        "name": "Item Replacer\nClick: Replace items (selected tokens or dialog)\nCtrl+Click: Replace for all players",
+        "icon": "fas fa-exchange-alt",
+        "row": 3,
+        "keyBindings": {
+            "default": "FFT.Functions.replaceItemsFromCompendiums",
+            "ctrl": "FFT.Functions.replaceItemsForAllPlayers"
+        }
     }
 }

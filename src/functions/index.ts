@@ -2,6 +2,8 @@ namespace FFT {
     export class Functions {
         // Core functions
         static selectAllPlayers = selectAllPlayers;
+        static waitForCanvasClickToSpawnPlayers = waitForCanvasClickToSpawnPlayers;
+        static spawnAllPlayersAtLocation = spawnAllPlayersAtLocation;
         static distributeGold = distributeGold;
         static distributeExperience = distributeExperience;
         static createDefaultLevels = createDefaultLevels;
@@ -20,6 +22,10 @@ namespace FFT {
         static removeTokensFromCombat = removeTokensFromCombat;
         static resetCombatEncounter = resetCombatEncounter;
         static deleteCombatEncounter = deleteCombatEncounter;
+
+        // Item management functions
+        static replaceItemsFromCompendiums = replaceItemsFromCompendiums;
+        static replaceItemsForAllPlayers = replaceItemsForAllPlayers;
 
         // classes
         static runicInscription = runicInscription;
