@@ -23,6 +23,11 @@ namespace FFT {
         static resetCombatEncounter = resetCombatEncounter;
         static deleteCombatEncounter = deleteCombatEncounter;
 
+        // Item management functions
+        static replaceItemsFromCompendiums = replaceItemsFromCompendiums;
+        static replaceItemsForSelectedTokens = replaceItemsForSelectedTokens;
+        static replaceItemsForAllPlayers = replaceItemsForAllPlayers;
+
         // classes
         static runicInscription = runicInscription;
     }
