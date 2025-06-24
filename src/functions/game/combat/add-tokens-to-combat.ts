@@ -39,20 +39,7 @@ async function addTokensToCombat(): Promise<void> {
     // Roll initiative for new combatants and start combat
     if (toRollInitiative.length > 0 && game.combat) {
         const ids = toRollInitiative.map(c => c.id);
-        
-        // Hook to suppress initiative roll messages
-        const hookId = Hooks.on("preCreateChatMessage", (document: any, data: any, options: any, userId: string) => {
-            if (data.flags?.core?.initiativeRoll) {
-                return false; // Prevent the message from being created
-            }
-        });
-        
-        try {
-            await game.combat.rollInitiative(ids);
-        } finally {
-            // Remove the hook after rolling
-            Hooks.off("preCreateChatMessage", hookId);
-        }
+        await game.combat.rollInitiative(ids);
 
         if (!game.combat.started) {
             await game.combat.startCombat();
