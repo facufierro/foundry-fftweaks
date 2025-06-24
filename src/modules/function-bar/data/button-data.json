@@ -18,7 +18,7 @@
         "script": "FFT.Functions.restSelected"
     },
     "combat": {
-        "name": "Toggle Combat\nClick: Add & Roll Initiative\nShift+Click: Delete Encounter\nRight-Click: Remove from Combat",
+        "name": "Toggle Combat\nClick: Add & Roll Initiative\nShift+Click: Delete Encounter\nAlt+Click: Reset Combat\nRight-Click: Remove from Combat",
         "icon": "fas fa-swords",
         "row": 2,
         "script": "FFT.Functions.toggleCombat"
