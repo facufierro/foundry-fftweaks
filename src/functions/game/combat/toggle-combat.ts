@@ -8,7 +8,7 @@ async function deleteCombatEncounter(): Promise<void> {
     }
     
     await game.combat.delete();
-    ui.notifications?.info("Combat encounter deleted.");
+    console.log("FFTweaks | Combat encounter deleted.");
 }
 
 /**
@@ -86,7 +86,7 @@ async function resetCombatEncounter(): Promise<void> {
     // Begin the encounter
     await newCombat.startCombat();
 
-    ui.notifications?.info(`Combat encounter reset with ${createdCombatants.length} combatants restored.`);
+    console.log(`FFTweaks | Combat encounter reset with ${createdCombatants.length} combatants restored.`);
 }
 
 /**
@@ -116,7 +116,7 @@ async function removeTokensFromCombat(): Promise<void> {
     }
     
     if (removedCount > 0) {
-        ui.notifications?.info(`Removed ${removedCount} token(s) from combat.`);
+        console.log(`FFTweaks | Removed ${removedCount} token(s) from combat.`);
     } else {
         ui.notifications?.warn("No selected tokens were in combat.");
     }
@@ -163,15 +163,19 @@ async function addTokensToCombat(): Promise<void> {
     // Roll initiative for new combatants and start combat
     if (toRollInitiative.length > 0 && game.combat) {
         const ids = toRollInitiative.map(c => c.id);
-        await game.combat.rollInitiative(ids);
+        await game.combat.rollInitiative(ids, { 
+            messageOptions: { 
+                rollMode: "gmroll" 
+            }
+        });
 
         if (!game.combat.started) {
             await game.combat.startCombat();
         }
         
-        ui.notifications?.info(`Added ${addedCount} token(s) to combat and rolled initiative.`);
+        console.log(`FFTweaks | Added ${addedCount} token(s) to combat and rolled initiative.`);
     } else if (addedCount === 0) {
-        ui.notifications?.info("All selected tokens are already in combat.");
+        console.log("FFTweaks | All selected tokens are already in combat.");
     }
 }
 
