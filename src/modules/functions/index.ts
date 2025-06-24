@@ -3,6 +3,7 @@ namespace FFT {
         static healSelected = healSelected;
         static hurtSelected = hurtSelected;
         static restSelected = restSelected;
+        static selectAllPlayers = selectAllPlayers;
         static toggleCombat = toggleCombat;
         static distributeGold = distributeGold;
         static distributeExperience = distributeExperience;
