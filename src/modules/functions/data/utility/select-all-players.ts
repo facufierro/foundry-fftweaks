@@ -19,12 +19,9 @@ async function selectAllPlayers(): Promise<void> {
 
     // Clear current selection and select all player tokens
     canvas.tokens?.releaseAll();
-    
+
     // Select all player tokens
     for (const token of playerTokens) {
         token.control({ releaseOthers: false });
     }
-
-    // Notify the user
-    ui.notifications?.info(`Selected ${playerTokens.length} player token${playerTokens.length === 1 ? '' : 's'}.`);
 }
