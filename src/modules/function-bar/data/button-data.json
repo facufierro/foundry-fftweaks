@@ -4,10 +4,10 @@
         "icon": "fas fa-heart",
         "row": 1,
         "keyBindings": {
-            "default": "FFT.Functions.fullHealSelected",
-            "alt": "FFT.Functions.heal1Selected",
-            "ctrl": "FFT.Functions.heal5Selected",
-            "shift": "FFT.Functions.heal10Selected"
+            "default": "FFT.Functions.healTokens()",
+            "alt": "FFT.Functions.healTokens(1)",
+            "ctrl": "FFT.Functions.healTokens(5)",
+            "shift": "FFT.Functions.healTokens(10)"
         }
     },
     "hurt": {
@@ -15,10 +15,10 @@
         "icon": "fas fa-heart-crack",
         "row": 1,
         "keyBindings": {
-            "default": "FFT.Functions.killSelected",
-            "alt": "FFT.Functions.hurt1Selected",
-            "ctrl": "FFT.Functions.hurt5Selected",
-            "shift": "FFT.Functions.hurt10Selected"
+            "default": "FFT.Functions.hurtTokens()",
+            "alt": "FFT.Functions.hurtTokens(1)",
+            "ctrl": "FFT.Functions.hurtTokens(5)",
+            "shift": "FFT.Functions.hurtTokens(10)"
         }
     },
     "rest": {
@@ -26,8 +26,8 @@
         "icon": "fas fa-bed",
         "row": 1,
         "keyBindings": {
-            "default": "FFT.Functions.longRestSelected",
-            "shift": "FFT.Functions.shortRestSelected"
+            "default": "FFT.Functions.restTokens(true)",
+            "shift": "FFT.Functions.restTokens(false)"
         }
     },
     "combat": {

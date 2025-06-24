@@ -67,13 +67,55 @@ namespace FFT {
         }
 
         static resolveFunction(scriptPath: string): (...args: any[]) => void {
-            const parts = scriptPath.split(".");
-            let fn: any = window;
-            for (const part of parts) {
-                fn = fn?.[part];
-            }
+            // Check if the scriptPath contains parameters (e.g., "FFT.Functions.healTokens(5)")
+            const functionCallMatch = scriptPath.match(/^(.+?)\((.*)?\)$/);
+            
+            if (functionCallMatch) {
+                // Handle function calls with parameters
+                const [, functionPath, argsString] = functionCallMatch;
+                const parts = functionPath.split(".");
+                let fn: any = window;
+                for (const part of parts) {
+                    fn = fn?.[part];
+                }
 
-            if (typeof fn === "function") return fn;
+                if (typeof fn === "function") {
+                    // Parse arguments
+                    let args: any[] = [];
+                    if (argsString && argsString.trim()) {
+                        try {
+                            // Simple argument parsing for basic types
+                            args = argsString.split(',').map(arg => {
+                                arg = arg.trim();
+                                if (arg === 'true') return true;
+                                if (arg === 'false') return false;
+                                if (arg === 'null') return null;
+                                if (arg === 'undefined') return undefined;
+                                if (/^\d+$/.test(arg)) return parseInt(arg, 10);
+                                if (/^\d*\.\d+$/.test(arg)) return parseFloat(arg);
+                                if (arg.startsWith('"') && arg.endsWith('"')) return arg.slice(1, -1);
+                                if (arg.startsWith("'") && arg.endsWith("'")) return arg.slice(1, -1);
+                                return arg;
+                            });
+                        } catch (e) {
+                            console.error(`Error parsing arguments for ${scriptPath}:`, e);
+                            args = [];
+                        }
+                    }
+                    
+                    return () => fn(...args);
+                }
+            } else {
+                // Handle simple function paths without parameters
+                const parts = scriptPath.split(".");
+                let fn: any = window;
+                for (const part of parts) {
+                    fn = fn?.[part];
+                }
+
+                if (typeof fn === "function") return fn;
+            }
+            
             console.error(`Invalid script path: ${scriptPath}`);
             return () => { };
         }
