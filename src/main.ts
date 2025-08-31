@@ -17,5 +17,6 @@ Hooks.once("ready", () => {
     // FFT.ResizeHandler.initialize();
     FFT.TokenVisualsModule.initialize();
     FFT.TargetPickerModule.initialize();
+    FFT.MidiAutoRollModule.initialize();
     // FFT.BattlemapGeneratorModule.initialize();
 });
