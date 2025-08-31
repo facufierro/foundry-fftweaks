@@ -9,31 +9,89 @@ namespace FFT {
         static initialize(): void {
             console.log("FFTweaks | Initializing Midi Auto Roll module");
             
-            // Start observing for midi-qol dialogs
-            this.startObserver();
+            // Hook into Foundry's render system to catch dialogs even earlier
+            this.hookIntoFoundryRender();
+            
+            // Start observing for midi-qol dialogs with immediate response
+            this.startFastObserver();
             
             // Also check immediately in case there are already dialogs open
             this.checkForRollButtons();
         }
 
         /**
-         * Starts the mutation observer to watch for new dialogs
+         * Hooks into Foundry's application rendering to catch midi-qol dialogs immediately
          */
-        private static startObserver(): void {
-            this.observer = new MutationObserver((mutations) => {
-                for (const mutation of mutations) {
-                    if (mutation.type === 'childList') {
-                        // Check if any new nodes contain roll buttons
-                        Array.from(mutation.addedNodes).forEach(node => {
-                            if (node.nodeType === Node.ELEMENT_NODE) {
-                                this.checkElementForRollButtons(node as Element);
-                            }
-                        });
+        private static hookIntoFoundryRender(): void {
+            // Hook into all dialog rendering
+            Hooks.on("renderDialog", (app: any, html: JQuery) => {
+                if (!this.isEnabled) return;
+                
+                // Check if this looks like a midi-qol dialog
+                const rollButton = html.find('button[data-action="roll"]');
+                if (rollButton.length > 0) {
+                    const span = rollButton.find('span');
+                    const icon = rollButton.find('i.fa-dice-d20, i.fa-solid.fa-dice-d20');
+                    
+                    if (span.text().trim() === 'Roll' && icon.length > 0) {
+                        console.log("FFTweaks | Caught midi-qol dialog on render, auto-clicking...");
+                        
+                        // Click immediately
+                        rollButton[0].click();
+                        console.log("FFTweaks | Auto-clicked roll button via render hook");
+                        
+                        // Try to close the dialog immediately
+                        setTimeout(() => {
+                            if (app.close) app.close();
+                        }, 50);
                     }
                 }
             });
 
-            // Start observing the document body for changes
+            // Also hook into any application render as a fallback
+            Hooks.on("renderApplication", (app: any, html: JQuery) => {
+                if (!this.isEnabled) return;
+                
+                // Quick check for roll buttons in any application
+                const rollButtons = html.find('button[data-action="roll"]');
+                rollButtons.each((index, button) => {
+                    const $button = $(button);
+                    const span = $button.find('span');
+                    const icon = $button.find('i.fa-dice-d20, i.fa-solid.fa-dice-d20');
+                    
+                    if (span.text().trim() === 'Roll' && icon.length > 0) {
+                        console.log("FFTweaks | Found roll button in application render, auto-clicking...");
+                        button.click();
+                    }
+                });
+            });
+        }
+
+        /**
+         * Starts the mutation observer with immediate response to catch dialogs as they're created
+         */
+        private static startFastObserver(): void {
+            this.observer = new MutationObserver((mutations) => {
+                mutations.forEach(mutation => {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === Node.ELEMENT_NODE) {
+                                const element = node as Element;
+                                
+                                // Check immediately without delay
+                                this.checkElementForRollButtons(element);
+                                
+                                // Also use requestAnimationFrame for even faster response
+                                requestAnimationFrame(() => {
+                                    this.checkElementForRollButtons(element);
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Start observing with immediate synchronous processing
             this.observer.observe(document.body, {
                 childList: true,
                 subtree: true
@@ -48,7 +106,7 @@ namespace FFT {
         }
 
         /**
-         * Checks a specific element and its children for roll buttons
+         * Checks a specific element and its children for roll buttons with immediate action
          */
         private static checkElementForRollButtons(element: Element): void {
             if (!this.isEnabled) return;
@@ -59,16 +117,20 @@ namespace FFT {
             Array.from(rollButtons).forEach(button => {
                 // Additional check to make sure it's the midi-qol roll button
                 const span = button.querySelector('span');
-                const icon = button.querySelector('i.fa-dice-d20');
+                const icon = button.querySelector('i.fa-dice-d20, i.fa-solid.fa-dice-d20');
                 
                 if (span?.textContent?.trim() === 'Roll' && icon) {
-                    console.log("FFTweaks | Found midi-qol roll button, auto-clicking...");
+                    console.log("FFTweaks | Found midi-qol roll button, auto-clicking immediately...");
                     
-                    // Small delay to ensure the dialog is fully rendered
-                    setTimeout(() => {
-                        (button as HTMLButtonElement).click();
-                        console.log("FFTweaks | Auto-clicked roll button");
-                    }, 100);
+                    // Click immediately without delay
+                    (button as HTMLButtonElement).click();
+                    console.log("FFTweaks | Auto-clicked roll button instantly");
+                    
+                    // Also try to hide the dialog immediately if possible
+                    const dialog = button.closest('.dialog, .application');
+                    if (dialog && dialog instanceof HTMLElement) {
+                        dialog.style.display = 'none';
+                    }
                 }
             });
         }
