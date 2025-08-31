@@ -62,6 +62,7 @@ namespace FFT {
                     }
 
                     // For each target in order, use the corresponding activity
+                    let firstCastSucceeded = false;
                     for (let i = 0; i < targets.length; i++) {
                         const t = targets[i];
                         // Clear all targets
@@ -76,13 +77,35 @@ namespace FFT {
                         Hooks.call("targetToken", t, true);
                         const currentTargets = Array.from(game.user?.targets ?? []).map(tok => `${tok.name} (${tok.id})`);
                         console.debug(`[FFT] Current user targets before activity.use():`, currentTargets);
+                        
                         // Use the correct activity for this target
                         if (i === 0) {
                             // First use: normal activity
                             console.debug(`[FFT] Using activity:`, activity.name, `on target:`, t.name, t.id);
-                            const result = await activity.use();
-                            console.debug(`[FFT] Result of activity.use() for target`, t.name, t.id, ':', result);
+                            try {
+                                const result = await activity.use();
+                                console.debug(`[FFT] Result of activity.use() for target`, t.name, t.id, ':', result);
+                                
+                                // Check if the activity was successful
+                                // Different activity types have different success indicators
+                                if (this.isActivitySuccessful(result, activity)) {
+                                    firstCastSucceeded = true;
+                                    console.debug(`[FFT] First cast succeeded, continuing with remaining targets`);
+                                } else {
+                                    console.log(`[FFT] First cast failed, stopping multi-target casting`);
+                                    break; // Stop the loop if first cast failed
+                                }
+                            } catch (error) {
+                                console.error(`[FFT] First cast failed with error:`, error);
+                                break; // Stop the loop on error
+                            }
                         } else {
+                            // Only continue with subsequent targets if first cast succeeded
+                            if (!firstCastSucceeded) {
+                                console.debug(`[FFT] Skipping target ${t.name} because first cast failed`);
+                                break;
+                            }
+                            
                             // Subsequent uses: try forward activity first
                             let usedForward = false;
                             const item = activity.item;
@@ -92,13 +115,23 @@ namespace FFT {
                                 );
                                 if (forward && typeof (forward as any).use === "function") {
                                     console.debug(`[FFT] Using forward activity for target:`, t.name, t.id);
-                                    await (forward as any).use();
-                                    usedForward = true;
+                                    try {
+                                        await (forward as any).use();
+                                        usedForward = true;
+                                    } catch (error) {
+                                        console.error(`[FFT] Forward activity failed for target ${t.name}:`, error);
+                                        // Continue to next target even if this one fails
+                                    }
                                 }
                             }
                             if (!usedForward) {
                                 console.debug(`[FFT] No forward activity, using main activity again for target:`, t.name, t.id);
-                                await activity.use();
+                                try {
+                                    await activity.use();
+                                } catch (error) {
+                                    console.error(`[FFT] Main activity failed for target ${t.name}:`, error);
+                                    // Continue to next target even if this one fails
+                                }
                             }
                         }
                         await new Promise(resolve => setTimeout(resolve, 600));
@@ -139,6 +172,56 @@ namespace FFT {
          */
         private static getActivityRange(activity: any): number {
             return activity.range?.value || 30;
+        }
+
+        /**
+         * Checks if an activity use was successful based on the result
+         */
+        private static isActivitySuccessful(result: any, activity: any): boolean {
+            // If result is null/undefined, assume failure
+            if (!result) {
+                console.debug(`[FFT] Activity result is null/undefined, treating as failure`);
+                return false;
+            }
+
+            // For spells, check if spell slot was consumed or if it was cancelled
+            if (activity.type === "spell" || activity.item?.type === "spell") {
+                // If the result has a message property, it likely succeeded
+                if (result.message || result.messages) {
+                    console.debug(`[FFT] Spell activity has message, treating as success`);
+                    return true;
+                }
+                
+                // Check if spell slots were consumed (indicates successful casting)
+                if (result.actorUpdates || result.itemUpdates) {
+                    console.debug(`[FFT] Spell activity has updates, treating as success`);
+                    return true;
+                }
+                
+                // If result is just an empty object or false, it was likely cancelled
+                if (result === false || (typeof result === 'object' && Object.keys(result).length === 0)) {
+                    console.debug(`[FFT] Spell activity returned false or empty object, treating as failure`);
+                    return false;
+                }
+            }
+
+            // For attacks, check if there was a roll result
+            if (activity.type === "attack") {
+                if (result.rolls || result.roll || result.message) {
+                    console.debug(`[FFT] Attack activity has roll result, treating as success`);
+                    return true;
+                }
+            }
+
+            // For other activities, if we got any result object, assume success
+            if (typeof result === 'object' && result !== null) {
+                console.debug(`[FFT] Activity returned an object, treating as success`);
+                return true;
+            }
+
+            // Default to failure if we can't determine success
+            console.debug(`[FFT] Could not determine activity success, treating as failure. Result:`, result);
+            return false;
         }
 
         /**
