@@ -64,36 +64,61 @@ namespace FFT {
 
         private onCanvasClick(event: MouseEvent) {
             if (event.button !== 0 && event.button !== 2) return;
-            const pos = event;
+            
+            // Get click position relative to the canvas element
             const rect = canvas.app.view.getBoundingClientRect() as DOMRect;
+            const clickX = event.clientX - rect.left;
+            const clickY = event.clientY - rect.top;
+
+            // Convert to world coordinates
+            const t = canvas.stage.worldTransform;
+            const worldX = (clickX - t.tx) / t.a;
+            const worldY = (clickY - t.ty) / t.d;
+
+            // Find all tokens under cursor
+            const candidates: any[] = [];
             const tokens = canvas.tokens.placeables;
-            let hitToken = false;
 
             for (const token of tokens) {
-                const bounds = token.getBounds();
-                if (bounds.contains(pos.clientX - rect.left, pos.clientY - rect.top)) {
-                    hitToken = true;
-                    const id = token.id;
-                    if (event.button === 2) {
-                        if (this._selected[id]) {
-                            this._selected[id]--;
-                            if (this._selected[id] <= 0) delete this._selected[id];
-                        }
-                    } else {
-                        const total = this.totalSelected();
-                        if (total < this._maxTargets) {
-                            this._selected[id] = (this._selected[id] || 0) + 1;
-                        }
-                    }
-                    this.update();
-                    if (this.totalSelected() >= this._maxTargets) this.end(true);
-                    break;
+                if (!token.visible) continue;
+                // Use containsPoint which handles the transform checks reliably
+                const b = token.bounds;
+                if (worldX >= b.x && worldX < b.x + b.width && worldY >= b.y && worldY < b.y + b.height) {
+                    candidates.push(token);
                 }
             }
 
-            if (!hitToken && event.button === 2) {
-                this.end(false);
+            // If no token hit
+            if (candidates.length === 0) {
+                if (event.button === 2) this.end(false);
+                return;
             }
+
+            // Sort candidates to find the top-most one (visually)
+            // Priority: Elevation > Y position
+            candidates.sort((a, b) => {
+                const elevA = a.document?.elevation ?? 0;
+                const elevB = b.document?.elevation ?? 0;
+                if (elevA !== elevB) return elevB - elevA;
+                return b.y - a.y;
+            });
+
+            const token = candidates[0];
+            const id = token.id;
+
+            if (event.button === 2) {
+                if (this._selected[id]) {
+                    this._selected[id]--;
+                    if (this._selected[id] <= 0) delete this._selected[id];
+                }
+            } else {
+                const total = this.totalSelected();
+                if (total < this._maxTargets) {
+                    this._selected[id] = (this._selected[id] || 0) + 1;
+                }
+            }
+            this.update();
+            if (this.totalSelected() >= this._maxTargets) this.end(true);
         }
 
         private totalSelected(): number {
