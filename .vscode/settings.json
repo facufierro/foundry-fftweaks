@@ -1,0 +1,48 @@
+{
+    "actionButtons": {
+        "commands": [
+            {
+                "name": "│",
+                "color": "#666666",
+                "tooltip": "Separator",
+                "command": ""
+            },
+            {
+                "name": "$(play)",
+                "color": "#4CAF50",
+                "singleInstance": true,
+                "command": "npx tsc",
+                "terminalName": "bash",
+                "tooltip": "Compile TypeScript"
+            },
+            {
+                "name": "$(terminal)",
+                "color": "#2196F3",
+                "singleInstance": true,
+                "command": "npx tsc --watch",
+                "terminalName": "bash",
+                "tooltip": "Watch and Compile"
+            },
+            {
+                "name": "│‌‌",
+                "color": "#666666",
+                "tooltip": "Separator",
+                "command": ""
+            },
+            {
+                "name": "$(gear)",
+                "color": "grey",
+                "tooltip": "Open Workspace Settings",
+                "command": "code-insiders \".vscode/settings.json\"; exit",
+                "singleInstance": true,
+                "terminalName": "bash",
+                "focus": false
+            }
+        ],
+        "defaultColor": "#00BCD4",
+        "reloadButton": "$(sync)",
+        "loadNpmCommands": false
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.pythonProjects": []
+}

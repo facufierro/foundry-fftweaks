@@ -29,5 +29,6 @@ namespace FFT {
 
         // classes
         static runicInscription = runicInscription;
+        static updateSpells = updateSpells;
     }
 }
