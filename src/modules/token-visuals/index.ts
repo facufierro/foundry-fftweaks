@@ -2,8 +2,9 @@ namespace FFT {
     export class TokenVisualsModule {
         static initialize() {
             Hooks.on("updateItem", this.handleTokenEquipmentUpdate);
-            Hooks.on("createToken", this.handleTokenSizeScaling);
-            Hooks.on("createToken", this.handleTokenNameShortening);  // New hook
+            Hooks.on("preCreateToken", this.handleTokenSizeScaling);
+            Hooks.on("preCreateToken", this.handleTokenNameShortening);
+            Hooks.on("preCreateToken", this.handleNPCHiding);
         }
 
         static async handleTokenEquipmentUpdate(item: any, updateData: any) {
@@ -102,7 +103,7 @@ namespace FFT {
             }, 100);
         }
 
-        static async handleTokenSizeScaling(tokenDocument: any) {
+        static handleTokenSizeScaling(tokenDocument: any) {
             const actor = tokenDocument.actor;
             if (!actor) return;
 
@@ -126,30 +127,40 @@ namespace FFT {
             const currentScaleY = currentTexture.scaleY ?? 1;
 
             if (currentScaleX !== expectedScale || currentScaleY !== expectedScale) {
-                await Promise.all([
-                    tokenDocument.update({
-                        texture: {
-                            scaleX: expectedScale,
-                            scaleY: expectedScale
-                        }
-                    }),
-                    actor.prototypeToken.update({
-                        texture: {
-                            scaleX: expectedScale,
-                            scaleY: expectedScale
-                        }
-                    })
-                ]);
+                tokenDocument.updateSource({
+                    texture: {
+                        scaleX: expectedScale,
+                        scaleY: expectedScale
+                    }
+                });
+                
+                actor.prototypeToken.update({
+                    texture: {
+                        scaleX: expectedScale,
+                        scaleY: expectedScale
+                    }
+                });
             }
         }
 
-        static async handleTokenNameShortening(tokenDocument: any) {
+        static handleTokenNameShortening(tokenDocument: any) {
             const actor = tokenDocument.actor;
             if (!actor) return;
 
             const firstName = actor.name.split(" ")[0];
 
-            await tokenDocument.update({ name: firstName });
+            tokenDocument.updateSource({ name: firstName });
         }
-    }
+        static handleNPCHiding(tokenDocument: any, data: any, options: any, userId: any) {
+            const actor = tokenDocument.actor;
+            if (!actor) return;
+
+            if (actor.type === "npc") {
+                tokenDocument.updateSource({ hidden: true });
+                // Ensure data is updated as well, covering both document source and initial data object
+                if (typeof data === 'object') {
+                    data.hidden = true; 
+                }
+            }
+        }    }
 }
