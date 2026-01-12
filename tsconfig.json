@@ -1,34 +1,19 @@
 {
-    "compilerOptions": {
-        "target": "ES6",
-        "module": "None",
-        "strict": false,
-        "noImplicitAny": false,
-        "strictNullChecks": false,
-        "strictFunctionTypes": false,
-        "strictBindCallApply": false,
-        "strictPropertyInitialization": false,
-        "lib": [
-            "ESNext",
-            "DOM"
-        ],
-        "moduleResolution": "node",
-        "skipLibCheck": true,
-        "baseUrl": ".",
-        "paths": {
-            "@league-of-foundry-developers/foundry-vtt-types/*": [
-                "node_modules/@league-of-foundry-developers/foundry-vtt-types/*"
-            ],
-            "@league-of-foundry-developers/foundry-vtt-dnd5e-types/*": [
-                "node_modules/@league-of-foundry-developers/foundry-vtt-dnd5e-types/*"
-            ]
-        },
-        "outFile": "./dist/main.js"
-    },
-    "include": [
-        "src"
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ESNext", "DOM"],
+    "strict": true,
+    "noImplicitAny": true,
+    "baseUrl": ".",
+    "types": [
+      "vite/client",
+      "@league-of-foundry-developers/foundry-vtt-types"
     ],
-    "exclude": [
-        "node_modules"
-    ]
+    "outDir": "./dist",
+    "sourceMap": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]
 }

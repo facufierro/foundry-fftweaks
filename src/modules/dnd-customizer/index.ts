@@ -1,4 +1,3 @@
-declare const dnd5e: any;
 
 namespace FFT {
     export class DNDCustomizerModule {
@@ -30,7 +29,7 @@ namespace FFT {
         static async registerCustomSpellLists(): Promise<void> {
             Debug.Log("Searching for custom spell lists...");
             
-            const journalEntry: any = await fromUuid("Compendium.fftweaks.journals.JournalEntry.ij43IJbeKdTP3rJd");
+            const journalEntry: any = await fromUuid("Compendium.fftweaks.journals.JournalEntry.ij43IJbeKdTP3rJd" as any);
             
             if (journalEntry) {
                 const spellListPages = journalEntry.pages.filter((page: any) => page.type === "spells");
@@ -68,7 +67,7 @@ namespace FFT {
             
             for (const uuid of this.pendingDefaults) {
                 try {
-                    const page: any = await fromUuid(uuid);
+                    const page: any = await fromUuid(uuid as any);
                     if (!page) continue;
                     
                     const type = page.system?.type;

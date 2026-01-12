@@ -1,25 +1,16 @@
-/// <reference types="@league-of-foundry-developers/foundry-vtt-types" />
-/// <reference types="@league-of-foundry-developers/foundry-vtt-dnd5e-types" />
+/**
+ * Entry point for FFTweaks
+ * Author: User
+ * License: MIT
+ */
 
-(window as any).FFT = (window as any).FFT || {};
+import './types/dnd5e.d.ts';
 
-Hooks.once("init", () => {
+Hooks.once('init', () => {
+    console.log('FFTweaks | Initializing FFTweaks Module');
     FFT.DNDCustomizerModule.initialize();
 });
 
-Hooks.once("ready", () => {
-    (window as any).FFT = FFT;
-    // Addons
-    // FFT.ItemMacroAddon.initialize();
-    FFT.LevelsAddon.initialize();
-    // FFT.SimpleCalendarAddon.initialize();
-    // FFT.SimpleTimekeepingAddon.initialize();
-    // Modules
-    FFT.FunctionBarModule.initialize();
-    // FFT.CharacterAnvilModule.initialize();
-    // FFT.ResizeHandler.initialize();
-    FFT.TokenVisualsModule.initialize();
-    FFT.TargetPickerModule.initialize();
-    // FFT.MidiAutoRollModule.initialize();
-    // FFT.BattlemapGeneratorModule.initialize();
+Hooks.once('ready', () => {
+    console.log('FFTweaks | FFTweaks is active');
 });
