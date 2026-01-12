@@ -50,7 +50,7 @@
                 "color": "#673AB7",
                 "singleInstance": true,
                 "command": "Write-Host 'Starting Vite Dev Server...' -ForegroundColor Cyan; Set-Location 'C:\\Main\\Games\\FoundryVTT\\Data\\modules\\fftweaks'; npm run dev",
-                "terminalName": "powershell",
+                "terminalName": "Dev Console",
                 "tooltip": "Start Vite Watcher (Hot Reload)"
             },
             {
