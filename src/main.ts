@@ -3,14 +3,13 @@
  * Author: User
  * License: MIT
  */
-
-import './types/dnd5e.d.ts';
+(window as any).FFT = (window as any).FFT || {};
 
 Hooks.once('init', () => {
-    console.log('FFTweaks | Initializing FFTweaks Module');
+    FFT.Debug.Log('FFTweaks | Initializing FFTweaks Module');
     FFT.DNDCustomizerModule.initialize();
 });
 
 Hooks.once('ready', () => {
-    console.log('FFTweaks | FFTweaks is active');
+    FFT.Debug.Log('FFTweaks | FFTweaks is active');
 });
