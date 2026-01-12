@@ -7,10 +7,10 @@ namespace FFT {
         public inventory: Record<string, Item5e[]>;
 
         constructor(public actor: Actor5e) {
-            this.background = actor.items.find(i => String(i.type) === "background") ?? null;
-            this.class = actor.items.find(i => i.type === "class") ?? null;
-            this.spells = actor.items.filter(i => String(i.type) === "spell") ?? [];
-            this.species = actor.items.find(i => String(i.type) === "race") ?? null;
+            this.background = (actor.items.find(i => String(i.type) === "background") as Item5e) ?? null;
+            this.class = (actor.items.find(i => i.type === "class") as Item5e) ?? null;
+            this.spells = (actor.items.filter(i => String(i.type) === "spell") as Item5e[]) ?? [];
+            this.species = (actor.items.find(i => String(i.type) === "race") as Item5e) ?? null;
             this.inventory = {
                 consumable: [],
                 container: [],
@@ -23,7 +23,7 @@ namespace FFT {
             actor.items.forEach(item => {
                 const itemType = String(item.type).toLowerCase();
                 if (this.inventory[itemType]) {
-                    this.inventory[itemType].push(item);
+                    this.inventory[itemType].push(item as Item5e);
                 }
             });
         }
