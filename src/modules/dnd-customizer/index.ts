@@ -1,3 +1,5 @@
+declare const dnd5e: any;
+
 namespace FFT {
     export class DNDCustomizerModule {
         static pendingDefaults: string[] = [];
@@ -6,7 +8,7 @@ namespace FFT {
         static dnd5eDefaults: Set<string>;
 
         static initialize(): void {
-            Hooks.once("init", () => DNDCustomizerModule.patchSpellListRegistry());
+            DNDCustomizerModule.patchSpellListRegistry();
             Hooks.once("ready", () => DNDCustomizerModule.registerCustomSpellLists());
         }
 
@@ -18,33 +20,32 @@ namespace FFT {
 
         static async interceptRegister(uuid: string) {
             if (this.dnd5eDefaults.has(uuid)) {
-                console.log(`FFTweaks: Deferring registration of default list ${uuid}`);
+                Debug.Log(`Deferring registration of default spell list`);
                 this.pendingDefaults.push(uuid);
                 return; 
             }
-            return this.originalRegister.call((dnd5e as any).registry.spellLists, uuid);
+            return this.originalRegister.call(dnd5e.registry.spellLists, uuid);
         }
 
         static async registerCustomSpellLists(): Promise<void> {
-            console.log("FFTweaks: Searching for custom spell lists...");
+            Debug.Log("Searching for custom spell lists...");
             
             const journalEntry: any = await fromUuid("Compendium.fftweaks.journals.JournalEntry.ij43IJbeKdTP3rJd");
             
             if (journalEntry) {
                 const spellListPages = journalEntry.pages.filter((page: any) => page.type === "spells");
-                console.log(`FFTweaks: Found ${spellListPages.length} user spell list pages`);
+                Debug.Log(`Found ${spellListPages.length} custom spell list pages`);
 
                 for (const page of spellListPages) {
                     await this.registerSpellListPage(page);
                 }
             } else {
-                console.warn("FFTweaks: Could not find custom spell lists journal entry");
+                Debug.Warn("Could not find custom spell lists journal entry");
             }
 
             await this.processDeferredDefaults();
             
-            console.log("FFTweaks: Spell list registration complete");
-            console.log("FFTweaks: Final spell lists:", (dnd5e as any).registry.spellLists.options);
+            Debug.Success("Spell list registration complete");
         }
 
         static async registerSpellListPage(page: any): Promise<void> {
@@ -55,15 +56,15 @@ namespace FFT {
                 
                 this.userListsRegistered.add(key);
                 
-                console.log(`FFTweaks: Registering custom ${page.name} (${key})`);
-                await (dnd5e as any).registry.spellLists.register(page.uuid);
+                Debug.Log(`Registering custom spell list: ${page.name} (${key})`);
+                await dnd5e.registry.spellLists.register(page.uuid);
             } catch (error) {
-                console.error(`FFTweaks: Failed to register ${page.name}`, error);
+                Debug.Error(`Failed to register ${page.name}`, error);
             }
         }
 
         static async processDeferredDefaults(): Promise<void> {
-            console.log(`FFTweaks: Processing ${this.pendingDefaults.length} deferred default lists...`);
+            Debug.Log(`Processing ${this.pendingDefaults.length} deferred default spell lists...`);
             
             for (const uuid of this.pendingDefaults) {
                 try {
@@ -75,13 +76,13 @@ namespace FFT {
                     const key = `${type}:${identifier}`;
 
                     if (this.userListsRegistered.has(key)) {
-                        console.log(`FFTweaks: Replacing default ${page.name} (${key}) with custom version`);
+                        Debug.Success(`Replaced default ${page.name} (${key}) with custom version`);
                     } else {
-                        await this.originalRegister.call((dnd5e as any).registry.spellLists, uuid);
+                        await this.originalRegister.call(dnd5e.registry.spellLists, uuid);
                     }
                 } catch (error) {
-                    console.error(`FFTweaks: Error processing default ${uuid}`, error);
-                    await this.originalRegister.call((dnd5e as any).registry.spellLists, uuid);
+                    Debug.Error(`Error processing default spell list ${uuid}`, error);
+                    await this.originalRegister.call(dnd5e.registry.spellLists, uuid);
                 }
             }
         }
