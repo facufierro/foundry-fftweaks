@@ -39,7 +39,12 @@ namespace FFT {
 
                 const extractSlotItem = (slotIndex: number): string | null => {
                     // Find the hotbar cell for the slot
-                    const slot = activeSet.querySelector(`.hotbar-cell[data-slot='${slotIndex}-0']`) as HTMLElement;
+                    const slot = activeSet.querySelector(`.bg3-grid-cell[data-slot='${slotIndex}-0']`) as HTMLElement;
+
+                    if (slot?.classList.contains("two-handed-duplicate")) {
+                        return "none";
+                    }
+
                     const img = slot?.querySelector("img.hotbar-item") as HTMLImageElement;
                     if (!img || !img.src) {
                         console.log(`[FFT] Slot ${slotIndex} image is empty.`);
