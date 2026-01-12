@@ -4,3 +4,4 @@ dist
 *.log
 backup
 packs
+package-lock.json
