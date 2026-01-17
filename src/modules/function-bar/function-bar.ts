@@ -1,16 +1,9 @@
-import type { Button } from "./button";
-import type { KeyBindings } from "./keybindings";
+import type { Button } from "./interfaces/button";
+import type { KeyBindings } from "./interfaces/keybindings";
 
 export class FunctionBar {
     private form: HTMLElement;
 
-
-    static async initialize(): Promise<void> {
-        if (!game.user?.isGM) return;
-
-        const buttons = await this.loadButtons();
-        new FunctionBar(buttons);
-    }
     private constructor(buttons: Button[]) {
         const existing = document.getElementById("fft-functionbar");
         if (existing) existing.remove();
@@ -32,6 +25,13 @@ export class FunctionBar {
 
         this.buildUI(buttons);
         this.render();
+    }
+
+    static async initialize(): Promise<void> {
+        if (!game.user?.isGM) return;
+
+        const buttons = await this.loadButtons();
+        new FunctionBar(buttons);
     }
 
     private buildUI(buttons: Button[]): void {
