@@ -1,23 +1,17 @@
-interface KeyBindings {
-    default: string;
-    shift?: string;
-    ctrl?: string;
-    alt?: string;
-    rightClick?: string;
-}
+import type { Button } from "./button";
+import type { KeyBindings } from "./keybindings";
 
-interface ButtonConfig {
-    id: string;
-    title: string;
-    icon: string;
-    row: number;
-    onClick: (event: Event) => void;
-}
-
-class FunctionBar {
+export class FunctionBar {
     private form: HTMLElement;
 
-    constructor(buttons: ButtonConfig[]) {
+
+    static async initialize(): Promise<void> {
+        if (!game.user?.isGM) return;
+
+        const buttons = await this.loadButtons();
+        new FunctionBar(buttons);
+    }
+    private constructor(buttons: Button[]) {
         const existing = document.getElementById("fft-functionbar");
         if (existing) existing.remove();
 
@@ -40,7 +34,7 @@ class FunctionBar {
         this.render();
     }
 
-    private buildUI(buttons: ButtonConfig[]): void {
+    private buildUI(buttons: Button[]): void {
         const handle = document.createElement("div");
         Object.assign(handle.style, {
             height: "20px",
@@ -52,7 +46,7 @@ class FunctionBar {
         this.makeDraggable(handle);
 
         const rows = new Map<number, HTMLElement[]>();
-        
+
         for (const btn of buttons) {
             if (!rows.has(btn.row)) rows.set(btn.row, []);
 
@@ -127,29 +121,21 @@ class FunctionBar {
     private render(): void {
         document.body.appendChild(this.form);
     }
-}
 
-export class FunctionBarModule {
-    static async initialize(): Promise<void> {
-        if (!game.user?.isGM) return;
 
-        const buttons = await this.loadButtons();
-        new FunctionBar(buttons);
-    }
-
-    private static async loadButtons(): Promise<ButtonConfig[]> {
+    private static async loadButtons(): Promise<Button[]> {
         const response = await fetch("modules/fftweaks/src/modules/function-bar/data/button-data.json");
         if (!response.ok) {
             console.error("Failed to fetch button data:", response.statusText);
             return [];
         }
 
-        const raw: Record<string, { 
-            name: string; 
-            icon: string; 
-            row: number; 
-            script?: string; 
-            keyBindings?: KeyBindings 
+        const raw: Record<string, {
+            name: string;
+            icon: string;
+            row: number;
+            script?: string;
+            keyBindings?: KeyBindings
         }> = await response.json();
 
         return Object.entries(raw).map(([id, { name, icon, row, script, keyBindings }]) => ({
@@ -235,6 +221,6 @@ export class FunctionBarModule {
         }
 
         console.error(`Invalid script path: ${scriptPath}`);
-        return () => {};
+        return () => { };
     }
 }

@@ -1,4 +1,4 @@
-import { FunctionBarModule } from "./modules/function-bar";
+import { FunctionBar } from "./modules/function-bar/function-bar";
 import { Debug } from "./utils/debug";
 
 Hooks.once("init", () => {
@@ -7,5 +7,5 @@ Hooks.once("init", () => {
 
 Hooks.once("ready", async () => {
     Debug.Log("FFTweaks | FFTweaks is active");
-    await FunctionBarModule.initialize();
+    await FunctionBar.initialize();
 });
