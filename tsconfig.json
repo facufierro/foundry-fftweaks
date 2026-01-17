@@ -5,6 +5,7 @@
     "moduleResolution": "bundler",
     "lib": ["ESNext", "DOM"],
     "strict": true,
+    "strictNullChecks": false,
     "noImplicitAny": true,
     "baseUrl": ".",
     "types": [
