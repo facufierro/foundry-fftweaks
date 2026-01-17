@@ -47,7 +47,7 @@ function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, {
         const actor = npc.actor;
         if (!actor) return "";
 
-        const items = actor.items.filter(item => {
+        const items = actor.items.filter((item: Item) => {
             // Exclude feat, spell types
             if (item.type === "feat" || item.type === "spell") {
                 return false;
@@ -65,7 +65,7 @@ function generateLootSections(deadNpcs: Token[], selectedItems: Record<string, {
         });
         if (items.length === 0) return "";
 
-        const itemIcons = items.map(item => {
+        const itemIcons = items.map((item: Item) => {
             const selection = selectedItems[item.id];
             const isSelected = selection !== undefined;
             const borderColor = isSelected ? selection.color : "transparent";
@@ -105,7 +105,7 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
             if (level === 3 && userId !== "default") { // OWNER level
                 const user = game.users?.get(userId);
                 if (user?.color && user.role !== 4) { // role 4 is GAMEMASTER
-                    userColor = user.color;
+                    userColor = typeof user.color === 'string' ? user.color : user.color.toString();
                     break;
                 }
             }
@@ -121,7 +121,7 @@ function createLootDialog(playerTokens: Token[], deadNpcs: Token[], selectedItem
         `;
     }).join("");
 
-    const dialog: Dialog<DialogOptions> = new Dialog({
+    const dialog: Dialog = new Dialog({
         title: "Loot Corpses",
         content: `
             <div style="margin-bottom: 20px;">
@@ -243,7 +243,7 @@ async function distributeLoot(playerTokens: Token[], deadNpcs: Token[], selected
     // Clean up empty NPCs (optional - remove if you don't want this behavior)
     for (const npc of deadNpcs) {
         if (!npc.actor) continue;
-        const remainingItems = npc.actor.items.filter(i => {
+        const remainingItems = npc.actor.items.filter((i: Item) => {
             // Only count lootable items (same filter as in generateLootSections)
             if (i.type === "feat" || i.type === "spell") return false;
             if (i.type === "weapon") {
@@ -263,7 +263,7 @@ async function distributeLoot(playerTokens: Token[], deadNpcs: Token[], selected
     ui.notifications?.info("Loot distributed to selected characters!");
 }
 
-function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string; playerName: string }>, dialog: Dialog<DialogOptions>): void {
+function setupItemClickHandler(html: JQuery, playerTokens: Token[], selectedItems: Record<string, { playerId: string; color: string; tokenId: string; playerName: string }>, dialog: Dialog): void {
     let selectedPlayerId: string | null = null;
     let selectedPlayerColor: string = "#000000";
 

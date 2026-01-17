@@ -14,7 +14,10 @@
     ],
     "outDir": "./dist",
     "sourceMap": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"]
 }

@@ -81,7 +81,7 @@ export async function distributeExperience(): Promise<void> {
                         const extra = i < remainder ? 1 : 0;
                         const totalShare = baseShare + extra;
 
-                        const currentXP = foundry.utils.getProperty(actor.system, "details.xp.value") ?? 0;
+                        const currentXP = Number(foundry.utils.getProperty(actor.system, "details.xp.value") ?? 0);
                         const newXP = isSubtraction
                             ? Math.max(0, currentXP - totalShare)
                             : currentXP + totalShare;
@@ -131,8 +131,8 @@ export async function distributeExperience(): Promise<void> {
 
                     await ChatMessage.create({
                         content: messageContent,
-                        speaker: { alias: "" },
-                    });
+                        speaker: { alias: "XP Distribution" }
+                    } as any);
                 }
             },
             cancel: { label: "Cancel" }

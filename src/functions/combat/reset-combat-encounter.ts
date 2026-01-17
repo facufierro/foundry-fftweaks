@@ -20,7 +20,7 @@ export async function resetCombatEncounter(): Promise<void> {
         defeated: boolean;
     }> = [];
 
-    for (const combatant of currentCombat.combatants) {
+    for (const combatant of currentCombat.combatants as any as Combatant[]) {
         combatantData.push({
             tokenId: combatant.tokenId,
             actorId: combatant.actorId,
@@ -44,7 +44,7 @@ export async function resetCombatEncounter(): Promise<void> {
     const newCombat = await Combat.create({
         scene: canvas.scene?.id,
         active: true
-    });
+    } as any) as Combat;
 
     if (!newCombat) {
         ui.notifications?.error("Failed to create new combat encounter.");
@@ -63,7 +63,7 @@ export async function resetCombatEncounter(): Promise<void> {
     }));
 
     // Add all combatants back with their stored initiatives
-    const createdCombatants = await newCombat.createEmbeddedDocuments("Combatant", newCombatantData);
+    const createdCombatants = await newCombat.createEmbeddedDocuments("Combatant", newCombatantData as any);
 
     if (!createdCombatants || createdCombatants.length === 0) {
         ui.notifications?.error("Failed to recreate combatants.");

@@ -44,7 +44,7 @@ export async function distributeGold(): Promise<void> {
                         const extra = i < remainder ? 1 : 0;
                         const totalShare = baseShare + extra;
 
-                        const currentGold = foundry.utils.getProperty(actor.system, "currency.gp") ?? 0;
+                        const currentGold = Number(foundry.utils.getProperty(actor.system, "currency.gp") ?? 0);
                         const newGold = isSubtraction
                             ? Math.max(0, currentGold - totalShare)
                             : currentGold + totalShare;
@@ -94,8 +94,8 @@ export async function distributeGold(): Promise<void> {
 
                     await ChatMessage.create({
                         content: messageContent,
-                        speaker: { alias: "" },
-                    });
+                        speaker: { alias: "Gold Distribution" }
+                    } as any);
                 }
             },
             cancel: { label: "Cancel" }

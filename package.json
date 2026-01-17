@@ -9,9 +9,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@league-of-foundry-developers/foundry-vtt-types": "^13.345.1",
+    "@league-of-foundry-developers/foundry-vtt-types": "^13.346.0-beta.20250812191140",
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
-    "vite-plugin-checker": "^0.6.2"
-  }
+    "vite-plugin-checker": "^0.6.2"  },
+  "peerDependencies": {
+    "@league-of-foundry-developers/foundry-vtt-types": ">=11"  }
 }

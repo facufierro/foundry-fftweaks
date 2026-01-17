@@ -1,31 +1,81 @@
+// D&D 5e System Type Augmentations
+
 export {};
 
 declare global {
   // Global dnd5e namespace
-  // This helps when you access `dnd5e.config` or `dnd5e.applications`
   var dnd5e: {
     applications: Record<string, any>;
     config: Record<string, any>;
-    documents: Record<string, any>;
+    documents: {
+      Actor5e: typeof Actor;
+      Item5e: typeof Item;
+    };
     registry: any;
-    // Add more as you discover them
   };
 
-  // Declaration Merging for Actor
+  // Extend Actor with dnd5e-specific system properties
   interface Actor {
     system: {
-        // Define common 5e system properties here as you need them
-        attributes?: {
-            hp?: {
-                value: number;
-                max: number;
-            }
-        }
-    } & Record<string, any>; // Fallback index signature to allow untyped usage
+      attributes?: {
+        hp?: {
+          value: number;
+          max: number;
+          temp?: number;
+          tempmax?: number;
+        };
+        ac?: {
+          value: number;
+        };
+        movement?: {
+          walk?: number;
+          fly?: number;
+          swim?: number;
+          climb?: number;
+        };
+      };
+      details?: {
+        xp?: {
+          value: number;
+          max?: number;
+        };
+        level?: number;
+        cr?: number;
+      };
+      currency?: {
+        pp?: number;
+        gp?: number;
+        ep?: number;
+        sp?: number;
+        cp?: number;
+      };
+      traits?: any;
+      skills?: any;
+      spells?: any;
+    } & Record<string, any>;
   }
 
-  // Declaration Merging for Item
+  // Extend Item with dnd5e-specific system properties  
   interface Item {
-    system: Record<string, any>;
+    system: {
+      description?: {
+        value: string;
+        chat?: string;
+      };
+      quantity?: number;
+      weight?: number;
+      price?: {
+        value: number;
+        denomination?: string;
+      };
+      rarity?: string;
+      identified?: boolean;
+      type?: {
+        value?: string;
+      };
+      activation?: any;
+      damage?: any;
+      uses?: any;
+    } & Record<string, any>;
   }
 }

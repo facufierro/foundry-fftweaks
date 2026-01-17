@@ -9,10 +9,10 @@ export async function addTokensToCombat(): Promise<void> {
     }
 
     // Ensure combat encounter exists
-    let combat = game.combat;
+    let combat: Combat | null | undefined = game.combat;
     if (!combat) {
-        combat = await Combat.create({ scene: canvas.scene?.id });
-        await combat.update({ active: true });
+        combat = await Combat.create({ scene: canvas.scene?.id } as any) as unknown as Combat;
+        if (combat) await combat.update({ active: true });
     }
 
     // Add tokens to combat that aren't already in it
