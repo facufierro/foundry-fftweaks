@@ -2,8 +2,8 @@
 import { Debug } from "./utils/debug";
 
 // Modules
-import { Functions } from "./functions/Functions";
-import { FunctionBar } from "./modules/function-bar/function-bar";
+import { Functions } from "./functions";
+import { FunctionBar } from "./modules/function-bar";
 
 const FFT = ((globalThis as any).FFT ??= {});
 FFT.Debug = Debug;
