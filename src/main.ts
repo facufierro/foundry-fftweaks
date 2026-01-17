@@ -1,15 +1,11 @@
-/**
- * Entry point for FFTweaks
- * Author: User
- * License: MIT
- */
-(window as any).FFT = (window as any).FFT || {};
+import { FunctionBarModule } from "./modules/function-bar";
+import { Debug } from "./utils/debug";
 
-Hooks.once('init', () => {
-    FFT.Debug.Log('FFTweaks | Initializing FFTweaks Module');
-    FFT.DNDCustomizerModule.initialize();
+Hooks.once("init", () => {
+    Debug.Log("FFTweaks | Initializing FFTweaks Module");
 });
 
-Hooks.once('ready', () => {
-    FFT.Debug.Log('FFTweaks | FFTweaks is active');
+Hooks.once("ready", async () => {
+    Debug.Log("FFTweaks | FFTweaks is active");
+    await FunctionBarModule.initialize();
 });
