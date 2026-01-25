@@ -35,27 +35,39 @@
                 {
                     "prepared": {
                         "3": [
-                            "alarm|XPHB",
-                            "shield|XPHB"
+                            "Alarm|XPHB",
+                            "Shield|XPHB"
                         ],
                         "5": [
-                            "misty step|XPHB",
-                            "knock|XPHB"
+                            "Misty Step|XPHB",
+                            "Knock|XPHB"
                         ],
                         "9": [
-                            "counterspell|XPHB",
-                            "glyph of warding|XPHB"
+                            "Counterspell|XPHB",
+                            "Glyph of Warding|XPHB"
                         ],
                         "13": [
-                            "banishment|XPHB",
-                            "greater invisibility|XPHB"
+                            "Banishment|XPHB",
+                            "Greater Invisibility|XPHB"
                         ],
                         "17": [
-                            "hold monster|XPHB",
-                            "telekinesis|XPHB"
+                            "Hold Monster|XPHB",
+                            "Telekinesis|XPHB"
                         ]
                     }
                 }
+            ],
+            "subclassSpells": [
+                "Alarm|XPHB",
+                "Shield|XPHB",
+                "Misty Step|XPHB",
+                "Knock|XPHB",
+                "Counterspell|XPHB",
+                "Glyph of Warding|XPHB",
+                "Banishment|XPHB",
+                "Greater Invisibility|XPHB",
+                "Hold Monster|XPHB",
+                "Telekinesis|XPHB"
             ],
             "subclassFeatures": [
                 "Runesmith|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT",
