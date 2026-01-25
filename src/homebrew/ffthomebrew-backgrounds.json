@@ -19,26 +19,50 @@
     "edition": "one",
     "status": "ready",
     "dateAdded": 1737842400,
-    "dateLastModified": 1769368198
+    "dateLastModified": 1769369364
   },
   "background": [
     {
       "name": "Clan Crafter",
       "source": "FFT",
       "page": 1,
+      "edition": "one",
       "ability": [
         {
           "choose": {
-            "from": [
-              "str",
-              "dex",
-              "con",
-              "int",
-              "wis",
-              "cha"
-            ],
-            "count": 3,
-            "amount": 1
+            "weighted": {
+              "from": [
+                "str",
+                "dex",
+                "con",
+                "int",
+                "wis",
+                "cha"
+              ],
+              "weights": [
+                2,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "str",
+                "dex",
+                "con",
+                "int",
+                "wis",
+                "cha"
+              ],
+              "weights": [
+                1,
+                1,
+                1
+              ]
+            }
           }
         }
       ],
@@ -92,7 +116,7 @@
             {
               "type": "item",
               "name": "Ability Scores:",
-              "entry": "Add +1 to three abilities or +2 to one and +1 to one"
+              "entry": "Increase one score by 2 and another by 1, or increase three scores by 1"
             },
             {
               "type": "item",
