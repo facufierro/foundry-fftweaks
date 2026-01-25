@@ -19,7 +19,7 @@
     "edition": "one",
     "status": "ready",
     "dateAdded": 1709124114,
-    "dateLastModified": 1769366144
+    "dateLastModified": 1769366301
   },
   "subclass": [
     {
@@ -193,6 +193,13 @@
           "name": "Arcane Empowerment",
           "entries": [
             "When you attack with a magic weapon, you can use your Intelligence modifier, instead of your Strength or Dexterity modifier, for the attack and damage rolls."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Runic Weapon Proficiency",
+          "entries": [
+            "You gain proficiency with any weapon that bears one of your {@subclassFeature Runic Inscription|Artificer|EFA|Runesmith|FFT|3|FFT|runes}. You can use a weapon bearing one of your runes as a {@variantrule Spellcasting Focus|XPHB} for your Artificer spells."
           ]
         }
       ]
