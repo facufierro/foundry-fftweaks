@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/TheGiddyLimit/5etools-utils/master/schema/ua-fast/homebrew.json",
     "_meta": {
         "sources": [
             {
@@ -15,13 +16,17 @@
                 "color": "ffffff"
             }
         ],
+        "edition": "one",
+        "status": "ready",
         "dateAdded": 1709124114,
-        "dateLastModified": 1709124114
+        "dateLastModified": 1737846000,
+        "_dateLastModifiedHash": "fft01252026"
     },
     "subclass": [
         {
             "name": "Runesmith",
             "source": "fft-homebrew",
+            "page": 1,
             "className": "Artificer",
             "classSource": "XUA2025EberronUpdates",
             "shortName": "Runesmith",
@@ -31,24 +36,24 @@
                 {
                     "prepared": {
                         "3": [
-                            "alarm",
-                            "shield"
+                            "alarm|XPHB",
+                            "shield|XPHB"
                         ],
                         "5": [
-                            "misty step",
-                            "knock"
+                            "misty step|XPHB",
+                            "knock|XPHB"
                         ],
                         "9": [
-                            "counterspell",
-                            "glyph of warding"
+                            "counterspell|XPHB",
+                            "glyph of warding|XPHB"
                         ],
                         "13": [
-                            "banishment",
-                            "greater invisibility"
+                            "banishment|XPHB",
+                            "greater invisibility|XPHB"
                         ],
                         "17": [
-                            "hold monster",
-                            "telekinesis"
+                            "hold monster|XPHB",
+                            "telekinesis|XPHB"
                         ]
                     }
                 }
@@ -65,11 +70,13 @@
         {
             "name": "Runesmith",
             "source": "fft-homebrew",
+            "page": 1,
             "className": "Artificer",
             "classSource": "XUA2025EberronUpdates",
             "subclassShortName": "Runesmith",
             "subclassSource": "fft-homebrew",
             "level": 3,
+            "header": 1,
             "entries": [
                 "A Runesmith is an Artificer that has narrowed their focus to working a specific language of magic - powerful Runes that can channel long lasting power. These Runes come in many shapes and forms, the lore behind from many sources.",
                 "A Runesmith can be a warrior, his runes splashed with gleaming power across his armor, or a scholar lending their power to their companions or even a strange tattooed mystic, their runes tattooed across their very body.",
@@ -79,11 +86,13 @@
         {
             "name": "Battle Runes",
             "source": "fft-homebrew",
+            "page": 1,
             "className": "Artificer",
             "classSource": "XUA2025EberronUpdates",
             "subclassShortName": "Runesmith",
             "subclassSource": "fft-homebrew",
             "level": 3,
+            "header": 2,
             "entries": [
                 "You inscribe a weapon with mystical runes of power, binding steel and spell into one. When wielding it, you can use your Intelligence modifier instead of Strength or Dexterity for attack and damage rolls. Additionally, a weapon inscribed with your runes serves as a spellcasting focus."
             ]
@@ -91,11 +100,13 @@
         {
             "name": "Forged for War",
             "source": "fft-homebrew",
+            "page": 1,
             "className": "Artificer",
             "classSource": "XUA2025EberronUpdates",
             "subclassShortName": "Runesmith",
             "subclassSource": "fft-homebrew",
             "level": 3,
+            "header": 2,
             "entries": [
                 "You gain proficiency with Martial weapons and Heavy armor.",
                 "In addition, when you craft nonmagical or magic weapon or armor, the amount of time required to craft it is halved."
@@ -104,11 +115,13 @@
         {
             "name": "Rune Carving",
             "source": "fft-homebrew",
+            "page": 1,
             "className": "Artificer",
             "classSource": "XUA2025EberronUpdates",
             "subclassShortName": "Runesmith",
             "subclassSource": "fft-homebrew",
             "level": 3,
+            "header": 2,
             "entries": [
                 "Your exploration of ancient dwarven arcana grants you the ability to carve runes, mystical symbols that store and unleash magic.",
                 "Inscribing a Rune. You can carve one rune onto a weapon, piece of armor, or another object larger than 2 inches during a Long Rest. The rune holds a single spell. The spell must be one you know and of a level you can cast.",
@@ -121,6 +134,7 @@
         {
             "name": "Clan Crafter",
             "source": "fft-homebrew",
+            "page": 1,
             "skillProficiencies": [
                 {
                     "history": true,
