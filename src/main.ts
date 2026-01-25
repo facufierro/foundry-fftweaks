@@ -5,6 +5,7 @@ import { Debug } from "./utils/debug";
 import { Functions } from "./functions";
 import { FunctionBar } from "./modules/function-bar";
 import { TargetPicker } from "./modules/target-picker";
+import { DNDCustomizerModule } from "./modules/dnd-customizer";
 
 const FFT = ((globalThis as any).FFT ??= {});
 FFT.Debug = Debug;
@@ -12,6 +13,7 @@ FFT.Functions = Functions;
 
 Hooks.once("init", () => {
     Debug.Log("FFTweaks | Initializing Init Hooks");
+    DNDCustomizerModule.initialize();
 });
 
 Hooks.once("ready", async () => {
