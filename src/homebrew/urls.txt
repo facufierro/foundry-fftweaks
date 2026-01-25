@@ -1,0 +1,2 @@
+https://foundry.ffdomain.win/modules/fftweaks/src/homebrew/ffthomebrew-artificer-subclasses.json
+https://foundry.ffdomain.win/modules/fftweaks/src/homebrew/ffthomebrew-backgrounds.json
