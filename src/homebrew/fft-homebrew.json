@@ -23,12 +23,12 @@
     },
     "subclass": [
         {
-            "name": "Runesmith",
+            "name": "Runesmith Test",
             "source": "FFT",
             "page": 1,
             "className": "Artificer",
             "classSource": "XUA2024Artificer",
-            "shortName": "Runesmith",
+            "shortName": "Runesmith Test",
             "casterProgression": "1/2",
             "spellcastingAbility": "int",
             "additionalSpells": [
@@ -70,21 +70,21 @@
                 "Telekinesis|XPHB"
             ],
             "subclassFeatures": [
-                "Runesmith|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT",
-                "Battle Runes|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT",
-                "Forged for War|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT",
-                "Rune Carving|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT"
+                "Runesmith Test|Artificer|XUA2024Artificer|Runesmith Test|FFT|3|FFT",
+                "Battle Runes|Artificer|XUA2024Artificer|Runesmith Test|FFT|3|FFT",
+                "Forged for War|Artificer|XUA2024Artificer|Runesmith Test|FFT|3|FFT",
+                "Rune Carving|Artificer|XUA2024Artificer|Runesmith Test|FFT|3|FFT"
             ]
         }
     ],
     "subclassFeature": [
         {
-            "name": "Runesmith",
+            "name": "Runesmith Test",
             "source": "FFT",
             "page": 1,
             "className": "Artificer",
             "classSource": "XUA2024Artificer",
-            "subclassShortName": "Runesmith",
+            "subclassShortName": "Runesmith Test",
             "subclassSource": "FFT",
             "level": 3,
             "header": 1,
@@ -100,7 +100,7 @@
             "page": 1,
             "className": "Artificer",
             "classSource": "XUA2024Artificer",
-            "subclassShortName": "Runesmith",
+            "subclassShortName": "Runesmith Test",
             "subclassSource": "FFT",
             "level": 3,
             "header": 2,
@@ -114,7 +114,7 @@
             "page": 1,
             "className": "Artificer",
             "classSource": "XUA2024Artificer",
-            "subclassShortName": "Runesmith",
+            "subclassShortName": "Runesmith Test",
             "subclassSource": "FFT",
             "level": 3,
             "header": 2,
@@ -129,7 +129,7 @@
             "page": 1,
             "className": "Artificer",
             "classSource": "XUA2024Artificer",
-            "subclassShortName": "Runesmith",
+            "subclassShortName": "Runesmith Test",
             "subclassSource": "FFT",
             "level": 3,
             "header": 2,
