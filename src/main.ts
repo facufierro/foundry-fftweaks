@@ -1,25 +1,21 @@
-/// <reference types="@league-of-foundry-developers/foundry-vtt-types" />
-/// <reference types="@league-of-foundry-developers/foundry-vtt-dnd5e-types" />
+// Utils
+import { Debug } from "./utils/debug";
 
-(window as any).FFT = (window as any).FFT || {};
+// Modules
+import { Functions } from "./functions";
+import { FunctionBar } from "./modules/function-bar";
+import { TargetPicker } from "./modules/target-picker";
+
+const FFT = ((globalThis as any).FFT ??= {});
+FFT.Debug = Debug;
+FFT.Functions = Functions;
 
 Hooks.once("init", () => {
-    FFT.DNDCustomizerModule.initialize();
+    Debug.Log("FFTweaks | Initializing Init Hooks");
 });
 
-Hooks.once("ready", () => {
-    (window as any).FFT = FFT;
-    // Addons
-    // FFT.ItemMacroAddon.initialize();
-    FFT.LevelsAddon.initialize();
-    // FFT.SimpleCalendarAddon.initialize();
-    // FFT.SimpleTimekeepingAddon.initialize();
-    // Modules
-    FFT.FunctionBarModule.initialize();
-    // FFT.CharacterAnvilModule.initialize();
-    // FFT.ResizeHandler.initialize();
-    FFT.TokenVisualsModule.initialize();
-    FFT.TargetPickerModule.initialize();
-    // FFT.MidiAutoRollModule.initialize();
-    // FFT.BattlemapGeneratorModule.initialize();
+Hooks.once("ready", async () => {
+    Debug.Log("FFTweaks | Initializing Ready Hooks");
+    await FunctionBar.initialize();
+    TargetPicker.initialize();
 });

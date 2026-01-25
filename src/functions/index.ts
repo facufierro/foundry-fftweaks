@@ -1,34 +1,21 @@
-namespace FFT {
-    export class Functions {
-        // Core functions
-        static selectAllPlayers = selectAllPlayers;
-        static waitForCanvasClickToSpawnPlayers = waitForCanvasClickToSpawnPlayers;
-        static spawnAllPlayersAtLocation = spawnAllPlayersAtLocation;
-        static distributeGold = distributeGold;
-        static distributeExperience = distributeExperience;
-        static createDefaultLevels = createDefaultLevels;
-        static lootCorpses = lootCorpses;
-        static generateEquipment = (actorName?: string) => {
-            console.warn("FFTweaks | generateEquipment function requires an actor parameter. Use FFT.CreatureGenerator API instead.");
-        };
+import { healTokens } from "./characters/health/heal-tokens";
+import { hurtTokens } from "./characters/health/hurt-tokens";
+import { addTokensToCombat } from "./combat/add-tokens-to-combat";
+import { removeTokensFromCombat } from "./combat/remove-tokens-from-combat";
+import { resetCombatEncounter } from "./combat/reset-combat-encounter";
+import { deleteCombatEncounter } from "./combat/delete-combat-encounter";
+import { distributeGold } from "./loot/distribute-gold";
+import { distributeExperience } from "./loot/distribute-experience";
+import { lootCorpses } from "./loot/loot-all";
 
-        // Parameterized functions for more flexibility
-        static healTokens = healTokens;
-        static hurtTokens = hurtTokens;
-        static restTokens = restTokens;
-
-        // Individual combat functions
-        static addTokensToCombat = addTokensToCombat;
-        static removeTokensFromCombat = removeTokensFromCombat;
-        static resetCombatEncounter = resetCombatEncounter;
-        static deleteCombatEncounter = deleteCombatEncounter;
-
-        // Item management functions
-        static replaceItemsFromCompendiums = replaceItemsFromCompendiums;
-        static replaceItemsForAllPlayers = replaceItemsForAllPlayers;
-
-        // classes
-        static runicInscription = runicInscription;
-        static updateSpells = updateSpells;
-    }
+export class Functions {
+    static healTokens = healTokens;
+    static hurtTokens = hurtTokens;
+    static addTokensToCombat = addTokensToCombat;
+    static removeTokensFromCombat = removeTokensFromCombat;
+    static resetCombatEncounter = resetCombatEncounter;
+    static deleteCombatEncounter = deleteCombatEncounter;
+    static distributeGold = distributeGold;
+    static distributeExperience = distributeExperience;
+    static lootCorpses = lootCorpses;
 }

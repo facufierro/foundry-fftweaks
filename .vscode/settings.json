@@ -2,47 +2,76 @@
     "actionButtons": {
         "commands": [
             {
-                "name": "│",
+                "name": "│​",
                 "color": "#666666",
                 "tooltip": "Separator",
                 "command": ""
             },
             {
-                "name": "$(play)",
+                "name": "$(info) Status",
+                "color": "#00BCD4",
+                "singleInstance": true,
+                "command": "Get-Service FoundryVTT | Select-Object Status, StartType, DisplayName | Format-Table -AutoSize",
+                "terminalName": "powershell",
+                "tooltip": "Check Foundry VTT Service Status"
+            },
+            {
+                "name": "$(debug-stop) Stop",
+                "color": "#F44336",
+                "singleInstance": true,
+                "command": "Stop-Service FoundryVTT -Force; Write-Host 'Foundry Service Stopped' -ForegroundColor Red",
+                "terminalName": "powershell",
+                "tooltip": "Stop Foundry VTT Service"
+            },
+            {
+                "name": "$(play) Start",
                 "color": "#4CAF50",
                 "singleInstance": true,
-                "command": "npx tsc",
-                "terminalName": "bash",
-                "tooltip": "Compile TypeScript"
+                "command": "Start-Service FoundryVTT; Write-Host 'Foundry Service Started' -ForegroundColor Green",
+                "terminalName": "powershell",
+                "tooltip": "Start Foundry VTT Service"
             },
             {
-                "name": "$(terminal)",
-                "color": "#2196F3",
+                "name": "$(sync) Restart",
+                "color": "#FFC107",
                 "singleInstance": true,
-                "command": "npx tsc --watch",
-                "terminalName": "bash",
-                "tooltip": "Watch and Compile"
+                "command": "Restart-Service FoundryVTT -Force; Write-Host 'Foundry Service Restarted' -ForegroundColor Yellow",
+                "terminalName": "powershell",
+                "tooltip": "Restart Foundry VTT Service"
             },
             {
-                "name": "│‌‌",
+                "name": "│​​​​",
                 "color": "#666666",
                 "tooltip": "Separator",
                 "command": ""
             },
             {
-                "name": "$(gear)",
-                "color": "grey",
-                "tooltip": "Open Workspace Settings",
-                "command": "code-insiders \".vscode/settings.json\"; exit",
+                "name": "$(tools) Dev Watch",
+                "color": "#673AB7",
                 "singleInstance": true,
-                "terminalName": "bash",
-                "focus": false
+                "command": "Write-Host 'Starting Vite Dev Server...' -ForegroundColor Cyan; Set-Location 'C:\\Main\\Games\\FoundryVTT\\Data\\modules\\fftweaks'; npm run dev",
+                "terminalName": "Dev Console",
+                "tooltip": "Start Vite Watcher (Hot Reload)"
+            },
+            {
+                "name": "│​​​​​",
+                "color": "#666666",
+                "tooltip": "Separator",
+                "command": ""
+            },
+            {
+                "name": "$(desktop-download) Reboot",
+                "color": "#FF5722",
+                "singleInstance": true,
+                "command": "shutdown /r /t 5",
+                "terminalName": "powershell",
+                "tooltip": "Reboot the PC (5 second delay)"
             }
         ],
         "defaultColor": "#00BCD4",
         "reloadButton": "$(sync)",
         "loadNpmCommands": false
     },
-    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
     "python-envs.pythonProjects": []
 }

@@ -1,6 +1,6 @@
 {
     "heal": {
-        "name": "Heal\nClick: Full Heal\nAlt+Click: Heal 1\nCtrl+Click: Heal 5\nShift+Click: Heal 10",
+        "name": "🖱️ Full Heal\n⌥+🖱️ Heal 1\n⌃+🖱️ Heal 5\n⇧+🖱️ Heal 10",
         "icon": "fas fa-heart",
         "row": 1,
         "keyBindings": {
@@ -11,7 +11,7 @@
         }
     },
     "hurt": {
-        "name": "Hurt\nClick: Kill\nAlt+Click: Hurt 1\nCtrl+Click: Hurt 5\nShift+Click: Hurt 10",
+        "name": "🖱️ Kill\n⌥+🖱️ Hurt 1\n⌃+🖱️ Hurt 5\n⇧+🖱️ Hurt 10",
         "icon": "fas fa-heart-crack",
         "row": 1,
         "keyBindings": {
@@ -22,16 +22,16 @@
         }
     },
     "rest": {
-        "name": "Rest\nClick: Long Rest\nShift+Click: Short Rest",
+        "name": "🖱️ Long Rest\n🖱️② Short Rest",
         "icon": "fas fa-bed",
         "row": 1,
         "keyBindings": {
             "default": "FFT.Functions.restTokens(true)",
-            "shift": "FFT.Functions.restTokens(false)"
+            "rightClick": "FFT.Functions.restTokens(false)"
         }
     },
     "combat": {
-        "name": "Toggle Combat\nClick: Add & Roll Initiative\nShift+Click: Delete Encounter\nAlt+Click: Reset Combat\nRight-Click: Remove from Combat",
+        "name": "🖱️ Add to Encounter\n🖱️② Remove from Encounter\n⇧+🖱️ Delete Encounter\n⌥+🖱️ Reset Encounter",
         "icon": "fas fa-swords",
         "row": 2,
         "keyBindings": {
@@ -54,27 +54,17 @@
         "script": "FFT.Functions.distributeExperience"
     },
     "selectAllPlayers": {
-        "name": "Select All Players\nClick: Select all player tokens on scene\nShift+Click: Spawn all players at clicked location",
+        "name": "🖱️ Select all player tokens on scene",
         "icon": "fas fa-users",
         "row": 3,
         "keyBindings": {
-            "default": "FFT.Functions.selectAllPlayers",
-            "shift": "FFT.Functions.waitForCanvasClickToSpawnPlayers"
+            "default": "FFT.Functions.selectAllPlayers"
         }
     },
-    "lootCorpses": {
-        "name": "Loot Corpses\nClick: Open loot dialog for dead enemies",
+    "loot": {
+        "name": "🖱️ Open loot dialog for dead enemies",
         "icon": "fas fa-treasure-chest",
         "row": 3,
         "script": "FFT.Functions.lootCorpses"
-    },
-    "itemReplacer": {
-        "name": "Item Replacer\nClick: Replace items (selected tokens or dialog)\nCtrl+Click: Replace for all players",
-        "icon": "fas fa-exchange-alt",
-        "row": 3,
-        "keyBindings": {
-            "default": "FFT.Functions.replaceItemsFromCompendiums",
-            "ctrl": "FFT.Functions.replaceItemsForAllPlayers"
-        }
     }
 }

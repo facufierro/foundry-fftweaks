@@ -19,9 +19,9 @@
     "dist/main.js"
   ],
   "styles": [
-    "src/ui/styles/style.css",
-    "src/ui/styles/argon-hud.css",
-    "src/ui/styles/function-bar.css"
+    {
+      "src": "src/styles/style.css"
+    }
   ],
   "packs": [
     {
@@ -133,6 +133,17 @@
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
+    },
+    {
+      "name": "macros",
+      "label": "Macros",
+      "path": "packs/macros",
+      "type": "Macro",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     }
   ],
   "authors": [
@@ -140,5 +151,7 @@
       "name": "fierrof",
       "flags": {}
     }
-  ]
+  ],
+  "description": "",
+  "flags": {}
 }
