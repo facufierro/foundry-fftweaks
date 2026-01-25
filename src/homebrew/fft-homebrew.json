@@ -19,7 +19,7 @@
     "edition": "one",
     "status": "ready",
     "dateAdded": 1709124114,
-    "dateLastModified": 1769365655
+    "dateLastModified": 1769366144
   },
   "subclass": [
     {
@@ -75,8 +75,8 @@
       "subclassSource": "FFT",
       "level": 3,
       "entries": [
-        "{@i Inscribe Ancient Power Through Mystical Runes}",
-        "A Runesmith specializes in inscribing ancient runes to protect allies, empower weapons, and ward against threats.",
+        "{@i Inscribe Runes to Channel Arcane Power}",
+        "A Runesmith specializes in inscribing mystical runes onto weapons and armor. The runes are enhanced to channel the Runesmith's magic, store powerful spells, and provide protection to allies.",
         {
           "type": "refSubclassFeature",
           "subclassFeature": "Tools of the Trade|Artificer|EFA|Runesmith|FFT|3|FFT"
