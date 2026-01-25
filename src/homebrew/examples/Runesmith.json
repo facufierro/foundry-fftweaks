@@ -1,0 +1,422 @@
+{
+	"$schema": "https://raw.githubusercontent.com/TheGiddyLimit/5etools-utils/master/schema/ua-fast/homebrew.json",
+	"_meta": {
+		"sources": [
+			{
+				"json": "FFTRunesmith",
+				"abbreviation": "FFT:RS",
+				"full": "Final Fantasy Tweaks: Runesmith",
+				"authors": [
+					"FFTweaks"
+				],
+				"convertedBy": [
+					"FFTweaks"
+				],
+				"version": "1.0.0",
+				"url": "",
+				"dateReleased": "2026-01-25"
+			}
+		],
+		"edition": "one",
+		"status": "ready",
+		"dateAdded": 1737820800,
+		"dateLastModified": 1737820800,
+		"_dateLastModifiedHash": "runesmith001"
+	},
+	"subclass": [
+		{
+			"name": "Runesmith",
+			"shortName": "Runesmith",
+			"source": "FFTRunesmith",
+			"className": "Artificer",
+			"classSource": "XUA2024Artificer",
+			"page": 1,
+			"additionalSpells": [
+				{
+					"prepared": {
+						"3": [
+							"Shield|XPHB",
+							"Heroism|XPHB"
+						],
+						"5": [
+							"Magic Weapon|XPHB",
+							"Warding Bond|XPHB"
+						],
+						"9": [
+							"Glyph of Warding|XPHB",
+							"Protection from Energy|XPHB"
+						],
+						"13": [
+							"Death Ward|XPHB",
+							"Stoneskin|XPHB"
+						],
+						"17": [
+							"Circle of Power|XPHB",
+							"Wall of Stone|XPHB"
+						]
+					}
+				}
+			],
+			"subclassSpells": [
+				"Shield|XPHB",
+				"Heroism|XPHB",
+				"Magic Weapon|XPHB",
+				"Warding Bond|XPHB",
+				"Glyph of Warding|XPHB",
+				"Protection from Energy|XPHB",
+				"Death Ward|XPHB",
+				"Stoneskin|XPHB",
+				"Circle of Power|XPHB",
+				"Wall of Stone|XPHB"
+			],
+			"subclassFeatures": [
+				"Runesmith|Artificer|XUA2024Artificer|Runesmith|FFTRunesmith|3|FFTRunesmith",
+				"Runic Empowerment|Artificer|XUA2024Artificer|Runesmith|FFTRunesmith|5|FFTRunesmith",
+				"Explosive Rune|Artificer|XUA2024Artificer|Runesmith|FFTRunesmith|9|FFTRunesmith",
+				"Master Runesmith|Artificer|XUA2024Artificer|Runesmith|FFTRunesmith|15|FFTRunesmith"
+			],
+			"hasFluff": true
+		}
+	],
+	"subclassFluff": [
+		{
+			"name": "Runesmith",
+			"shortName": "Runesmith",
+			"source": "FFTRunesmith",
+			"className": "Artificer",
+			"classSource": "XUA2024Artificer",
+			"entries": [
+				"{@i Inscribe Ancient Power Through Mystical Runes}",
+				{
+					"type": "inset",
+					"name": "Design Note: Runesmith Origin",
+					"page": 1,
+					"entries": [
+						"The Runesmith is an Artificer subclass that channels magic through ancient runic inscriptions. Unlike the explosive Artillerist, the Runesmith focuses on protective and empowering runes:",
+						{
+							"type": "list",
+							"page": 1,
+							"items": [
+								{
+									"type": "item",
+									"name": "Tool Proficiency",
+									"nameDot": false,
+									"entries": [
+										"grants proficiency with Calligrapher's Supplies and allows faster crafting of magic scrolls."
+									]
+								},
+								{
+									"type": "item",
+									"name": "Runic Sigil",
+									"nameDot": false,
+									"entries": [
+										"creates a magical construct inscribed with protective or offensive runes that can shield allies, empower attacks, or ward against enemies."
+									]
+								},
+								{
+									"type": "item",
+									"name": "Explosive Rune",
+									"nameDot": false,
+									"entries": [
+										"allows your sigils to detonate with runic power and increases their effectiveness."
+									]
+								}
+							]
+						}
+					],
+					"data": {
+						"isNoOutline": true
+					}
+				}
+			]
+		}
+	],
+	"classFeature": [
+		{
+			"name": "Runesmith",
+			"source": "FFTRunesmith",
+			"page": 1,
+			"className": "Artificer",
+			"classSource": "XUA2024Artificer",
+			"subclassShortName": "Runesmith",
+			"subclassSource": "FFTRunesmith",
+			"level": 3,
+			"entries": [
+				"A Runesmith specializes in inscribing ancient runes to protect allies, empower weapons, and ward against threats.",
+				{
+					"type": "refSubclassFeature",
+					"subclassFeature": "Tool Proficiency|Artificer|XUA2024Artificer|Runesmith|FFTRunesmith|3|FFTRunesmith"
+				},
+				{
+					"type": "refSubclassFeature",
+					"subclassFeature": "Runesmith Spells|Artificer|XUA2024Artificer|Runesmith|FFTRunesmith|3|FFTRunesmith"
+				},
+				{
+					"type": "refSubclassFeature",
+					"subclassFeature": "Runic Sigil|Artificer|XUA2024Artificer|Runesmith|FFTRunesmith|3|FFTRunesmith"
+				}
+			]
+		},
+		{
+			"name": "Runesmith Spells",
+			"source": "FFTRunesmith",
+			"page": 1,
+			"className": "Artificer",
+			"classSource": "XUA2024Artificer",
+			"subclassShortName": "Runesmith",
+			"subclassSource": "FFTRunesmith",
+			"level": 3,
+			"entries": [
+				"When you reach an Artificer level specified in the {@table Runesmith Spells|FFTRunesmith} table, you thereafter always have the listed spells prepared.",
+				{
+					"type": "statblock",
+					"tag": "table",
+					"source": "FFTRunesmith",
+					"name": "Runesmith Spells",
+					"page": 1
+				}
+			]
+		},
+		{
+			"name": "Runic Sigil",
+			"source": "FFTRunesmith",
+			"page": 1,
+			"className": "Artificer",
+			"classSource": "XUA2024Artificer",
+			"subclassShortName": "Runesmith",
+			"subclassSource": "FFTRunesmith",
+			"level": 3,
+			"entries": [
+				"Using {@item Calligrapher's Supplies|XPHB} or {@item Mason's Tools|XPHB}, you can take a {@action Magic|XPHB} action to create a Small or Tiny {@object Runic Sigil|FFTRunesmith} in an unoccupied space on a horizontal surface within 5 feet of yourself. The sigil's game statistics appear below. You determine its appearance, which can be a floating rune, carved stone, or inscribed tablet. It disappears if it is reduced to 0 Hit Points or after 1 hour. You can dismiss it early as a {@action Magic|XPHB} action.",
+				"Once you create a sigil, you can't do so again until you finish a {@variantrule Long Rest|XPHB} or expend a spell slot to create one. You can have only one sigil at a time and can't create one while your sigil is present.",
+				{
+					"type": "statblock",
+					"tag": "object",
+					"source": "FFTRunesmith",
+					"name": "Runic Sigil",
+					"page": 1,
+					"collapsed": true
+				}
+			]
+		},
+		{
+			"name": "Tool Proficiency",
+			"source": "FFTRunesmith",
+			"page": 1,
+			"className": "Artificer",
+			"classSource": "XUA2024Artificer",
+			"subclassShortName": "Runesmith",
+			"subclassSource": "FFTRunesmith",
+			"level": 3,
+			"entries": [
+				"You gain proficiency with {@item Calligrapher's Supplies|XPHB}. If you already have this proficiency, you gain proficiency with one other type of {@item Artisan's Tools|XPHB} of your choice.",
+				"In addition, when you craft a magic {@item Spell Scroll|XDMG}, the amount of time required to craft it is halved."
+			]
+		},
+		{
+			"name": "Runic Empowerment",
+			"source": "FFTRunesmith",
+			"page": 1,
+			"className": "Artificer",
+			"classSource": "XUA2024Artificer",
+			"subclassShortName": "Runesmith",
+			"subclassSource": "FFTRunesmith",
+			"level": 5,
+			"entries": [
+				"When you finish a {@variantrule Long Rest|XPHB}, you can use {@item Calligrapher's Supplies|XPHB} to inscribe special runes onto a weapon, {@item Rod|XPHB}, {@item Staff|XPHB}, or {@item Wand|XPHB} and thereby turn it into your runic focus. The runes disappear from the object if you later inscribe them on a different item. The runes otherwise last indefinitely.",
+				"You can use your runic focus as a {@variantrule Spellcasting Focus|XPHB} for your Artificer spells. When you cast an Artificer spell through the runic focus, roll {@damage 1d8}, and you gain a bonus to one of the spell's damage rolls equal to the number rolled.",
+				"Additionally, when a creature you can see within 30 feet of you makes an attack roll, you can use your {@variantrule Reaction|XPHB} to inscribe a temporary rune of power on their weapon, granting them a {@dice 1d8} bonus to the attack roll. You can use this reaction a number of times equal to your Intelligence modifier (minimum of once), and you regain all expended uses when you finish a {@variantrule Long Rest|XPHB}."
+			]
+		},
+		{
+			"name": "Explosive Rune",
+			"source": "FFTRunesmith",
+			"page": 1,
+			"className": "Artificer",
+			"classSource": "XUA2024Artificer",
+			"subclassShortName": "Runesmith",
+			"subclassSource": "FFTRunesmith",
+			"level": 9,
+			"entries": [
+				"Every {@object Runic Sigil|FFTRunesmith} you create is now more powerful. You gain the following benefits:",
+				{
+					"type": "list",
+					"style": "list-hang-notitle",
+					"page": 1,
+					"items": [
+						{
+							"type": "item",
+							"name": "Detonate",
+							"entries": [
+								"When your sigil is reduced to 0 Hit Points, you can take a {@variantrule Reaction|XPHB} to command the sigil to detonate if you are within 60 feet of it. Doing so destroys the sigil and forces each creature within 20 feet of it to make a Dexterity saving throw against {@dcYourSpellSave}, taking {@damage 3d10} Force damage on a failed save or half as much damage on a successful one."
+							]
+						},
+						{
+							"type": "item",
+							"name": "Empowered Runes",
+							"entries": [
+								"The sigil's damage and healing rolls increase by {@damage 1d8}."
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Master Runesmith",
+			"source": "FFTRunesmith",
+			"page": 1,
+			"className": "Artificer",
+			"classSource": "XUA2024Artificer",
+			"subclassShortName": "Runesmith",
+			"subclassSource": "FFTRunesmith",
+			"level": 15,
+			"entries": [
+				"You're a master at inscribing protective wards using your {@object Runic Sigil|FFTRunesmith}. You gain the following benefits:",
+				{
+					"type": "list",
+					"style": "list-hang-notitle",
+					"page": 1,
+					"items": [
+						{
+							"type": "item",
+							"name": "Dual Inscriptions",
+							"entries": [
+								"You can now have two sigils at the same time. You can create two with the same {@action Magic|XPHB} action (but not with the same spell slot), and you can activate both of them with the same {@variantrule Bonus Action|XPHB}, ordering them to use the same activation option or different ones. You can't create a third sigil while you have two."
+							]
+						},
+						{
+							"type": "item",
+							"name": "Runic Aegis",
+							"entries": [
+								"You and your allies have {@variantrule Cover|XPHB|Half Cover} while within 10 feet of your {@object Runic Sigil|FFTRunesmith}."
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"foundrySubclassFeature": [
+		{
+			"name": "Tool Proficiency",
+			"source": "FFTRunesmith",
+			"className": "Artificer",
+			"classSource": "XUA2024Artificer",
+			"subclassShortName": "Runesmith",
+			"subclassSource": "FFTRunesmith",
+			"level": 3,
+			"entryData": {
+				"toolProficiencies": [
+					{
+						"calligrapher's supplies": true
+					},
+					{
+						"anyArtisansTool": 1
+					}
+				]
+			}
+		}
+	],
+	"object": [
+		{
+			"name": "Runic Sigil",
+			"source": "FFTRunesmith",
+			"page": 1,
+			"size": [
+				"T",
+				"S"
+			],
+			"objectType": "U",
+			"ac": 18,
+			"hp": {
+				"special": "5 × your artificer level (casting {@spell mending|XPHB} on the sigil restores {@dice 2d6} hit points to it)"
+			},
+			"immune": [
+				"poison",
+				"psychic"
+			],
+			"entries": [
+				"{@note Created by the {@subclassFeature Runic Sigil|Artificer|XUA2024Artificer|Runesmith|FFTRunesmith|3} subclass feature.}"
+			],
+			"actionEntries": [
+				{
+					"type": "entries",
+					"name": "Activate Sigil (Requires You to be within 60 Feet of the Sigil)",
+					"entries": [
+						"As a {@variantrule Bonus Action|XPHB}, you order the sigil to use the Rune of Warding, Rune of Smiting, or Rune of Restoration option below; you can direct the sigil to move up to 15 feet before or after that option:",
+						{
+							"type": "list",
+							"style": "list-hang-notitle",
+							"page": 1,
+							"items": [
+								{
+									"type": "item",
+									"name": "Rune of Warding",
+									"entries": [
+										"The sigil creates a protective barrier in a 15-foot {@variantrule Cone [Area of Effect]|XPHB|Cone}. Each creature of your choice in that area gains {@variantrule Resistance|XPHB} to the next instance of damage they take before the start of your next turn. Additionally, hostile creatures in the {@variantrule Cone [Area of Effect]|XPHB|Cone} must make a Wisdom saving throw against {@dcYourSpellSave} or have {@variantrule Disadvantage|XPHB} on their next attack roll."
+									]
+								},
+								{
+									"type": "item",
+									"name": "Rune of Smiting",
+									"entries": [
+										"Make a ranged spell attack originating from the sigil at one creature or object within 120 feet of it. On a hit, the target takes {@damage 2d8} Force damage, and if the target is a creature, it must succeed on a Strength saving throw against {@dcYourSpellSave} or be knocked {@condition prone|XPHB}."
+									]
+								},
+								{
+									"type": "item",
+									"name": "Rune of Restoration",
+									"entries": [
+										"The sigil emits healing runic energy that grants itself and each creature of your choice within 10 feet of it a number of {@variantrule Temporary Hit Points|XPHB} equal to {@dice 1d8} plus your Intelligence modifier (minimum of 1). Additionally, one creature of your choice within range can immediately end one condition on itself chosen from {@condition charmed|XPHB}, {@condition frightened|XPHB}, or {@condition poisoned|XPHB}."
+									]
+								}
+							]
+						}
+					]
+				}
+			],
+			"token": {
+				"name": "Runic Sigil",
+				"source": "FFTRunesmith"
+			}
+		}
+	],
+	"table": [
+		{
+			"name": "Runesmith Spells",
+			"source": "FFTRunesmith",
+			"page": 1,
+			"colLabels": [
+				"Artificer Level",
+				"Spells"
+			],
+			"colStyles": [
+				"col-3 text-center",
+				"col-9"
+			],
+			"rows": [
+				[
+					"3",
+					"{@spell Shield|XPHB}, {@spell Heroism|XPHB}"
+				],
+				[
+					"5",
+					"{@spell Magic Weapon|XPHB}, {@spell Warding Bond|XPHB}"
+				],
+				[
+					"9",
+					"{@spell Glyph of Warding|XPHB}, {@spell Protection from Energy|XPHB}"
+				],
+				[
+					"13",
+					"{@spell Death Ward|XPHB}, {@spell Stoneskin|XPHB}"
+				],
+				[
+					"17",
+					"{@spell Circle of Power|XPHB}, {@spell Wall of Stone|XPHB}"
+				]
+			]
+		}
+	]
+}
