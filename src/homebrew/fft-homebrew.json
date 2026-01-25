@@ -1,9 +1,9 @@
 {
-    "$schema": "https://raw.githubusercontent.com/TheGiddyLimit/5etools-utils/master/schema/ua-fast/homebrew.json",
+    "$schema": "https://raw.githubusercontent.com/TheGiddyLimit/5etools-utils/master/schema/brew-fast/homebrew.json",
     "_meta": {
         "sources": [
             {
-                "json": "fft-homebrew",
+                "json": "FFT",
                 "abbreviation": "FFT",
                 "full": "FFTweaks Homebrew",
                 "authors": [
@@ -19,13 +19,12 @@
         "edition": "one",
         "status": "ready",
         "dateAdded": 1709124114,
-        "dateLastModified": 1737846000,
-        "_dateLastModifiedHash": "a1b2c3d4e5"
+        "dateLastModified": 1737846000
     },
     "subclass": [
         {
             "name": "Runesmith",
-            "source": "fft-homebrew",
+            "source": "FFT",
             "page": 1,
             "className": "Artificer",
             "classSource": "XUA2024Artificer",
@@ -59,22 +58,22 @@
                 }
             ],
             "subclassFeatures": [
-                "Runesmith|Artificer|XUA2024Artificer|Runesmith|fft-homebrew|3|fft-homebrew",
-                "Battle Runes|Artificer|XUA2024Artificer|Runesmith|fft-homebrew|3|fft-homebrew",
-                "Forged for War|Artificer|XUA2024Artificer|Runesmith|fft-homebrew|3|fft-homebrew",
-                "Rune Carving|Artificer|XUA2024Artificer|Runesmith|fft-homebrew|3|fft-homebrew"
+                "Runesmith|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT",
+                "Battle Runes|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT",
+                "Forged for War|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT",
+                "Rune Carving|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT"
             ]
         }
     ],
     "subclassFeature": [
         {
             "name": "Runesmith",
-            "source": "fft-homebrew",
+            "source": "FFT",
             "page": 1,
             "className": "Artificer",
             "classSource": "XUA2024Artificer",
             "subclassShortName": "Runesmith",
-            "subclassSource": "fft-homebrew",
+            "subclassSource": "FFT",
             "level": 3,
             "header": 1,
             "entries": [
@@ -85,12 +84,12 @@
         },
         {
             "name": "Battle Runes",
-            "source": "fft-homebrew",
+            "source": "FFT",
             "page": 1,
             "className": "Artificer",
             "classSource": "XUA2024Artificer",
             "subclassShortName": "Runesmith",
-            "subclassSource": "fft-homebrew",
+            "subclassSource": "FFT",
             "level": 3,
             "header": 2,
             "entries": [
@@ -99,12 +98,12 @@
         },
         {
             "name": "Forged for War",
-            "source": "fft-homebrew",
+            "source": "FFT",
             "page": 1,
             "className": "Artificer",
             "classSource": "XUA2024Artificer",
             "subclassShortName": "Runesmith",
-            "subclassSource": "fft-homebrew",
+            "subclassSource": "FFT",
             "level": 3,
             "header": 2,
             "entries": [
@@ -114,12 +113,12 @@
         },
         {
             "name": "Rune Carving",
-            "source": "fft-homebrew",
+            "source": "FFT",
             "page": 1,
             "className": "Artificer",
             "classSource": "XUA2024Artificer",
             "subclassShortName": "Runesmith",
-            "subclassSource": "fft-homebrew",
+            "subclassSource": "FFT",
             "level": 3,
             "header": 2,
             "entries": [
@@ -127,48 +126,6 @@
                 "Inscribing a Rune. You can carve one rune onto a weapon, piece of armor, or another object larger than 2 inches during a Long Rest. The rune holds a single spell. The spell must be one you know and of a level you can cast.",
                 "Using the Rune. Once inscribed, the rune can be activated as part of the action required to cast the stored spell without expending a spell slot, unleashing its power. The rune can only be activated once, after which its power fades and must be recharged. You can have a number of active runes equal to your proficiency bonus at one time.",
                 "Recharging Runes. Whenever you finish a Short Rest, you can recharge runes of your choice equal to no more than half your Artificer level (round up), if you have Smith's Tools in hand."
-            ]
-        }
-    ],
-    "background": [
-        {
-            "name": "Clan Crafter",
-            "source": "fft-homebrew",
-            "page": 1,
-            "skillProficiencies": [
-                {
-                    "history": true,
-                    "religion": true
-                }
-            ],
-            "toolProficiencies": [
-                {
-                    "choose": {
-                        "from": [
-                            "alchemist's supplies",
-                            "brewer's supplies",
-                            "calligrapher's supplies",
-                            "carpenter's tools",
-                            "cartographer's tools",
-                            "cobbler's tools",
-                            "cook's utensils",
-                            "glassblower's tools",
-                            "jeweler's tools",
-                            "leatherworker's tools",
-                            "mason's tools",
-                            "painter's supplies",
-                            "potter's tools",
-                            "smith's tools",
-                            "tinker's tools",
-                            "weaver's tools",
-                            "woodcarver's tools"
-                        ],
-                        "count": 1
-                    }
-                }
-            ],
-            "entries": [
-                "<div>\n    <div class=\"rd__b  rd__b--1\">\n        <div class=\"rd__b  rd__b--2\">\n            <div class=\"rd__b  rd__b--3\">\n                <p>The Stout Folk are well known for their artisanship and the worth of their handiworks, and you have been trained in that ancient tradition. For years you labored under a dwarf master of the craft, enduring long hours and dismissive, sour-tempered treatment in order to gain the fine skills you possess today.</p>\n            </div>\n        </div>\n    </div>\n    <hr>\n</div>\n<div>\n    <p class=\"rd__p-list-item\"><span style=\"font-family: 'Roboto Condensed', sans-serif\"><strong style=\"box-sizing:border-box;user-select:text;scrollbar-width:thin;scrollbar-color:var(--color-scrollbar) var(--color-scrollbar-track);color:rgb(207, 210, 218);font-family:'Roboto Condensed', sans-serif;font-size:13px;font-style:normal;font-variant-ligatures:normal;font-variant-caps:normal;letter-spacing:normal;orphans:2;text-align:start;text-indent:0px;text-transform:none;widows:2;word-spacing:0px;-webkit-text-stroke-width:0px;white-space:normal;background-color:rgb(13, 11, 11);text-decoration-thickness:initial;text-decoration-style:initial;text-decoration-color:initial\">Ability Scores: </strong></span>Add +1 to three abilities or +2 to one and +1 to one</p>\n    <p><strong>Feat: </strong>Pick an Origin Feat</p>\n    <p><strong>Skill Proficiencies: </strong>History and Religion</p>\n    <p><strong>Tool Proficiencies: </strong>One type of <span class=\"bold\">artisan's tools</span></p>\n    <p><strong>Equipment: </strong>A set of <span class=\"bold\">artisan's tools</span> with which you are proficient, A Chisel , Traveler's Clothes, 15 GP</p>\n</div>"
             ]
         }
     ]
