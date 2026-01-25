@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TheGiddyLimit/5etools-utils/master/schema/brew-fast/homebrew.json",
+  "_meta": {
+    "sources": [
+      {
+        "json": "FFT",
+        "abbreviation": "FFT",
+        "full": "FFTweaks Homebrew",
+        "authors": [
+          "fierrof"
+        ],
+        "convertedBy": [
+          "fierrof"
+        ],
+        "version": "1.0.0",
+        "color": "ffffff"
+      }
+    ],
+    "edition": "one",
+    "status": "ready",
+    "dateAdded": 1737842400,
+    "dateLastModified": 1737842400
+  },
+  "background": []
+}
