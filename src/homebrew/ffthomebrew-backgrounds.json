@@ -19,7 +19,104 @@
     "edition": "one",
     "status": "ready",
     "dateAdded": 1737842400,
-    "dateLastModified": 1737842400
+    "dateLastModified": 1769368198
   },
-  "background": []
+  "background": [
+    {
+      "name": "Clan Crafter",
+      "source": "FFT",
+      "page": 1,
+      "ability": [
+        {
+          "choose": {
+            "from": [
+              "str",
+              "dex",
+              "con",
+              "int",
+              "wis",
+              "cha"
+            ],
+            "count": 3,
+            "amount": 1
+          }
+        }
+      ],
+      "feats": [
+        {
+          "any": 1,
+          "fromFilter": "type=OF"
+        }
+      ],
+      "skillProficiencies": [
+        {
+          "arcana": true,
+          "history": true
+        }
+      ],
+      "toolProficiencies": [
+        {
+          "anyArtisansTool": 1
+        }
+      ],
+      "startingEquipment": [
+        {
+          "A": [
+            {
+              "equipmentType": "toolArtisan"
+            },
+            {
+              "item": "pouch|xphb",
+              "quantity": 2
+            },
+            {
+              "item": "traveler's clothes|xphb"
+            },
+            {
+              "value": 3200
+            }
+          ],
+          "B": [
+            {
+              "value": 5000
+            }
+          ]
+        }
+      ],
+      "entries": [
+        "The Stout Folk are well known for their artisanship and the worth of their handiworks, and you have been trained in that ancient tradition. For years you labored under a dwarf master of the craft, enduring long hours and dismissive, sour-tempered treatment in order to gain the fine skills you possess today.",
+        {
+          "type": "list",
+          "style": "list-hang-notitle",
+          "items": [
+            {
+              "type": "item",
+              "name": "Ability Scores:",
+              "entry": "Add +1 to three abilities or +2 to one and +1 to one"
+            },
+            {
+              "type": "item",
+              "name": "Feat:",
+              "entry": "Pick an Origin Feat"
+            },
+            {
+              "type": "item",
+              "name": "Skill Proficiencies:",
+              "entry": "{@skill Arcana|XPHB}, {@skill History|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Tool Proficiency:",
+              "entry": "Choose one kind of {@item Artisan's Tools|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Equipment:",
+              "entry": "Choose A or B: (A) {@item Artisan's Tools|XPHB} (same as above), 2 {@item Pouch|XPHB|Pouches}, {@item Traveler's Clothes|XPHB}, 32 GP; or (B) 50 GP"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
