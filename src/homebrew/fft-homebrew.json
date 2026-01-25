@@ -117,14 +117,7 @@
           "type": "entries",
           "name": "Tool Proficiency",
           "entries": [
-            "You gain proficiency with {@item Calligrapher's Supplies|XPHB}. If you already have this proficiency, you gain proficiency with one other type of {@item Artisan's Tools|XPHB} of your choice."
-          ]
-        },
-        {
-          "type": "entries",
-          "name": "Weapon Knowledge",
-          "entries": [
-            "You gain proficiency with {@filter Martial weapons|items|type=martial weapon}. You can use a weapon with which you have proficiency as a {@variantrule Spellcasting Focus|XPHB} for your Artificer spells."
+            "You gain proficiency with {@item Smith's Tools|XPHB}. If you already have this proficiency, you gain proficiency with one other type of {@item Artisan's Tools|XPHB} of your choice."
           ]
         },
         {
