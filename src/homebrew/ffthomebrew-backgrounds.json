@@ -19,7 +19,7 @@
     "edition": "one",
     "status": "ready",
     "dateAdded": 1737842400,
-    "dateLastModified": 1769369364
+    "dateLastModified": 1769372138
   },
   "background": [
     {
@@ -68,8 +68,34 @@
       ],
       "feats": [
         {
-          "any": 1,
-          "fromFilter": "type=OF"
+          "alert|xphb": true
+        },
+        {
+          "crafter|xphb": true
+        },
+        {
+          "healer|xphb": true
+        },
+        {
+          "lucky|xphb": true
+        },
+        {
+          "magic initiate|xphb": true
+        },
+        {
+          "musician|xphb": true
+        },
+        {
+          "savage attacker|xphb": true
+        },
+        {
+          "skilled|xphb": true
+        },
+        {
+          "tavern brawler|xphb": true
+        },
+        {
+          "tough|xphb": true
         }
       ],
       "skillProficiencies": [
@@ -81,30 +107,6 @@
       "toolProficiencies": [
         {
           "anyArtisansTool": 1
-        }
-      ],
-      "startingEquipment": [
-        {
-          "A": [
-            {
-              "equipmentType": "toolArtisan"
-            },
-            {
-              "item": "pouch|xphb",
-              "quantity": 2
-            },
-            {
-              "item": "traveler's clothes|xphb"
-            },
-            {
-              "value": 3200
-            }
-          ],
-          "B": [
-            {
-              "value": 5000
-            }
-          ]
         }
       ],
       "entries": [
@@ -121,7 +123,7 @@
             {
               "type": "item",
               "name": "Feat:",
-              "entry": "Pick an Origin Feat"
+              "entry": "Choose one Origin Feat (add manually after import)"
             },
             {
               "type": "item",

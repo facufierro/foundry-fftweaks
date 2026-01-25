@@ -7,6 +7,8 @@ import { deleteCombatEncounter } from "./combat/delete-combat-encounter";
 import { distributeGold } from "./loot/distribute-gold";
 import { distributeExperience } from "./loot/distribute-experience";
 import { lootCorpses } from "./loot/loot-all";
+import { replaceCompendiumItems } from "./utilities/replace-compendium-items";
+import { updateSpellLists } from "./utilities/update-spell-lists";
 
 export class Functions {
     static healTokens = healTokens;
@@ -18,4 +20,6 @@ export class Functions {
     static distributeGold = distributeGold;
     static distributeExperience = distributeExperience;
     static lootCorpses = lootCorpses;
+    static replaceCompendiumItems = replaceCompendiumItems;
+    static updateSpellLists = updateSpellLists;
 }
