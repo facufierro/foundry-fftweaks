@@ -19,7 +19,7 @@
     "edition": "one",
     "status": "ready",
     "dateAdded": 1709124114,
-    "dateLastModified": 1769360412
+    "dateLastModified": 1769365655
   },
   "subclass": [
     {
@@ -27,51 +27,41 @@
       "shortName": "Runesmith",
       "source": "FFT",
       "className": "Artificer",
-      "classSource": "XUA2024Artificer",
+      "classSource": "EFA",
       "page": 1,
       "additionalSpells": [
         {
           "prepared": {
             "3": [
-              "Magic Missile|XPHB",
-              "Shield|XPHB"
+              "magic missile|xphb",
+              "shield|xphb"
             ],
             "5": [
-              "Misty Step|XPHB",
-              "Knock|XPHB"
+              "misty step|xphb",
+              "knock|xphb"
             ],
             "9": [
-              "Counterspell|XPHB",
-              "Glyph of Warding|XPHB"
+              "counterspell|xphb",
+              "glyph of warding|xphb"
             ],
             "13": [
-              "Banishment|XPHB",
-              "Greater Invisibility|XPHB"
+              "banishment|xphb",
+              "greater invisibility|xphb"
             ],
             "17": [
-              "Hold Monster|XPHB",
-              "Telekinesis|XPHB"
+              "hold monster|xphb",
+              "telekinesis|xphb"
             ]
           }
         }
       ],
-      "subclassSpells": [
-        "Magic Missile|XPHB",
-        "Shield|XPHB",
-        "Misty Step|XPHB",
-        "Knock|XPHB",
-        "Counterspell|XPHB",
-        "Glyph of Warding|XPHB",
-        "Banishment|XPHB",
-        "Greater Invisibility|XPHB",
-        "Hold Monster|XPHB",
-        "Telekinesis|XPHB"
-      ],
       "subclassFeatures": [
-        "Runesmith|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT",
-        "Extra Attack|Artificer|XUA2024Artificer|Runesmith|FFT|5|FFT"
+        "Runesmith|Artificer|EFA|Runesmith|FFT|3|FFT",
+        "Extra Attack|Artificer|EFA|Runesmith|FFT|5|FFT",
+        "Arcane Inscription|Artificer|EFA|Runesmith|FFT|9|FFT",
+        "Perfected Runes|Artificer|EFA|Runesmith|FFT|15|FFT"
       ],
-      "hasFluff": true
+      "hasFluffImages": true
     }
   ],
   "subclassFeature": [
@@ -80,55 +70,70 @@
       "source": "FFT",
       "page": 1,
       "className": "Artificer",
-      "classSource": "XUA2024Artificer",
+      "classSource": "EFA",
       "subclassShortName": "Runesmith",
       "subclassSource": "FFT",
       "level": 3,
       "entries": [
+        "{@i Inscribe Ancient Power Through Mystical Runes}",
         "A Runesmith specializes in inscribing ancient runes to protect allies, empower weapons, and ward against threats.",
         {
           "type": "refSubclassFeature",
-          "subclassFeature": "Forged for War|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT"
+          "subclassFeature": "Tools of the Trade|Artificer|EFA|Runesmith|FFT|3|FFT"
         },
         {
           "type": "refSubclassFeature",
-          "subclassFeature": "Runesmith Spells|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT"
+          "subclassFeature": "Runesmith Spells|Artificer|EFA|Runesmith|FFT|3|FFT"
         },
         {
           "type": "refSubclassFeature",
-          "subclassFeature": "Battle Rune|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT"
+          "subclassFeature": "Battle Rune|Artificer|EFA|Runesmith|FFT|3|FFT"
         },
         {
           "type": "refSubclassFeature",
-          "subclassFeature": "Runic Inscription|Artificer|XUA2024Artificer|Runesmith|FFT|3|FFT"
+          "subclassFeature": "Runic Inscription|Artificer|EFA|Runesmith|FFT|3|FFT"
         }
       ]
     },
     {
-      "name": "Forged for War",
+      "name": "Tools of the Trade",
       "source": "FFT",
       "page": 1,
       "className": "Artificer",
-      "classSource": "XUA2024Artificer",
+      "classSource": "EFA",
       "subclassShortName": "Runesmith",
       "subclassSource": "FFT",
       "level": 3,
       "entries": [
-        "You gain proficiency with {@item Martial Weapons|XPHB|Martial weapons} and {@item Heavy Armor|XPHB|Heavy armor}.",
-        "In addition, when you craft weapons or armor, the amount of time required to craft it is halved."
-      ]
-    },
-    {
-      "name": "Battle Rune",
-      "source": "FFT",
-      "page": 1,
-      "className": "Artificer",
-      "classSource": "XUA2024Artificer",
-      "subclassShortName": "Runesmith",
-      "subclassSource": "FFT",
-      "level": 3,
-      "entries": [
-        "You use your Intelligence as your Attack and Damage Bonus instead of Strength."
+        "You gain the following benefits.",
+        {
+          "type": "entries",
+          "name": "Armor Training",
+          "entries": [
+            "You gain training with Heavy armor."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Tool Proficiency",
+          "entries": [
+            "You gain proficiency with {@item Calligrapher's Supplies|XPHB}. If you already have this proficiency, you gain proficiency with one other type of {@item Artisan's Tools|XPHB} of your choice."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Weapon Knowledge",
+          "entries": [
+            "You gain proficiency with {@filter Martial weapons|items|type=martial weapon}. You can use a weapon with which you have proficiency as a {@variantrule Spellcasting Focus|XPHB} for your Artificer spells."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Rune Crafting",
+          "entries": [
+            "When you craft magic {@item Wand|XPHB|wands} or {@item Spell Scroll|XDMG|spell scrolls}, the amount of time required to craft them is halved."
+          ]
+        }
       ]
     },
     {
@@ -136,18 +141,66 @@
       "source": "FFT",
       "page": 1,
       "className": "Artificer",
-      "classSource": "XUA2024Artificer",
+      "classSource": "EFA",
       "subclassShortName": "Runesmith",
       "subclassSource": "FFT",
       "level": 3,
       "entries": [
-        "When you reach an Artificer level specified in the {@table Runesmith Spells|FFT} table, you thereafter always have the listed spells prepared.",
+        "When you reach an Artificer level specified in the Runesmith Spells table, you thereafter always have the listed spells prepared.",
         {
-          "type": "statblock",
-          "tag": "table",
-          "source": "FFT",
-          "name": "Runesmith Spells",
-          "page": 1
+          "caption": "Runesmith Spells",
+          "type": "table",
+          "page": 1,
+          "colLabels": [
+            "Artificer Level",
+            "Spells"
+          ],
+          "colStyles": [
+            "col-3 text-center",
+            "col-9"
+          ],
+          "rows": [
+            [
+              "3",
+              "{@spell Magic Missile|XPHB}, {@spell Shield|XPHB}"
+            ],
+            [
+              "5",
+              "{@spell Misty Step|XPHB}, {@spell Knock|XPHB}"
+            ],
+            [
+              "9",
+              "{@spell Counterspell|XPHB}, {@spell Glyph of Warding|XPHB}"
+            ],
+            [
+              "13",
+              "{@spell Banishment|XPHB}, {@spell Greater Invisibility|XPHB}"
+            ],
+            [
+              "17",
+              "{@spell Hold Monster|XPHB}, {@spell Telekinesis|XPHB}"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Battle Rune",
+      "source": "FFT",
+      "page": 1,
+      "className": "Artificer",
+      "classSource": "EFA",
+      "subclassShortName": "Runesmith",
+      "subclassSource": "FFT",
+      "level": 3,
+      "entries": [
+        "Your combat training and your experiments with magic have paid off in two ways.",
+        {
+          "type": "entries",
+          "name": "Arcane Empowerment",
+          "entries": [
+            "When you attack with a magic weapon, you can use your Intelligence modifier, instead of your Strength or Dexterity modifier, for the attack and damage rolls."
+          ]
         }
       ]
     },
@@ -156,26 +209,26 @@
       "source": "FFT",
       "page": 1,
       "className": "Artificer",
-      "classSource": "XUA2024Artificer",
+      "classSource": "EFA",
       "subclassShortName": "Runesmith",
       "subclassSource": "FFT",
       "level": 3,
       "entries": [
-        "You gain the ability to inscribe runes, mystical symbols that store and unleash your spells through enchanted objects. The amount of runes inscribed counts towards the amount of items you can create with the {@classFeature Replicate Magic Item|Artificer|XUA2024Artificer|2|XUA2024Artificer} feature.",
+        "You gain the ability to inscribe runes, mystical symbols that store and unleash your spells through enchanted objects. The number of runes inscribed counts towards the number of items you can create with the {@classFeature Replicate Magic Item|Artificer|EFA|2|EFA} feature.",
         {
           "type": "entries",
           "name": "Inscribing a Rune",
           "entries": [
-            "When you finish a {@variantrule Long Rest|XPHB}, you can inscribe one rune into a weapon, piece of armor, or object at least the size of a rune. A rune stores one spell and each rune is able to cast.",
-            "When inscribing the rune, you can improve it using a {@classFeature Replicate Magic Item|Artificer|XUA2024Artificer|2|XUA2024Artificer} slot to increase the spell's level. The spell's level can be increased by a number of levels equal to half your Artificer level. The spell cannot be upcast further than 9th level."
+            "When you finish a {@variantrule Long Rest|XPHB}, you can inscribe one or more runes into weapons, pieces of armor, or objects at least the size of a rune. A rune stores one Artificer spell of 1st level or higher that you have prepared.",
+            "When inscribing the rune, you can improve it by expending additional magic item slots from your {@classFeature Replicate Magic Item|Artificer|EFA|2|EFA} feature to increase the spell's level. The spell's level can be increased by a number of levels equal to half your Artificer level (rounded down). The spell cannot exceed 5th level."
           ]
         },
         {
           "type": "entries",
           "name": "Using Runes",
           "entries": [
-            "A rune can be activated as part of the action to cast the stored spell. You don't expend a spell slot when casting a spell this way. The spell uses your Artificer spell ability for attack rolls and saving throws.",
-            "Each rune has one charge. At 12th level, runes gain two charges. At 20th level, they gain three charges. Once all charges are used, the rune becomes inert until it is recharged."
+            "A rune can be activated as part of the action to cast the stored spell. You don't expend a spell slot when casting a spell this way. The spell uses your Artificer spellcasting ability for attack rolls and saving throws.",
+            "Each rune has one charge. Once the charge is used, the rune becomes inert until it is recharged."
           ]
         },
         {
@@ -192,12 +245,76 @@
       "source": "FFT",
       "page": 1,
       "className": "Artificer",
-      "classSource": "XUA2024Artificer",
+      "classSource": "EFA",
       "subclassShortName": "Runesmith",
       "subclassSource": "FFT",
       "level": 5,
+      "header": 2,
       "entries": [
         "You can attack twice instead of once whenever you take the {@action Attack|XPHB} action on your turn."
+      ]
+    },
+    {
+      "name": "Arcane Inscription",
+      "source": "FFT",
+      "page": 1,
+      "className": "Artificer",
+      "classSource": "EFA",
+      "subclassShortName": "Runesmith",
+      "subclassSource": "FFT",
+      "level": 9,
+      "header": 2,
+      "entries": [
+        "Your {@subclassFeature Runic Inscription|Artificer|EFA|Runesmith|FFT|3|FFT} feature becomes more powerful. You gain the following benefits.",
+        {
+          "type": "entries",
+          "name": "Improved Runes",
+          "entries": [
+            "Each rune now has two charges. When you reach level 15, runes gain three charges."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Rune Replication",
+          "entries": [
+            "You learn an additional plan for your {@classFeature Replicate Magic Item|Artificer|EFA|2|EFA} feature. In addition, you can create an additional item with that feature."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Perfected Runes",
+      "source": "FFT",
+      "page": 1,
+      "className": "Artificer",
+      "classSource": "EFA",
+      "subclassShortName": "Runesmith",
+      "subclassSource": "FFT",
+      "level": 15,
+      "header": 2,
+      "entries": [
+        "Your mastery of runic magic reaches its peak. You gain the following benefits.",
+        {
+          "type": "entries",
+          "name": "Empowered Runes",
+          "entries": [
+            "When you cast a spell from a rune, you can add your Intelligence modifier to one damage roll of the spell."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Runic Barrier",
+          "entries": [
+            "As a {@variantrule Reaction|XPHB}, when you or a creature you can see within 30 feet of you takes damage, you can expend a rune charge to grant the creature {@variantrule Resistance|XPHB} to that damage. You can use this {@variantrule Reaction|XPHB} a number of times equal to your Intelligence modifier (minimum of once), and you regain all expended uses when you finish a {@variantrule Long Rest|XPHB}."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Master Inscriber",
+          "entries": [
+            "You have {@variantrule Cover|XPHB|Half Cover} while within 10 feet of an object bearing one of your runes."
+          ]
+        }
       ]
     }
   ],
@@ -207,62 +324,21 @@
       "shortName": "Runesmith",
       "source": "FFT",
       "className": "Artificer",
-      "classSource": "XUA2024Artificer",
+      "classSource": "EFA",
       "entries": [
         "{@i Inscribe Ancient Power Through Mystical Runes}",
-        "A Runesmith is an Artificer that has narrowed their focus to working a specific language of magic - powerful Runes that can channel long lasting power. These Runes come in many shapes and forms, the lore behind from many sources.",
-        "A Runesmith can be a warrior, his runes splashed with gleaming power across his armor, or a scholar lending their power to their companions or even a strange tattooed mystic, their runes tattooed across their very body.",
-        "Runesmiths are not inherently good or evil, though their rigorous attention to detail and patience tend to make them more inclined to a Lawful perspective.",
-        {
-          "type": "inset",
-          "name": "Design Note: Runesmith Origin",
-          "page": 1,
-          "entries": [
-            "The Runesmith is an Artificer subclass that channels magic through ancient runic inscriptions. Unlike the explosive Artillerist, the Runesmith focuses on protective and empowering runes:",
-            {
-              "type": "list",
-              "page": 1,
-              "items": [
-                {
-                  "type": "item",
-                  "name": "Tool Proficiency",
-                  "nameDot": false,
-                  "entries": [
-                    "grants proficiency with Calligrapher's Supplies and allows faster crafting of magic scrolls."
-                  ]
-                },
-                {
-                  "type": "item",
-                  "name": "Runic Sigil",
-                  "nameDot": false,
-                  "entries": [
-                    "creates a magical construct inscribed with protective or offensive runes that can shield allies, empower attacks, or ward against enemies."
-                  ]
-                },
-                {
-                  "type": "item",
-                  "name": "Explosive Rune",
-                  "nameDot": false,
-                  "entries": [
-                    "allows your sigils to detonate with runic power and increases their effectiveness."
-                  ]
-                }
-              ]
-            }
-          ],
-          "data": {
-            "isNoOutline": true
-          }
-        }
+        "A Runesmith is an Artificer that has mastered the art of inscribing ancient runes to channel magical power. These mystical symbols can protect allies, empower weapons, and ward against threats. The knowledge of these runes comes from many sources—ancient texts, divine inspiration, or personal experimentation.",
+        "A Runesmith can be a warrior with gleaming runes across their armor, a scholar lending their power to companions through inscribed talismans, or a mystic with runes tattooed across their very body.",
+        "Runesmiths are not inherently good or evil, though their rigorous attention to detail and patience tend to make them more inclined to a Lawful perspective."
       ]
     }
   ],
   "foundrySubclassFeature": [
     {
-      "name": "Forged for War",
+      "name": "Tools of the Trade",
       "source": "FFT",
       "className": "Artificer",
-      "classSource": "XUA2024Artificer",
+      "classSource": "EFA",
       "subclassShortName": "Runesmith",
       "subclassSource": "FFT",
       "level": 3,
