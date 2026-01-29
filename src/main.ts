@@ -1,12 +1,12 @@
 // Utils
 import { Debug } from "./utils/debug";
 
-// Modules
+// Plugins
 import { Functions } from "./functions";
-import { FunctionBar } from "./modules/function-bar";
-import { TargetPicker } from "./modules/target-picker";
-import { DNDCustomizerModule } from "./modules/dnd-customizer";
-import { AdvancementSync } from "./modules/advancement-sync";
+import { FunctionBar } from "./plugins/function-bar";
+import { TargetPicker } from "./plugins/target-picker";
+import { DNDCustomizer as DNDCustomizer } from "./plugins/dnd-customizer";
+import { AdvancementSync } from "./plugins/advancement-sync";
 
 const FFT = ((globalThis as any).FFT ??= {});
 FFT.Debug = Debug;
@@ -14,7 +14,7 @@ FFT.Functions = Functions;
 
 Hooks.once("init", () => {
     Debug.Log("FFTweaks | Initializing Init Hooks");
-    DNDCustomizerModule.initialize();
+    DNDCustomizer.initialize();
 });
 
 Hooks.once("ready", async () => {

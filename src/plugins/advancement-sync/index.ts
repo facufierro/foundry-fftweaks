@@ -48,7 +48,7 @@ export class AdvancementSync {
         "fftweaks.species",
         "fftweaks.feats"
     ];
-    private static readonly DATA_PATH = "modules/fftweaks/src/modules/advancement-sync/data";
+    private static readonly DATA_PATH = "modules/fftweaks/src/plugins/advancement-sync/data";
 
     private static readonly ORIGIN_FEATS = [
         "alert", "crafter", "healer", "lucky", "magic initiate", "musician",

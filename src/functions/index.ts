@@ -11,7 +11,7 @@ import { replaceCompendiumItems } from "./utilities/replace-compendium-items";
 import { updateSpellLists } from "./utilities/update-spell-lists";
 import { updateAdvancements } from "./utilities/update-advancements";
 import { addFolderToAdvancement } from "./utilities/add-folder-to-advancement";
-import { AdvancementSync } from "../modules/advancement-sync";
+import { AdvancementSync } from "../plugins/advancement-sync";
 
 export class Functions {
     static healTokens = healTokens;

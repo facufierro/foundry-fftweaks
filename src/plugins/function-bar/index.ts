@@ -124,7 +124,7 @@ export class FunctionBar {
 
 
     private static async loadButtons(): Promise<Button[]> {
-        const response = await fetch("modules/fftweaks/src/modules/function-bar/data/button-data.json");
+        const response = await fetch("modules/fftweaks/src/plugins/function-bar/data/button-data.json");
         if (!response.ok) {
             console.error("Failed to fetch button data:", response.statusText);
             return [];

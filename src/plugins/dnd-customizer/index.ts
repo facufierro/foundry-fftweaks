@@ -2,15 +2,15 @@ import { Debug } from "../../utils/debug";
 
 declare const dnd5e: any;
 
-export class DNDCustomizerModule {
+export class DNDCustomizer {
     static pendingDefaults: string[] = [];
     static userListsRegistered = new Set<string>();
     static originalRegister: any;
     static dnd5eDefaults: Set<string>;
 
     static initialize(): void {
-        DNDCustomizerModule.patchSpellListRegistry();
-        Hooks.once("ready", () => DNDCustomizerModule.registerCustomSpellLists());
+        DNDCustomizer.patchSpellListRegistry();
+        Hooks.once("ready", () => DNDCustomizer.registerCustomSpellLists());
     }
 
     static patchSpellListRegistry(): void {
