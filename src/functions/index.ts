@@ -9,6 +9,7 @@ import { distributeExperience } from "./loot/distribute-experience";
 import { lootCorpses } from "./loot/loot-all";
 import { replaceCompendiumItems } from "./utilities/replace-compendium-items";
 import { updateSpellLists } from "./utilities/update-spell-lists";
+import { updateAdvancements } from "./utilities/update-advancements";
 
 export class Functions {
     static healTokens = healTokens;
@@ -22,4 +23,5 @@ export class Functions {
     static lootCorpses = lootCorpses;
     static replaceCompendiumItems = replaceCompendiumItems;
     static updateSpellLists = updateSpellLists;
+    static updateAdvancements = updateAdvancements;
 }
