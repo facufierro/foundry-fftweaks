@@ -1,0 +1,3772 @@
+{
+  "classes": {
+    "_Shared": {
+      "Fighting Style": {
+        "id": "9Me5PL5PRazJNa13",
+        "advancements": [
+          {
+            "id": "FxqoC3Nwg50uVRHZ",
+            "title": "Choose Items",
+            "type": "ItemChoice",
+            "items": [
+              {
+                "name": "Archery",
+                "type": "feat",
+                "uuid": "Compendium.fftweaks.feats.Item.nNCpsEg6H0L2Skyy",
+                "broken": false
+              },
+              {
+                "name": "Defense",
+                "type": "feat",
+                "uuid": "Compendium.fftweaks.feats.Item.DlAoDEyEC0vaNTfj",
+                "broken": false
+              },
+              {
+                "name": "Great Weapon Fighting",
+                "type": "feat",
+                "uuid": "Compendium.fftweaks.feats.Item.lZ05BIZHH1LoEzM3",
+                "broken": false
+              },
+              {
+                "name": "Two-Weapon Fighting",
+                "type": "feat",
+                "uuid": "Compendium.fftweaks.feats.Item.hNuinIt9DeZzQhPy",
+                "broken": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "Artificer": {
+      "id": "Xl5DgJguFnZRIhmu",
+      "advancements": [
+        {
+          "id": "CTmwzlFgOyeE1L6K",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Spellcasting",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.wB5ADHS6pJkl08SJ",
+              "broken": false
+            },
+            {
+              "name": "Tinker's Magic",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.Tf5DJRbr3sq6FXQA",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "lFF3vrpe5gwODNu2",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Replicate Magic Item",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.8nhW4b31cGY9EneL",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "fQFv6Ct8K6Uep8c5",
+          "title": "Grant Items",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Magic Item Tinker",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.nnqOOoNXD0B19hKb",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "pqMmXp8xHyavRlJc",
+          "title": "Grant Items",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Flash of Genius",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.uNWxUqXuKbljc4Qo",
+              "broken": false
+            }
+          ]
+        }
+      ],
+      "subclasses": {
+        "Runesmith": {
+          "id": "UDZaJCCOyE4mNd0k",
+          "advancements": [
+            {
+              "id": "F8WHf8zcdpBCuJoq",
+              "title": "Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Battle Rune",
+                  "type": "feat",
+                  "uuid": "Compendium.fftweaks.classes.Item.BZdTrAmjKWhchV9l",
+                  "broken": false
+                },
+                {
+                  "name": "Runic Inscription",
+                  "type": "feat",
+                  "uuid": "Compendium.fftweaks.classes.Item.b4876hD5ynw0bgOa",
+                  "broken": false
+                },
+                {
+                  "name": "Tools of the Trade",
+                  "type": "feat",
+                  "uuid": "Compendium.fftweaks.classes.Item.74zXppcynB6GXvwc",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "F01J2rzRyhcsa6Pd",
+              "title": "Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Extra Attack",
+                  "type": "feat",
+                  "uuid": "Compendium.fftweaks.classes.Item.nEqJmoVhM5wgvUV5",
+                  "broken": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "Barbarian": {
+      "id": "r9orN3jPbYYxrVkM",
+      "advancements": [
+        {
+          "id": "amez6rlose3eoigo",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Rage",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.se64JztIvl2DUbHc",
+              "broken": false
+            },
+            {
+              "name": "Unarmored Defense",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.HQFMzV9YXYsbugpE",
+              "broken": false
+            },
+            {
+              "name": "Weapon Mastery",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.2eeWW25CCptjvRVy",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "udl318k61boq0rnn",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Danger Sense",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.imsVuus1JLl4E7CE",
+              "broken": false
+            },
+            {
+              "name": "Reckless Attack",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.JeGz1qEK6lyp4jef",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "uoexdq8totskritb",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Extra Attack",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.XogoBnFWmCAHXppo",
+              "broken": false
+            },
+            {
+              "name": "Fast Movement",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.Kl6zifJ5OmdHlOi2",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "w6ceiqibcmzpcuy8",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Feral Instinct",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.NlXslw4yAqmKZWtN",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "ty9si22p6pfwb3ow",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Brutal Critical",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.L94gyvNpUhUe0rwh",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "802xi5l50le3ntk8",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Relentless Rage",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.FqfmbPgxiyrWzhYk",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "g9ut0x1ugm31gbhk",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Persistent Rage",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.l8tUhZ5Pecm9wz7I",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "so18afasiyobkpxy",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Indomitable Might",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.Q1exex5ALteprrPo",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "9hvtrqbg7d7zwg07",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Primal Champion",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.jVU4AgqfrFaqgXns",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "jtYgkKEC5p8dmna3",
+          "title": "Grant Items",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Primal Knowledge",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.Zf6JKx9p63zhr84Q",
+              "broken": false
+            }
+          ]
+        }
+      ],
+      "subclasses": {
+        "Path of the Berserker": {
+          "id": "UtZc23nTol9Ctrfc",
+          "advancements": [
+            {
+              "id": "79o5gdodki55y2s6",
+              "title": "Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Frenzy",
+                  "type": "feat",
+                  "uuid": "Compendium.fftweaks.classes.Item.6zuvl5uU8xAYUqrC",
+                  "broken": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "Bard": {
+      "id": "BB4w1RNuF0r4fQ68",
+      "advancements": [
+        {
+          "id": "MSF1wogSoeJqfxAR",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Bard College",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.ILhzFHiRrqgQ9dFJ",
+              "broken": false
+            },
+            {
+              "name": "Expertise",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.aQLg7BWdRnm4Hr9S",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "I7HqKmtMcat8Dm08",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Font of Inspiration",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.3VDZGs5Ug3hIE322",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "UThCJ6mGUL0XQUb8",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Countercharm",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.SEJmsjkEhdAZ90ki",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "2fX3mtdNC16A1z7S",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Magical Secrets",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.aonJ2YjkqkYB9WYB",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "ZwU2MLhnY219t78q",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Superior Inspiration",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.GBYN5rH4nh1ocRlY",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "e0FUZL9SxuBimLv3",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Bardic Inspiration",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.QQ0RU2ieTNZrVUOL",
+              "broken": false
+            },
+            {
+              "name": "Spellcasting",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.mdSYsGr5pYuhEHWe",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "XfjcpKcLiSJmzQau",
+          "title": "Grant Items",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Acid Splash",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.uJk16M950x4zMwwt",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Class": {
+      "id": "S9RVabOdGtLOOr7w",
+      "advancements": []
+    },
+    "Cleric": {
+      "id": "CN36rig6kPJu9nFb",
+      "advancements": [
+        {
+          "id": "axeH6FmdvAfb3TnK",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Spellcasting",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.TXKylwBcL7VXtj4D",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "PwcMUZPMhGxn6JnJ",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Destroy Undead",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.NMy4piwXIpLjYbRE",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "RAGsl9ESVLpLfX5u",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Divine Intervention",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.eVXqHn0ojWrEuYGU",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "V8GfnoZYTe1PLXPI",
+          "title": "Divine Order Choice",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Divine Order: Protector",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.7SdFl1n1oLLhE85d",
+              "broken": false
+            },
+            {
+              "name": "Divine Order: Thaumaturge",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.2tcBaG1qsC33BGhq",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "Rt2N9iG9DSuUTFQV",
+          "title": "Cantrips",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Guidance",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.o5w91cCFb7SaBa8N",
+              "broken": false
+            },
+            {
+              "name": "Light",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.QGhhEGhnRTYqWRze",
+              "broken": false
+            },
+            {
+              "name": "Mending",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.JSa30fHWkqtDeYhD",
+              "broken": false
+            },
+            {
+              "name": "Resistance",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.fBX6yYE5KfKxc8aH",
+              "broken": false
+            },
+            {
+              "name": "Sacred Flame",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.Qqnoz2hC2zuYZEdE",
+              "broken": false
+            },
+            {
+              "name": "Spare the Dying",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.7lg9N3HXAVq690rI",
+              "broken": false
+            },
+            {
+              "name": "Thaumaturgy",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.2LUgNfjoHJDOazz4",
+              "broken": false
+            },
+            {
+              "name": "Toll the Dead",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.jMRTXzgSZYedJNFd",
+              "broken": false
+            },
+            {
+              "name": "Word of Radiance",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.aFxvqKIzMgRnmBA7",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "XuJRyyvsGnXJ36SN",
+          "title": "1st Level Spells",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.ORpzMpMBUngh01qc",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.GCV8eQhE6HhMxzbI",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.JIPM6OXknAth0Fy6",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.Zpn3exchyj4VwGWm",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.sUyHPV2LBmQN1rbA",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.2V1LBCJNy7tNhpsX",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.OjfCganIwznrQsvX",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.f64ET1iYiCSO67f9",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.3R7CUBuSg4PqAOv3",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.kt066OdZkPH6OSTi",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.gH4CHVa384Zili9z",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.HI4QYb0bm0binwRA",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.tWia45dMCXW58ymA",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.RX9U9aFJvInxtDs4",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.COrlCPEzV9ZJ7sXn",
+              "broken": true
+            }
+          ]
+        },
+        {
+          "id": "5oDfiGTcqZr0wehg",
+          "title": "2nd Level Spells",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Aid",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.g8nCTLSTTNejjgfV",
+              "broken": false
+            },
+            {
+              "name": "Augury",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.L0zs8dV0duH9bjWg",
+              "broken": false
+            },
+            {
+              "name": "Blindness/Deafness",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.GxBG8iKSRaVjwTlC",
+              "broken": false
+            },
+            {
+              "name": "Calm Emotions",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.bav71eqelULyD4CO",
+              "broken": false
+            },
+            {
+              "name": "Continual Flame",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.OLvqxJNJvUvN4SHd",
+              "broken": false
+            },
+            {
+              "name": "Enhance Ability",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.hhXfRChqfvKJOjIq",
+              "broken": false
+            },
+            {
+              "name": "Find Traps",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.amk0RPAJiATduQLs",
+              "broken": false
+            },
+            {
+              "name": "Gentle Repose",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.TvNUtag4UKXZpiPA",
+              "broken": false
+            },
+            {
+              "name": "Hold Person",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.2fVrEW6CJ0U0oZKu",
+              "broken": false
+            },
+            {
+              "name": "Lesser Restoration",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.gj54zDWgZvy2U4gS",
+              "broken": false
+            },
+            {
+              "name": "Locate Object",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.ly80j4LolHFtxzj1",
+              "broken": false
+            },
+            {
+              "name": "Prayer of Healing",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.R9CtqyjlzpNYb99x",
+              "broken": false
+            },
+            {
+              "name": "Protection from Poison",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.h9bGlvSRu50DcZbx",
+              "broken": false
+            },
+            {
+              "name": "Silence",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.pSMIxkF4VEi9qFTu",
+              "broken": false
+            },
+            {
+              "name": "Spiritual Weapon",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.owzbmS7t2lbQ00ZT",
+              "broken": false
+            },
+            {
+              "name": "Warding Bond",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.7XAEJxeklnAL0d8B",
+              "broken": false
+            },
+            {
+              "name": "Zone of Truth",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.RD7V2qmEUSZ3jO0g",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Druid": {
+      "id": "hGLzRfiAb1sHMmVG",
+      "advancements": [
+        {
+          "id": "pkkBT3JrxyLuTmwm",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Druidic",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.5GaZMqk0in9AUMVJ",
+              "broken": false
+            },
+            {
+              "name": "Primal Order",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.sPb6eEgQHmnoi4BA",
+              "broken": false
+            },
+            {
+              "name": "Spellcasting",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.D5hLiNhr9UOfiJUS",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "IRKvBsuqs6C3ktQu",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Beast Spells",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.xvgPu1O57DgXCM86",
+              "broken": false
+            },
+            {
+              "name": "Timeless Body",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.cVDEQo0ow1WJT7Wl",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "UpHHo8cfTCVk92Th",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Archdruid",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.ip4bvmGoz3qkoqes",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "hqFHDOxndUxPju31",
+          "title": "Primal Order",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Magician",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.edjsnjhtfdsXbb4y",
+              "broken": false
+            },
+            {
+              "name": "Warden",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.NzlxSaaLMx5MOi38",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "SpGvDfOabbJrOR3K",
+          "title": "Druidic Spells",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Speak with Animals",
+              "type": "spell",
+              "uuid": "Compendium.dnd5e.spells24.Item.phbsplSpeakwithA",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "hmO24ovOBpmXAb4U",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Wild Companion",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbdrdWildCompan",
+              "broken": false
+            },
+            {
+              "name": "Wild Shape",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbdrdWildShape0",
+              "broken": false
+            }
+          ]
+        }
+      ],
+      "subclasses": {
+        "Circle of the Moon": {
+          "id": "22rKnBbf8dGQOg8N",
+          "advancements": [
+            {
+              "id": "e4gAPpou0jFQbZlX",
+              "title": "Spells",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "[BROKEN]",
+                  "type": "unknown",
+                  "uuid": "Compendium.fftweaks.spells.Item.sUyHPV2LBmQN1rbA",
+                  "broken": true
+                },
+                {
+                  "name": "Moonbeam",
+                  "type": "spell",
+                  "uuid": "Compendium.fftweaks.spells.Item.gpLO3cDMBqbq93bf",
+                  "broken": false
+                },
+                {
+                  "name": "Starry Wisp",
+                  "type": "spell",
+                  "uuid": "Compendium.fftweaks.spells.Item.7On7Eb95TnLVkOPj",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "Kw2TXQluBVXcPrzg",
+              "title": "Grant Items",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "[BROKEN]",
+                  "type": "unknown",
+                  "uuid": "Compendium.fftweaks.classes.Item.8EZB4ENMsDj0zc0b",
+                  "broken": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "Fighter": {
+      "id": "1ytyYJvC5CMBIz3K",
+      "advancements": [
+        {
+          "id": "PwWJCRoUIftcpy47",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Fighting Style",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.9Me5PL5PRazJNa13",
+              "broken": false
+            },
+            {
+              "name": "Second Wind",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.E6Lcs4Hgo71JJmBI",
+              "broken": false
+            },
+            {
+              "name": "Weapon Mastery",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.zMKRIulku4ZT66yf",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "pxHWfZrwT5tdCH61",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.character-creation.Item.VES6NHASqs2Azbdh",
+              "broken": true
+            },
+            {
+              "name": "Action Surge",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.xF1VTcJ3AdkbTsdQ",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "1UqvFqvQRr0Mzk3K",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Extra Attack",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.q9g1MLXuLZyxjQMg",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "hu99eLBFUHiOOKdl",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Indomitable",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.653ZHbNcmm7ZGXbw",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Monk": {
+      "id": "mHeiw5hZP3011csf",
+      "advancements": [
+        {
+          "id": "n0q8XyiGA3vLPgpK",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Martial Arts",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.l50hjTxO2r0iecKw",
+              "broken": false
+            },
+            {
+              "name": "Unarmed Strike",
+              "type": "weapon",
+              "uuid": "Compendium.dnd5e.classfeatures.eGxoNmSMWKNzChCO",
+              "broken": false
+            },
+            {
+              "name": "Unarmored Defense",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.UAvV7N7T4zJhxdfI",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "7TyDqpGGi3r3nsp0",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Flurry of Blows",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.5MwNlVZK7m6VolOH",
+              "broken": false
+            },
+            {
+              "name": "Ki",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.10b6z2W1txNkrGP7",
+              "broken": false
+            },
+            {
+              "name": "Patient Defense",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.TDglPcxIVEzvVSgK",
+              "broken": false
+            },
+            {
+              "name": "Step of the Wind",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.yrSFIGTaQOH2PFRI",
+              "broken": false
+            },
+            {
+              "name": "Unarmored Movement",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.zCeqyQ8uIPNdYJSW",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "2sLHTw6k15DSW8WB",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Deflect Missiles",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.mzweVbnsJPQiVkAe",
+              "broken": false
+            },
+            {
+              "name": "Monastic Tradition",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.rtpQdX77dYWbDIOH",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "Zc1jOZK1b9mIKekq",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Slow Fall",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.KQz9bqxVkXjDl8gK",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "j9LeWmxlsENKaMLo",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Extra Attack",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.XogoBnFWmCAHXppo",
+              "broken": false
+            },
+            {
+              "name": "Stunning Strike",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.pvRc6GAu1ok6zihC",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "psobDjMqtA2216Db",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Ki-Empowered Strikes",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.7flZKruSSu6dHg6D",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "K38aFaEMxMqRB0BC",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Evasion",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.a4P4DNMmH8CqSNkC",
+              "broken": false
+            },
+            {
+              "name": "Stillness of Mind",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.ZmC31XKS4YNENnoc",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "eLqmJotmwzlGNrxG",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Purity of Body",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.bqWA7t9pDELbNRkp",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "N0geIQiuofqYgswj",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Tongue of the Sun and Moon",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.XjuGBeB8Y0C3A5D4",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "N1hjizyI82UPp8UI",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Diamond Soul",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.7D2EkLdISwShEDlN",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "TcLZS9WzC7bPETSd",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Timeless Body",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.gDH8PMrKvLHaNmEI",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "tRb3a0tA5IpehPs8",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Empty Body",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.3jwFt3hSqDswBlOH",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "sEQz9c9XhWYjS9x5",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Perfect Self",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.mQNPg89YIs7g5tG4",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Paladin": {
+      "id": "zCJV3xHqxAKGuIrl",
+      "advancements": [
+        {
+          "id": "HL6Kwpmrsz5yqmBK",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.character-creation.Item.5ogTZWGPmW18eo2F",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.character-creation.Item.JK4GYsjYzO9THaf0",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.character-creation.Item.jWtlSXs8CmLYKvRC",
+              "broken": true
+            }
+          ]
+        },
+        {
+          "id": "RwqEtAP5aJqHIW5J",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Divine Smite",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.ySMPQ6zNSlvkrl2f",
+              "broken": false
+            },
+            {
+              "name": "Fighting Style",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.Ho7dVxBlOYFlfBHk",
+              "broken": false
+            },
+            {
+              "name": "Spellcasting",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.ihoQHsmVZlyDbPhX",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "ki8eEksoSjfOHDcF",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Channel Divinity",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.8M7uOPhbTxoxxJSo",
+              "broken": false
+            },
+            {
+              "name": "Divine Health",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.dY9yrqkyEDuF0CG2",
+              "broken": false
+            },
+            {
+              "name": "Sacred Oath",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.olAqNsUTIef9x8xC",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "WaoJQunO9O2pdC1g",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Extra Attack",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.XogoBnFWmCAHXppo",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "Gs5c5ciErsG3NDyW",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Aura of Protection",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.carGDhkIdoduTC0I",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "teLWeatpgzXs5uCc",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Aura of Courage",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.nahSkBO6LH4HkpaT",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "BWhYgjLNVypoHyqZ",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Improved Divine Smite",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.FAk41RPCTcvCk6KI",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "63s9ja0RR4UkfHCN",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Cleansing Touch",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.U7BIPVPsptBmwsnV",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "GPzUDRFo5bfrhU1K",
+          "title": "Fighting Style",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Defense",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.zSlV0O2rQMdoq6pB",
+              "broken": false
+            },
+            {
+              "name": "Dueling",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.hCop9uJrWhF1QPb4",
+              "broken": false
+            },
+            {
+              "name": "Great Weapon Fighting",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.3Nc6u9pyStByuJsm",
+              "broken": false
+            },
+            {
+              "name": "Protection",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.06NVMYf58Z76O85O",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Ranger": {
+      "id": "BsLiCPVKy3F8ewtf",
+      "advancements": [
+        {
+          "id": "R77BAIzMfcPq0urg",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Favored Enemy",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.tjllJ3IH8DpLSQAO",
+              "broken": false
+            },
+            {
+              "name": "Spellcasting",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.OmhxIK3esut8UcPu",
+              "broken": false
+            },
+            {
+              "name": "Weapon Mastery",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.UmZt8SzWDgcAuZ2q",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "DOENALOWWjAUHzb7",
+          "title": "Favored Enemy",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Hunter's Mark (Ranger)",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.classes.Item.6iUcPPern2YQb6oV",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "0XJhkNDTm9P3K5n3",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Deft Explorer",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.BdMkP9rEkCI1OtIk",
+              "broken": false
+            },
+            {
+              "name": "Fighting Style",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.WXNaIbuXTWRT2VfG",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "AtKKnCoTLBqSxhCh",
+          "title": "Fighting Style",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Archery",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.nNCpsEg6H0L2Skyy",
+              "broken": false
+            },
+            {
+              "name": "Defense",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.DlAoDEyEC0vaNTfj",
+              "broken": false
+            },
+            {
+              "name": "Druidic Warrior",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.ER5fhkUGzDKTOd89",
+              "broken": false
+            },
+            {
+              "name": "Great Weapon Fighting",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.lZ05BIZHH1LoEzM3",
+              "broken": false
+            },
+            {
+              "name": "Two-Weapon Fighting",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.hNuinIt9DeZzQhPy",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "onoWzEIWhrrG4QJt",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Extra Attack",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbrgrExtraAttac",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "fEmkkyi2Z6qGfYOZ",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Roving",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbrgrRoving0000",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "fy2LFc8UC9PTq4aF",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Expertise",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbrgrExpertise0",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "tfv4CeK2F4fdZMMi",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Tireless",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbrgrTireless00",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "yMKZmo7nE6oSFMD0",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Relentless Hunter",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbrgrRelentless",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "zurYQjBBNQW92SAz",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Nature's Veil",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbrgrNaturesVei",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "c3CqyzFeTFA5Yq8u",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Precise Hunter",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbrgrPreciseHun",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "e1EWIvBos04kIm4n",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Feral Senses",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbrgrFeralSense",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "ztJJ72qlk8az3gtf",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Epic Boon",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbrgrEpicBoon00",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "bCHYpBUX4qHrGIwU",
+          "title": "Epic Boon",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofEnergyR",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofFortitu",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofRecover",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofSkill00",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofSpeed00",
+              "broken": true
+            },
+            {
+              "name": "Boon of Combat Prowess",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofCombatP",
+              "broken": false
+            },
+            {
+              "name": "Boon of Dimensional Travel",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofDimensi",
+              "broken": false
+            },
+            {
+              "name": "Boon of Fate",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofFate000",
+              "broken": false
+            },
+            {
+              "name": "Boon of Irresistible Offense",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofIrresis",
+              "broken": false
+            },
+            {
+              "name": "Boon of Spell Recall",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofSpellRe",
+              "broken": false
+            },
+            {
+              "name": "Boon of the Night Spirit",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonoftheNigh",
+              "broken": false
+            },
+            {
+              "name": "Boon of Truesight",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.feats24.Item.phbBoonofTruesig",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "M9VOxnHqo0qYtwGb",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Foe Slayer",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbrgrFoeSlayer0",
+              "broken": false
+            }
+          ]
+        }
+      ],
+      "subclasses": {
+        "Hunter": {
+          "id": "SW2xA1iF8URFqLHv",
+          "advancements": [
+            {
+              "id": "wacj6x75L5ZaZUky",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Hunter's Lore",
+                  "type": "feat",
+                  "uuid": "Compendium.fftweaks.classes.Item.EnoFrig8i2rpmF5c",
+                  "broken": false
+                },
+                {
+                  "name": "Hunter's Prey",
+                  "type": "feat",
+                  "uuid": "Compendium.fftweaks.classes.Item.QYWZifbVfRplFwSg",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "4nA7C6uQhBJBtWdS",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Defensive Tactics",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbrgrDefensiveT",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "gBE1JZA0jf6dglQu",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Superior Hunter's Prey",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbrgrSuperiorHu",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "1P4RbYyrzFoutFrj",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Superior Hunter's Defense",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbrgrSuperiorDe",
+                  "broken": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "Rogue": {
+      "id": "kLeRWvgpzlFasjMx",
+      "advancements": [
+        {
+          "id": "5crdJzGJRQIVhbyr",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Cunning Action",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.01pcLg6PRu5zGrsb",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "PvQXh3OhvuLhjVoo",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Uncanny Dodge",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.Mm64SKAHJWYecgXS",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "X8G2PrPxOrfWQevi",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Evasion",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.a4P4DNMmH8CqSNkC",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "MqV3BlQkAZycZ4Ue",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Reliable Talent",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.YN9xm6MCvse4Y60u",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "sI4nacIwT4B8Y7mb",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Blindsense",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.fjsBk7zxoAbLf8ZI",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "mugszpD8eVZ2jybU",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Slippery Mind",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.V4pwFxlwHtNeB4w9",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "EOVFTUpweDErdpSz",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Elusive",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.L7nJSRosos8sHJH9",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "GVuwdOHDEDfQX9cl",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Stroke of Luck",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.rQhWDaMHMn7iU4f2",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "rJBruqYZaUACSbcx",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Expertise",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.yFlrSseG1cRM7M5E",
+              "broken": false
+            },
+            {
+              "name": "Sneak Attack",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.1IGkVK4ufFvEtYjl",
+              "broken": false
+            },
+            {
+              "name": "Thieves' Cant",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.WmZi5FBRAp2Jid2D",
+              "broken": false
+            },
+            {
+              "name": "Weapon Mastery",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.JBch3Cda5ZMjbFNo",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "fRBtvgNor4Nmiq4g",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Steady Aim",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.HIz3ThQ0FnQbkXgZ",
+              "broken": false
+            }
+          ]
+        }
+      ],
+      "subclasses": {
+        "Thief": {
+          "id": "QAa0pH1JWQ1r0j3k",
+          "advancements": [
+            {
+              "id": "q1y2nsk2voi9hift",
+              "title": "Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Fast Hands",
+                  "type": "feat",
+                  "uuid": "Compendium.fftweaks.classes.Item.vvEUWMNPiNpCKCfi",
+                  "broken": false
+                },
+                {
+                  "name": "Second-Story Work",
+                  "type": "feat",
+                  "uuid": "Compendium.fftweaks.classes.Item.B8jUXLNwcNJYe24T",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "mn1phw6y8csnul2f",
+              "title": "Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Supreme Sneak",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classfeatures.Ei1Oh4UAA2E30jcD",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "5zutrvrhem8ygscb",
+              "title": "Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Use Magic Device",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classfeatures.NqWyHE7Rpw9lyKWu",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "8r4g78wm6s2k9jwo",
+              "title": "Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Thief's Reflexes",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classfeatures.LhRm1EeUMvp2EWhV",
+                  "broken": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "Sorcerer": {
+      "id": "2sGamTVNkdRliPPF",
+      "advancements": [
+        {
+          "id": "tHGuZb6Cezr0Yda6",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Sorcerous Origins",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.cmRCL9T9UgRYOj1c",
+              "broken": false
+            },
+            {
+              "name": "Spellcasting",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.oygRF3ZjTv2T7z0Y",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "vEbnPhd3OW2Z5RH8",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Font of Magic",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.LBKChJY5n02Afhnq",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "7MYEF9Ci5OaEWaQ7",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Metamagic",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.9Uh7uTDNZ04oTJsL",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "7FUhVIQtDqVQxUCJ",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Sorcerous Restoration",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.F2lEKSmOY0NUruzY",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "JvnMksZAolGhHMVS",
+          "title": "Metamagic",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Careful Spell",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.zElYrOcCFFMhB6Xl",
+              "broken": false
+            },
+            {
+              "name": "Distant Spell",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.DZpAa3LzMNBexbmX",
+              "broken": false
+            },
+            {
+              "name": "Empowered Spell",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.IWpe0Y9uAStHGiH1",
+              "broken": false
+            },
+            {
+              "name": "Extended Spell",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.tQxlKyAx9sgPrbgj",
+              "broken": false
+            },
+            {
+              "name": "Heightened Spell",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.tNG2qi9zhmXEkecA",
+              "broken": false
+            },
+            {
+              "name": "Quickened Spell",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.nViGf6bZ6DQAJhkw",
+              "broken": false
+            },
+            {
+              "name": "Subtle Spell",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.fXa0DMhoVLtbBu9l",
+              "broken": false
+            },
+            {
+              "name": "Twinned Spell",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.Qb391hakCfmH4w8p",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Warlock": {
+      "id": "akud3yI06v5kZa0g",
+      "advancements": [
+        {
+          "id": "uyk0EVG0tcXKHKr3",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Eldritch Invocations",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.qTiX9CLHonxUhWVV",
+              "broken": false
+            },
+            {
+              "name": "Pact Magic",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.iwzT6WTuf6vrsBB3",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "bkQ3V55QYINQjyNc",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Magical Cunning",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.QugvOrGarvnRJVai",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "IoMXlLFzoR7ehPDs",
+          "title": "Eldritch Invocations",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Agonizing Blast",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.lMVQCvYW5VjUznKi",
+              "broken": false
+            },
+            {
+              "name": "Misty Visions",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.ojqrdZoiVpnryDaD",
+              "broken": false
+            },
+            {
+              "name": "Pact of the Blade",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.RzeH0dtIjqNzwzkL",
+              "broken": false
+            },
+            {
+              "name": "Pact of the Chain",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.nVKJlAZeWmbasYZO",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "HEhW2xUlc48EnRu1",
+          "title": "Cantrips",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Blade Ward",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.SdCA9ZIltBktZlZR",
+              "broken": false
+            },
+            {
+              "name": "Chill Touch",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.A8cjK7fMMCXrh7Ob",
+              "broken": false
+            },
+            {
+              "name": "Eldritch Blast",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.4zFkMvoNe2CDJ82N",
+              "broken": false
+            },
+            {
+              "name": "Friends",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.1V6jDINXqQLD7afl",
+              "broken": false
+            },
+            {
+              "name": "Mage Hand",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.uvyk3UMiUvP7t5Tt",
+              "broken": false
+            },
+            {
+              "name": "Mind Sliver",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.Wp0trMb1eJMZpyV0",
+              "broken": false
+            },
+            {
+              "name": "Minor Illusion",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.SK7Qr00cv92UgHgH",
+              "broken": false
+            },
+            {
+              "name": "Poison Spray",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.evKdv7AQ5cQ8hZjV",
+              "broken": false
+            },
+            {
+              "name": "Prestidigitation",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.s367zTFciFIksXmD",
+              "broken": false
+            },
+            {
+              "name": "Thunderclap",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.BHwqY8ylBJfVkMr7",
+              "broken": false
+            },
+            {
+              "name": "Toll the Dead",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.jMRTXzgSZYedJNFd",
+              "broken": false
+            },
+            {
+              "name": "True Strike",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.WXWKYQpKPxXwggLl",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "At0rb7D2fN6Uzt5h",
+          "title": "Spells",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.mGEkYqytOBvZDlzX",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.ORpzMpMBUngh01qc",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.sGhpKB3FcCnjRGwX",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.jJFIylF38lKJTjoY",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.OjfCganIwznrQsvX",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.nVCNpHlAdkem29dB",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.7GLnQ24JPTefK8OL",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.cKZmzcqbz2C5dctm",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.jI0w3qXXQfpxN3x6",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.HI4QYb0bm0binwRA",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.yqDvzX5Oe6p8wBfr",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.N48xAuUqkChpKfBY",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.XTMVo5A0cOFt2pTw",
+              "broken": true
+            },
+            {
+              "name": "Armor of Agathys",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.h8dR8jmndspIjMQz",
+              "broken": false
+            },
+            {
+              "name": "Arms of Hadar",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.zm9qGGqVWUlQkwDz",
+              "broken": false
+            },
+            {
+              "name": "Cloud of Daggers",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.flOM6MP93BGWpXRR",
+              "broken": false
+            },
+            {
+              "name": "Crown of Madness",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.GPr3FAamynR8e8LK",
+              "broken": false
+            },
+            {
+              "name": "Darkness",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.RMB9cchieM14zD81",
+              "broken": false
+            },
+            {
+              "name": "Enthrall",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.FUem4jUnKXn6VVgz",
+              "broken": false
+            },
+            {
+              "name": "Hold Person",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.2fVrEW6CJ0U0oZKu",
+              "broken": false
+            },
+            {
+              "name": "Invisibility",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.OQwIRgxp9fh3hpjh",
+              "broken": false
+            },
+            {
+              "name": "Mind Spike",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.7D6dzrTMT6HuFp5f",
+              "broken": false
+            },
+            {
+              "name": "Mirror Image",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.GyLlL1odcIhnT7di",
+              "broken": false
+            },
+            {
+              "name": "Misty Step",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.ylBOCVgYmqpg5mYw",
+              "broken": false
+            },
+            {
+              "name": "Ray of Enfeeblement",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.9tfzrQkJ2ZNRXd4J",
+              "broken": false
+            },
+            {
+              "name": "Spider Climb",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.siUzFbWNbolzEtr3",
+              "broken": false
+            },
+            {
+              "name": "Suggestion",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.Xa0ZNacV3eM2oJWY",
+              "broken": false
+            },
+            {
+              "name": "Tasha's Hideous Laughter",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.OpAnwUuvp2U3kmKy",
+              "broken": false
+            },
+            {
+              "name": "Witch Bolt",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.oAKm3xiE95Jf8vXc",
+              "broken": false
+            }
+          ]
+        }
+      ],
+      "subclasses": {
+        "Fiend Patron": {
+          "id": "oBv9JF5nalpu7Jbq",
+          "advancements": [
+            {
+              "id": "GC6PIWmhybpiZDNl",
+              "title": "Spells",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "[BROKEN]",
+                  "type": "unknown",
+                  "uuid": "Compendium.fftweaks.spells.Item.sbMBuKsid2uG6wXe",
+                  "broken": true
+                },
+                {
+                  "name": "[BROKEN]",
+                  "type": "unknown",
+                  "uuid": "Compendium.fftweaks.spells.Item.JIPM6OXknAth0Fy6",
+                  "broken": true
+                },
+                {
+                  "name": "Scorching Ray",
+                  "type": "spell",
+                  "uuid": "Compendium.fftweaks.spells.Item.OeqHuwBewJt9t59S",
+                  "broken": false
+                },
+                {
+                  "name": "Suggestion",
+                  "type": "spell",
+                  "uuid": "Compendium.fftweaks.spells.Item.Xa0ZNacV3eM2oJWY",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "cT2SoKHgl1Z0M4du",
+              "title": "Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Dark One's Blessing",
+                  "type": "feat",
+                  "uuid": "Compendium.fftweaks.classes.Item.bho58yysM2fHpeiM",
+                  "broken": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "Wizard": {
+      "id": "ymNXTrcVMRgQbqrq",
+      "advancements": [
+        {
+          "id": "0jnLhoNlk5qFB4QM",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Spell Mastery",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.JfFfHTeIszx1hNRx",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "ftN4NxMNvbBwYA0p",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Signature Spells",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classfeatures.nUrZDi6QN1YjwAr6",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "JTCSb4dfm8Auy6WD",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Scholar",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbwzdScholar000",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "2whBHO3s8fBYBEWi",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Arcane Recovery",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbwzdArcaneReco",
+              "broken": false
+            },
+            {
+              "name": "Ritual Adept",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbwzdRitualAdep",
+              "broken": false
+            },
+            {
+              "name": "Spellcasting",
+              "type": "feat",
+              "uuid": "Compendium.dnd5e.classes24.Item.phbwzdSpellcasti",
+              "broken": false
+            }
+          ]
+        }
+      ],
+      "subclasses": {
+        "Evoker": {
+          "id": "YuL9gmh2AZiXjFiH",
+          "advancements": [
+            {
+              "id": "NElqwo5qeP2KjewN",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Evocation Savant",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbwzdEvocationS",
+                  "broken": false
+                },
+                {
+                  "name": "Potent Cantrip",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbwzdPotentCant",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "MnGUHDUfl1pqbwJK",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Sculpt Spells",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbwzdSculptSpel",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "vyrvNKiCAYyJcR9l",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Empowered Evocation",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbwzdEmpoweredE",
+                  "broken": false
+                }
+              ]
+            },
+            {
+              "id": "GeBj8GgEaEGUkxxL",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Overchannel",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbwzdOverchanne",
+                  "broken": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "backgrounds": {
+    "Acolyte": {
+      "id": "ZyQQmnjMZiSxusJz",
+      "advancements": []
+    },
+    "Clan Crafter": {
+      "id": "4FfoDHkDJAxPlk7B",
+      "advancements": []
+    },
+    "Criminal": {
+      "id": "FrBoqZKlYKNl258N",
+      "advancements": [
+        {
+          "id": "OB15kzA8nYocaq5U",
+          "title": "Origin Feat",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Alert",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.gu4tVdRMgT58DVoD",
+              "broken": false
+            },
+            {
+              "name": "Crafter",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.5YDBilIF0bvw03hA",
+              "broken": false
+            },
+            {
+              "name": "Healer",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.7KR8Q301c3CJPqhv",
+              "broken": false
+            },
+            {
+              "name": "Lucky",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.pJHRYOmzXPBNepw4",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Cleric)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.hylc6ylh3M9kmXdj",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Druid)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.1ypMnrJ4oTOwgt44",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Wizard)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.Uc4jj9CWXoJSZqTJ",
+              "broken": false
+            },
+            {
+              "name": "Musician",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.YutMezEUbvGA3RfQ",
+              "broken": false
+            },
+            {
+              "name": "Savage Attacker",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.my7orZ9gTDSX3fIC",
+              "broken": false
+            },
+            {
+              "name": "Skilled",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.tYRUWnislD7E7LuZ",
+              "broken": false
+            },
+            {
+              "name": "Tavern Brawler",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.DOuX2nPPxt1f4Vpr",
+              "broken": false
+            },
+            {
+              "name": "Tough",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.FmzMr9VwAwYQ1dyC",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Enterteiner": {
+      "id": "Ztsg3nyRggYi8uTV",
+      "advancements": [
+        {
+          "id": "OB15kzA8nYocaq5U",
+          "title": "Origin Feat",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Alert",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.gu4tVdRMgT58DVoD",
+              "broken": false
+            },
+            {
+              "name": "Crafter",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.5YDBilIF0bvw03hA",
+              "broken": false
+            },
+            {
+              "name": "Healer",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.7KR8Q301c3CJPqhv",
+              "broken": false
+            },
+            {
+              "name": "Lucky",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.pJHRYOmzXPBNepw4",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Cleric)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.hylc6ylh3M9kmXdj",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Druid)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.1ypMnrJ4oTOwgt44",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Wizard)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.Uc4jj9CWXoJSZqTJ",
+              "broken": false
+            },
+            {
+              "name": "Musician",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.YutMezEUbvGA3RfQ",
+              "broken": false
+            },
+            {
+              "name": "Savage Attacker",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.my7orZ9gTDSX3fIC",
+              "broken": false
+            },
+            {
+              "name": "Skilled",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.tYRUWnislD7E7LuZ",
+              "broken": false
+            },
+            {
+              "name": "Tavern Brawler",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.DOuX2nPPxt1f4Vpr",
+              "broken": false
+            },
+            {
+              "name": "Tough",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.FmzMr9VwAwYQ1dyC",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Gladiator": {
+      "id": "Lauq5xEFtcjKvWYe",
+      "advancements": [
+        {
+          "id": "OB15kzA8nYocaq5U",
+          "title": "Origin Feat",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Alert",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.gu4tVdRMgT58DVoD",
+              "broken": false
+            },
+            {
+              "name": "Crafter",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.5YDBilIF0bvw03hA",
+              "broken": false
+            },
+            {
+              "name": "Healer",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.7KR8Q301c3CJPqhv",
+              "broken": false
+            },
+            {
+              "name": "Lucky",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.pJHRYOmzXPBNepw4",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Cleric)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.hylc6ylh3M9kmXdj",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Druid)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.1ypMnrJ4oTOwgt44",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Wizard)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.Uc4jj9CWXoJSZqTJ",
+              "broken": false
+            },
+            {
+              "name": "Musician",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.YutMezEUbvGA3RfQ",
+              "broken": false
+            },
+            {
+              "name": "Savage Attacker",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.my7orZ9gTDSX3fIC",
+              "broken": false
+            },
+            {
+              "name": "Skilled",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.tYRUWnislD7E7LuZ",
+              "broken": false
+            },
+            {
+              "name": "Tavern Brawler",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.DOuX2nPPxt1f4Vpr",
+              "broken": false
+            },
+            {
+              "name": "Tough",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.FmzMr9VwAwYQ1dyC",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Guide": {
+      "id": "xYVAonXwAm6f2pLZ",
+      "advancements": [
+        {
+          "id": "OB15kzA8nYocaq5U",
+          "title": "Origin Feat",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Alert",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.gu4tVdRMgT58DVoD",
+              "broken": false
+            },
+            {
+              "name": "Crafter",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.5YDBilIF0bvw03hA",
+              "broken": false
+            },
+            {
+              "name": "Healer",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.7KR8Q301c3CJPqhv",
+              "broken": false
+            },
+            {
+              "name": "Lucky",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.pJHRYOmzXPBNepw4",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Cleric)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.hylc6ylh3M9kmXdj",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Druid)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.1ypMnrJ4oTOwgt44",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Wizard)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.Uc4jj9CWXoJSZqTJ",
+              "broken": false
+            },
+            {
+              "name": "Musician",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.YutMezEUbvGA3RfQ",
+              "broken": false
+            },
+            {
+              "name": "Savage Attacker",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.my7orZ9gTDSX3fIC",
+              "broken": false
+            },
+            {
+              "name": "Skilled",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.tYRUWnislD7E7LuZ",
+              "broken": false
+            },
+            {
+              "name": "Tavern Brawler",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.DOuX2nPPxt1f4Vpr",
+              "broken": false
+            },
+            {
+              "name": "Tough",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.FmzMr9VwAwYQ1dyC",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Outlander": {
+      "id": "BbbyBfQPJuMkLhhL",
+      "advancements": [
+        {
+          "id": "OB15kzA8nYocaq5U",
+          "title": "Feat",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.feats.Item.7xvd43EcUacSYIBt",
+              "broken": true
+            },
+            {
+              "name": "Alert",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.gu4tVdRMgT58DVoD",
+              "broken": false
+            },
+            {
+              "name": "Crafter",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.5YDBilIF0bvw03hA",
+              "broken": false
+            },
+            {
+              "name": "Healer",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.7KR8Q301c3CJPqhv",
+              "broken": false
+            },
+            {
+              "name": "Lucky",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.pJHRYOmzXPBNepw4",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Cleric)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.hylc6ylh3M9kmXdj",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Druid)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.1ypMnrJ4oTOwgt44",
+              "broken": false
+            },
+            {
+              "name": "Musician",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.YutMezEUbvGA3RfQ",
+              "broken": false
+            },
+            {
+              "name": "Savage Attacker",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.my7orZ9gTDSX3fIC",
+              "broken": false
+            },
+            {
+              "name": "Skilled",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.tYRUWnislD7E7LuZ",
+              "broken": false
+            },
+            {
+              "name": "Tavern Brawler",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.DOuX2nPPxt1f4Vpr",
+              "broken": false
+            },
+            {
+              "name": "Tough",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.FmzMr9VwAwYQ1dyC",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Sage": {
+      "id": "YeFSUwmlTYQNDTaQ",
+      "advancements": [
+        {
+          "id": "OB15kzA8nYocaq5U",
+          "title": "Feat",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Alert",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.gu4tVdRMgT58DVoD",
+              "broken": false
+            },
+            {
+              "name": "Crafter",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.5YDBilIF0bvw03hA",
+              "broken": false
+            },
+            {
+              "name": "Healer",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.7KR8Q301c3CJPqhv",
+              "broken": false
+            },
+            {
+              "name": "Lucky",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.pJHRYOmzXPBNepw4",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Cleric)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.hylc6ylh3M9kmXdj",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Druid)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.1ypMnrJ4oTOwgt44",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Wizard)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.Uc4jj9CWXoJSZqTJ",
+              "broken": false
+            },
+            {
+              "name": "Musician",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.YutMezEUbvGA3RfQ",
+              "broken": false
+            },
+            {
+              "name": "Savage Attacker",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.my7orZ9gTDSX3fIC",
+              "broken": false
+            },
+            {
+              "name": "Skilled",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.tYRUWnislD7E7LuZ",
+              "broken": false
+            },
+            {
+              "name": "Tavern Brawler",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.DOuX2nPPxt1f4Vpr",
+              "broken": false
+            },
+            {
+              "name": "Tough",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.FmzMr9VwAwYQ1dyC",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Soldier": {
+      "id": "MbyyxQp3AHNDf5ek",
+      "advancements": [
+        {
+          "id": "jshw3aC8lu71HHVk",
+          "title": "Choose Items",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Dice",
+              "type": "tool",
+              "uuid": "Compendium.fftweaks.items.Item.phbgstDice000000",
+              "broken": false
+            },
+            {
+              "name": "Dragonchess",
+              "type": "tool",
+              "uuid": "Compendium.fftweaks.items.Item.phbgstDragonches",
+              "broken": false
+            },
+            {
+              "name": "Playing Cards",
+              "type": "tool",
+              "uuid": "Compendium.fftweaks.items.Item.phbgstPlayingcar",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "OB15kzA8nYocaq5U",
+          "title": "Feat",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Alert",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.gu4tVdRMgT58DVoD",
+              "broken": false
+            },
+            {
+              "name": "Crafter",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.5YDBilIF0bvw03hA",
+              "broken": false
+            },
+            {
+              "name": "Healer",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.7KR8Q301c3CJPqhv",
+              "broken": false
+            },
+            {
+              "name": "Lucky",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.pJHRYOmzXPBNepw4",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Cleric)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.hylc6ylh3M9kmXdj",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Druid)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.1ypMnrJ4oTOwgt44",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Wizard)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.Uc4jj9CWXoJSZqTJ",
+              "broken": false
+            },
+            {
+              "name": "Musician",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.YutMezEUbvGA3RfQ",
+              "broken": false
+            },
+            {
+              "name": "Savage Attacker",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.my7orZ9gTDSX3fIC",
+              "broken": false
+            },
+            {
+              "name": "Skilled",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.tYRUWnislD7E7LuZ",
+              "broken": false
+            },
+            {
+              "name": "Tavern Brawler",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.DOuX2nPPxt1f4Vpr",
+              "broken": false
+            },
+            {
+              "name": "Tough",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.FmzMr9VwAwYQ1dyC",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "species": {
+    "Breath Weapon (Acid)": {
+      "id": "tycwMSDfabTiMAZf",
+      "advancements": []
+    },
+    "Breath Weapon (Cold)": {
+      "id": "3RGIITyMLPM48eOC",
+      "advancements": []
+    },
+    "Draconic Ancestry: Black": {
+      "id": "TlwBGwrE5ZHv2Nea",
+      "advancements": [
+        {
+          "id": "S3dO6aiudBArY8Wd",
+          "title": "Grant Items",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Breath Weapon (Acid)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.tycwMSDfabTiMAZf",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Draconic Ancestry: White": {
+      "id": "NcH4BmgDkHOIQIAz",
+      "advancements": [
+        {
+          "id": "S3dO6aiudBArY8Wd",
+          "title": "Grant Items",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Breath Weapon (Cold)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.3RGIITyMLPM48eOC",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Dragonborn": {
+      "id": "zPQF3syBL9CwuCV0",
+      "advancements": [
+        {
+          "id": "Uupo29CYPTDFi8wu",
+          "title": "Draconic Ancestry",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Draconic Ancestry: Black",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.TlwBGwrE5ZHv2Nea",
+              "broken": false
+            },
+            {
+              "name": "Draconic Ancestry: White",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.NcH4BmgDkHOIQIAz",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Dwarf": {
+      "id": "coYP7qZxFoocytJ2",
+      "advancements": [
+        {
+          "id": "tNfLTuoHfvAxg2FC",
+          "title": "Special Traits",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Dwarven Resilience",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.pyk2nFqL9IwCUUtf",
+              "broken": false
+            },
+            {
+              "name": "Dwarven Toughness",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.LVAooI105cNOrtPt",
+              "broken": false
+            },
+            {
+              "name": "Stonecunning",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.qTEn7PQsU5cH3Nye",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Dwarven Resilience": {
+      "id": "pyk2nFqL9IwCUUtf",
+      "advancements": []
+    },
+    "Dwarven Toughness": {
+      "id": "LVAooI105cNOrtPt",
+      "advancements": []
+    },
+    "Elf": {
+      "id": "32KAUtJWr5R8PhcY",
+      "advancements": [
+        {
+          "id": "tNfLTuoHfvAxg2FC",
+          "title": "Special Traits",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Fey Ancestry",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.DAft17HAWWbIj91k",
+              "broken": false
+            },
+            {
+              "name": "Keen Senses",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.AVrES3mZpYWVWeE7",
+              "broken": false
+            },
+            {
+              "name": "Trance",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.lQwGAimrxOyiTsHa",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "XoOg3XwmqbdRGcOR",
+          "title": "Choose Items",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Elven Lineage (Drow)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.Ouw4u4cYa35EJhnZ",
+              "broken": false
+            },
+            {
+              "name": "Elven Lineage (High)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.1kLLrDDnEIClTNKl",
+              "broken": false
+            },
+            {
+              "name": "Elven Lineage (Wood)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.G73TmhcCVNoWvMrr",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Elven Lineage (Drow)": {
+      "id": "Ouw4u4cYa35EJhnZ",
+      "advancements": [
+        {
+          "id": "G7pS3kwATE7Px1bd",
+          "title": "Grant Items",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Dancing Lights",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.Pqj4ykYYtOk5GpaJ",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "yFILnkiieoubZCkn",
+          "title": "Grant Items",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.jEOHLBGrWnJUqzzv",
+              "broken": true
+            }
+          ]
+        },
+        {
+          "id": "LcPVby5ejG0yroxw",
+          "title": "Grant Items",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Darkness",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.RMB9cchieM14zD81",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Elven Lineage (High)": {
+      "id": "1kLLrDDnEIClTNKl",
+      "advancements": [
+        {
+          "id": "1KdtSblhcLavAtb9",
+          "title": "Spells",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Prestidigitation",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.s367zTFciFIksXmD",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "T6GrSefGhz7L68Wy",
+          "title": "Spells",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.OjfCganIwznrQsvX",
+              "broken": true
+            }
+          ]
+        },
+        {
+          "id": "AjdxYIRzFfVHyDrV",
+          "title": "Spells",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Misty Step",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.ylBOCVgYmqpg5mYw",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Elven Lineage (Wood)": {
+      "id": "G73TmhcCVNoWvMrr",
+      "advancements": [
+        {
+          "id": "1KdtSblhcLavAtb9",
+          "title": "Spells",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Druidcraft",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.X39mcAROL9K27wBE",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "T6GrSefGhz7L68Wy",
+          "title": "Spells",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Compendium.fftweaks.spells.Item.4sLqHU7M5GabrapN",
+              "broken": true
+            }
+          ]
+        },
+        {
+          "id": "AjdxYIRzFfVHyDrV",
+          "title": "Spells",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Pass without Trace",
+              "type": "spell",
+              "uuid": "Compendium.fftweaks.spells.Item.ZqHy9MUGcVbeVlhp",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Gnome": {
+      "id": "vgvN8QEUwjTearKl",
+      "advancements": [
+        {
+          "id": "tNfLTuoHfvAxg2FC",
+          "title": "Special Traits",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Gnomish Cunning",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.rS2qK9DydLQbeNSp",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "7WayZOkhuxHu8nb8",
+          "title": "Lineage",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Gnomish Lineage (Forest )",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.ebgZZNWQDOQBRmBD",
+              "broken": false
+            },
+            {
+              "name": "Gnomish Lineage (Rock)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.0pOg8Oze0HtINxip",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Halfling": {
+      "id": "yh2XzMDIkZeoIe9Q",
+      "advancements": [
+        {
+          "id": "tNfLTuoHfvAxg2FC",
+          "title": "Special Traits",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Brave",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.CUR6y7nJ9gElizUs",
+              "broken": false
+            },
+            {
+              "name": "Halfling Nimbleness",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.keeBLXpH0gDjFNVk",
+              "broken": false
+            },
+            {
+              "name": "Luck",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.DQnNyYaJ4Gpy4KJx",
+              "broken": false
+            },
+            {
+              "name": "Naturally Stealthy",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.bJq6AafJaHEqqeJK",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Human": {
+      "id": "Pv05IeUKXIjhTcZL",
+      "advancements": [
+        {
+          "id": "tNfLTuoHfvAxg2FC",
+          "title": "Special Traits",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Resourceful",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.hoeT184vqW61ToJZ",
+              "broken": false
+            },
+            {
+              "name": "Skillful",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.usxZBhKGBE62UNiG",
+              "broken": false
+            },
+            {
+              "name": "Versatile",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.vorwa5Oj8minofOW",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Orc": {
+      "id": "P6Yti4UmP4RphzGd",
+      "advancements": [
+        {
+          "id": "mwAyuXsd1szqrgIT",
+          "title": "Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Adrenaline Rush",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.WJZpnu90Y7F8XbJ5",
+              "broken": false
+            },
+            {
+              "name": "Relentless Endurance",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.species.Item.6knQOIebMfdVlZxw",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    },
+    "Relentless Endurance": {
+      "id": "6knQOIebMfdVlZxw",
+      "advancements": []
+    },
+    "Stonecunning": {
+      "id": "qTEn7PQsU5cH3Nye",
+      "advancements": []
+    },
+    "Versatile": {
+      "id": "vorwa5Oj8minofOW",
+      "advancements": [
+        {
+          "id": "OB15kzA8nYocaq5U",
+          "title": "Origin Feat",
+          "type": "ItemChoice",
+          "items": [
+            {
+              "name": "Alert",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.gu4tVdRMgT58DVoD",
+              "broken": false
+            },
+            {
+              "name": "Crafter",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.5YDBilIF0bvw03hA",
+              "broken": false
+            },
+            {
+              "name": "Healer",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.7KR8Q301c3CJPqhv",
+              "broken": false
+            },
+            {
+              "name": "Lucky",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.pJHRYOmzXPBNepw4",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Cleric)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.hylc6ylh3M9kmXdj",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Druid)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.1ypMnrJ4oTOwgt44",
+              "broken": false
+            },
+            {
+              "name": "Magic Initiate (Wizard)",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.Uc4jj9CWXoJSZqTJ",
+              "broken": false
+            },
+            {
+              "name": "Musician",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.YutMezEUbvGA3RfQ",
+              "broken": false
+            },
+            {
+              "name": "Savage Attacker",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.my7orZ9gTDSX3fIC",
+              "broken": false
+            },
+            {
+              "name": "Skilled",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.tYRUWnislD7E7LuZ",
+              "broken": false
+            },
+            {
+              "name": "Tavern Brawler",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.DOuX2nPPxt1f4Vpr",
+              "broken": false
+            },
+            {
+              "name": "Tough",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.feats.Item.FmzMr9VwAwYQ1dyC",
+              "broken": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "feats": {
+    "Origin Feats": {},
+    "General Feats": {},
+    "Other": {}
+  }
+}

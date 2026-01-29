@@ -10,6 +10,7 @@ import { lootCorpses } from "./loot/loot-all";
 import { replaceCompendiumItems } from "./utilities/replace-compendium-items";
 import { updateSpellLists } from "./utilities/update-spell-lists";
 import { updateAdvancements } from "./utilities/update-advancements";
+import { AdvancementSync } from "../modules/advancement-sync";
 
 export class Functions {
     static healTokens = healTokens;
@@ -24,4 +25,5 @@ export class Functions {
     static replaceCompendiumItems = replaceCompendiumItems;
     static updateSpellLists = updateSpellLists;
     static updateAdvancements = updateAdvancements;
+    static syncAdvancements = AdvancementSync.syncAll.bind(AdvancementSync);
 }
