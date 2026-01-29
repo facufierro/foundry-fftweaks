@@ -113,10 +113,30 @@ interface HierarchicalSyncData {
  * @param targetUuid - UUID of the target Item OR specific Advancement
  * @param sourceCompendiumId - Pack ID to pull fresh UUIDs from (e.g., "fftweaks.spells")
  */
+const DEFAULT_SOURCE_COMPENDIUMS = [
+    "fftweaks.classes",
+    "fftweaks.backgrounds",
+    "fftweaks.species",
+    "fftweaks.feats",
+    "fftweaks.spells",
+    "fftweaks.items"
+];
+
+/**
+ * Updates advancement items using saved names from advancements.json.
+ * Rebuilds advancement content with fresh UUIDs from the source compendiums.
+ * 
+ * @param targetUuid - UUID of the target Item OR specific Advancement
+ * @param sourceCompendiumIds - List of pack IDs to pull fresh UUIDs from (e.g., ["fftweaks.spells", "fftweaks.feats"])
+ *                              Defaults to a standard list of fftweaks compendiums if not provided.
+ */
 export async function updateAdvancements(
     targetUuid: string,
-    sourceCompendiumId: string
+    sourceCompendiumIds: string[] | string = DEFAULT_SOURCE_COMPENDIUMS
 ): Promise<void> {
+    // Normalize sourceCompendiumIds to array
+    const sources = Array.isArray(sourceCompendiumIds) ? sourceCompendiumIds : [sourceCompendiumIds];
+
     // -------------------------------------------------------------------------
     // STEP 1: Parse and validate the target UUID
     // -------------------------------------------------------------------------
@@ -160,24 +180,35 @@ export async function updateAdvancements(
     }
 
     // -------------------------------------------------------------------------
-    // STEP 4: Build a name -> UUID lookup map from the source compendium
+    // STEP 4: Build a name -> UUID lookup map from all source compendiums
     // -------------------------------------------------------------------------
-    const sourcePack = game.packs.get(sourceCompendiumId);
-    if (!sourcePack) {
-        ui.notifications?.error(`Source compendium not found: ${sourceCompendiumId}`);
-        return;
-    }
-
     // Map item names (lowercase) to their UUIDs for quick lookup
     const sourceMap = new Map<string, string>();
-    for (const indexEntry of sourcePack.index) {
-        const entry = indexEntry as any;
-        if (entry.name) {
-            sourceMap.set(entry.name.toLowerCase(), `Compendium.${sourceCompendiumId}.Item.${entry._id}`);
+    let packsFound = 0;
+
+    for (const packId of sources) {
+        const sourcePack = game.packs.get(packId);
+        if (!sourcePack) {
+            Debug.Warn(`Source compendium not found: ${packId}`);
+            continue;
+        }
+        packsFound++;
+
+        for (const indexEntry of sourcePack.index) {
+            const entry = indexEntry as any;
+            if (entry.name) {
+                // If duplicates exist across packs, later packs overwrite earlier ones
+                sourceMap.set(entry.name.toLowerCase(), `Compendium.${packId}.Item.${entry._id}`);
+            }
         }
     }
 
-    Debug.Log(`Source map built with ${sourceMap.size} unique names`);
+    if (packsFound === 0) {
+        ui.notifications?.error("No valid source compendiums found.");
+        return;
+    }
+
+    Debug.Log(`Source map built with ${sourceMap.size} unique names from ${packsFound} compendiums`);
 
     // -------------------------------------------------------------------------
     // STEP 5: Get the item's current advancement data
@@ -211,11 +242,14 @@ export async function updateAdvancements(
         const savedAdv = savedData.advancements.find(s => s.id === adv._id);
         if (!savedAdv || savedAdv.items.length === 0) continue;
 
-        Debug.Log(`Updating advancement: ${adv.title || adv.type} (${adv._id})`);
+        Debug.Log(`Processing: ${adv.title || adv.type}`);
 
         // ItemChoice uses "pool", ItemGrant uses "items"
         const isChoice = adv.type === "ItemChoice";
+        const existingEntries = (isChoice ? adv.configuration?.pool : adv.configuration?.items) || [];
         const newEntries: any[] = [];
+        let updatedInAdvancement = 0;
+        let preservedInAdvancement = 0;
 
         // For each saved item name, find it in the source compendium
         for (const savedItem of savedAdv.items) {
@@ -223,7 +257,6 @@ export async function updateAdvancements(
 
             // Skip items that were already broken when synced
             if (name === "[broken]" || name === "[missing uuid]") {
-                Debug.Warn(`Skipping unrecoverable item in advancement ${adv.title}`);
                 continue;
             }
 
@@ -232,10 +265,34 @@ export async function updateAdvancements(
                 const newUuid = sourceMap.get(name)!;
                 // ItemChoice entries only need uuid; ItemGrant needs uuid + optional flag
                 newEntries.push(isChoice ? { uuid: newUuid } : { uuid: newUuid, optional: false });
-                totalUpdateCount++;
+
+                // Only count as updated if the UUID actually changed
+                if (newUuid !== savedItem.uuid) {
+                    totalUpdateCount++;
+                    updatedInAdvancement++;
+                } else {
+                    // UUID is same, so it's technically "preserved" but because we found it in source
+                    preservedInAdvancement++;
+                }
             } else {
-                Debug.Warn(`Item "${savedItem.name}" not found in source compendium ${sourceCompendiumId}`);
+                // Item not found in any source compendium
+                // Attempt to preserve the existing entry if UUID matches
+                const existingEntry = existingEntries.find((e: any) => e.uuid === savedItem.uuid);
+
+                if (existingEntry) {
+                    newEntries.push(existingEntry);
+                    preservedInAdvancement++;
+                    Debug.Log(`  [NO MATCH] "${savedItem.name}" not in sources. Keeping existing.`);
+                } else {
+                    // Fallback: keep the original saved UUID even if not currently in item
+                    newEntries.push(isChoice ? { uuid: savedItem.uuid } : { uuid: savedItem.uuid, optional: false });
+                    Debug.Warn(`Restored missing item: ${savedItem.name}`);
+                }
             }
+        }
+
+        if (preservedInAdvancement > 0) {
+            Debug.Log(`  - Updated ${updatedInAdvancement}, Preserved ${preservedInAdvancement}`);
         }
 
         // Replace the advancement's items/pool with our new entries
@@ -251,14 +308,15 @@ export async function updateAdvancements(
     // STEP 7: Save the updated item back to Foundry
     // -------------------------------------------------------------------------
     if (totalUpdateCount === 0) {
-        ui.notifications?.info("No items were updated.");
+        ui.notifications?.info(`Checked ${targetItem.name}: All items up to date.`);
         return;
     }
 
     try {
         await targetItem.update({ "system.advancement": advancements });
-        ui.notifications?.info(`Successfully updated ${totalUpdateCount} items in ${targetItem.name}`);
-        Debug.Success(`Updated ${totalUpdateCount} items in ${targetItem.name}`);
+        const msg = `Updated ${totalUpdateCount} items in ${targetItem.name}`;
+        ui.notifications?.info(msg);
+        Debug.Success(msg);
     } catch (error) {
         Debug.Error("Failed to update advancements:", error);
         ui.notifications?.error("Failed to update advancements. Check console.");

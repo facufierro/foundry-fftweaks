@@ -55,16 +55,21 @@ export class AdvancementSync {
         "savage attacker", "skilled", "tavern brawler", "tough"
     ];
 
+    private static syncTimeout: ReturnType<typeof setTimeout> | null = null;
+
     static initialize(): void {
-        Hooks.on("updateItem", this.onUpdateItem.bind(this));
+        // Sync when a target compendium is opened
+        Hooks.on("renderCompendium", this.onRenderCompendium.bind(this));
         this.syncAll();
         Debug.Log("AdvancementSync initialized");
     }
 
-    private static onUpdateItem(item: any, changes: any, options: any, userId: string): void {
-        const pack = item.pack;
-        if (!pack || !this.COMPENDIUMS.includes(pack)) return;
-        Debug.Log(`Item updated in ${pack}: ${item.name}`);
+    private static onRenderCompendium(app: any, html: any, data: any): void {
+        const packId = app.collection?.metadata?.id;
+        if (!packId || !this.COMPENDIUMS.includes(packId)) return;
+
+        // Sync when compendium is opened
+        Debug.Log(`Compendium opened: ${packId}`);
         this.syncAll();
     }
 
@@ -264,11 +269,31 @@ export class AdvancementSync {
         const jsonString = JSON.stringify(sortedData, null, 2);
         const file = new File([jsonString], "advancements.json", { type: "application/json" });
 
+        // Temporarily suppress all notifications during upload
+        const originalNotify = ui.notifications?.info;
+        const originalWarn = ui.notifications?.warn;
+        if (ui.notifications) {
+            ui.notifications.info = () => null as any;
+            ui.notifications.warn = () => null as any;
+        }
+
         try {
-            await FilePicker.upload("data", this.DATA_PATH, file, {});
-            Debug.Success("Advancement data synced successfully");
+            // V13+ support
+            if (foundry.applications?.apps?.FilePicker?.upload) {
+                await foundry.applications.apps.FilePicker.upload("data", this.DATA_PATH, file, {});
+            }
+            // V12 and below support
+            else if (FilePicker.upload) {
+                await FilePicker.upload("data", this.DATA_PATH, file, {});
+            }
         } catch (error) {
             Debug.Error("Failed to write advancement data:", error);
+        } finally {
+            // Restore original notification methods
+            if (ui.notifications && originalNotify && originalWarn) {
+                ui.notifications.info = originalNotify;
+                ui.notifications.warn = originalWarn;
+            }
         }
     }
 

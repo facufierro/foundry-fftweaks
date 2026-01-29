@@ -330,7 +330,7 @@
       "advancements": [
         {
           "id": "MSF1wogSoeJqfxAR",
-          "title": "Features",
+          "title": "Class Features",
           "type": "ItemGrant",
           "items": [
             {
@@ -342,7 +342,7 @@
             {
               "name": "Expertise",
               "type": "feat",
-              "uuid": "Compendium.dnd5e.classfeatures.aQLg7BWdRnm4Hr9S",
+              "uuid": "Compendium.fftweaks.classes.Item.yFlrSseG1cRM7M5E",
               "broken": false
             }
           ]
@@ -362,7 +362,7 @@
         },
         {
           "id": "UThCJ6mGUL0XQUb8",
-          "title": "Features",
+          "title": "Class Features",
           "type": "ItemGrant",
           "items": [
             {
@@ -375,7 +375,7 @@
         },
         {
           "id": "2fX3mtdNC16A1z7S",
-          "title": "Features",
+          "title": "Class Features",
           "type": "ItemGrant",
           "items": [
             {
@@ -388,7 +388,7 @@
         },
         {
           "id": "ZwU2MLhnY219t78q",
-          "title": "Features",
+          "title": "Class Features",
           "type": "ItemGrant",
           "items": [
             {
@@ -413,29 +413,97 @@
             {
               "name": "Spellcasting",
               "type": "feat",
-              "uuid": "Compendium.fftweaks.classes.Item.mdSYsGr5pYuhEHWe",
+              "uuid": "Compendium.fftweaks.classes.Item.wB5ADHS6pJkl08SJ",
               "broken": false
             }
           ]
         },
         {
-          "id": "XfjcpKcLiSJmzQau",
-          "title": "Grant Items",
-          "type": "ItemGrant",
+          "id": "lNvFp6OtycF06CoZ",
+          "title": "Cantrips",
+          "type": "ItemChoice",
           "items": [
             {
-              "name": "Acid Splash",
-              "type": "spell",
-              "uuid": "Compendium.fftweaks.spells.Item.uJk16M950x4zMwwt",
-              "broken": false
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.dQXeyKnWmkSIGeID",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.GTHHK3JvCPNiVlTy",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.lpAgc7gqz6W9wRnh",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.Xqq6UCpGZJfQEWP7",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.FosC86Gfj2cwK5B3",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.4aSjsqcW0W7infwd",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.oDWTRw87W8Ok3UYE",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.IWRzBgSVTHPQYiqa",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.Mq8xcoVwrOvEMoRF",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.c323O6f2wtlSp37B",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.1qyvdYNuLUbPgu5O",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.rojyTUU3hZXo5Map",
+              "broken": true
+            },
+            {
+              "name": "[BROKEN]",
+              "type": "unknown",
+              "uuid": "Item.5j9PBff8U5ZXoUEo",
+              "broken": true
             }
           ]
         }
       ]
-    },
-    "Class": {
-      "id": "S9RVabOdGtLOOr7w",
-      "advancements": []
     },
     "Cleric": {
       "id": "CN36rig6kPJu9nFb",
@@ -2722,87 +2790,7 @@
     },
     "Enterteiner": {
       "id": "Ztsg3nyRggYi8uTV",
-      "advancements": [
-        {
-          "id": "OB15kzA8nYocaq5U",
-          "title": "Origin Feat",
-          "type": "ItemChoice",
-          "items": [
-            {
-              "name": "Alert",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.gu4tVdRMgT58DVoD",
-              "broken": false
-            },
-            {
-              "name": "Crafter",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.5YDBilIF0bvw03hA",
-              "broken": false
-            },
-            {
-              "name": "Healer",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.7KR8Q301c3CJPqhv",
-              "broken": false
-            },
-            {
-              "name": "Lucky",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.pJHRYOmzXPBNepw4",
-              "broken": false
-            },
-            {
-              "name": "Magic Initiate (Cleric)",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.hylc6ylh3M9kmXdj",
-              "broken": false
-            },
-            {
-              "name": "Magic Initiate (Druid)",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.1ypMnrJ4oTOwgt44",
-              "broken": false
-            },
-            {
-              "name": "Magic Initiate (Wizard)",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.Uc4jj9CWXoJSZqTJ",
-              "broken": false
-            },
-            {
-              "name": "Musician",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.YutMezEUbvGA3RfQ",
-              "broken": false
-            },
-            {
-              "name": "Savage Attacker",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.my7orZ9gTDSX3fIC",
-              "broken": false
-            },
-            {
-              "name": "Skilled",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.tYRUWnislD7E7LuZ",
-              "broken": false
-            },
-            {
-              "name": "Tavern Brawler",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.DOuX2nPPxt1f4Vpr",
-              "broken": false
-            },
-            {
-              "name": "Tough",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.feats.Item.FmzMr9VwAwYQ1dyC",
-              "broken": false
-            }
-          ]
-        }
-      ]
+      "advancements": []
     },
     "Gladiator": {
       "id": "Lauq5xEFtcjKvWYe",
@@ -3622,7 +3610,7 @@
       "advancements": [
         {
           "id": "tNfLTuoHfvAxg2FC",
-          "title": "Special Traits",
+          "title": "Species Traits",
           "type": "ItemGrant",
           "items": [
             {
@@ -3640,7 +3628,7 @@
             {
               "name": "Versatile",
               "type": "feat",
-              "uuid": "Compendium.fftweaks.species.Item.vorwa5Oj8minofOW",
+              "uuid": "Item.ZfnezBQStawJZjuK",
               "broken": false
             }
           ]
