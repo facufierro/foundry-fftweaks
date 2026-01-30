@@ -36,6 +36,780 @@
             ]
           }
         ]
+      },
+      "Spellcasting": {
+        "id": "mdSYsGr5pYuhEHWe",
+        "advancements": [
+          {
+            "id": "nTjY89crV1PLMGol",
+            "title": "Spells",
+            "type": "ItemChoice",
+            "items": [
+              {
+                "name": "Aid",
+                "type": "spell",
+                "uuid": "Item.tyf6QpHWqiOmf9Rf",
+                "broken": false
+              },
+              {
+                "name": "Animal Friendship",
+                "type": "spell",
+                "uuid": "Item.zHP9QgNcRf4i5k55",
+                "broken": false
+              },
+              {
+                "name": "Animal Messenger",
+                "type": "spell",
+                "uuid": "Item.1Xz1BYFY7itoxd3o",
+                "broken": false
+              },
+              {
+                "name": "Animate Objects",
+                "type": "spell",
+                "uuid": "Item.dUoXI5WI6UBxVb8q",
+                "broken": false
+              },
+              {
+                "name": "Antipathy/Sympathy",
+                "type": "spell",
+                "uuid": "Item.n6XNUxynT6D1OTKz",
+                "broken": false
+              },
+              {
+                "name": "Awaken",
+                "type": "spell",
+                "uuid": "Item.s4gWR8LXcxEmNLab",
+                "broken": false
+              },
+              {
+                "name": "Bane",
+                "type": "spell",
+                "uuid": "Item.fy5jm76OXVmy6e85",
+                "broken": false
+              },
+              {
+                "name": "Befuddlement",
+                "type": "spell",
+                "uuid": "Item.LLHqgT53bOjRQz1g",
+                "broken": false
+              },
+              {
+                "name": "Bestow Curse",
+                "type": "spell",
+                "uuid": "Item.ZWIGWlGqxtcQ2M9a",
+                "broken": false
+              },
+              {
+                "name": "Blindness/Deafness",
+                "type": "spell",
+                "uuid": "Item.Y5cadPx7H1Ia8nUd",
+                "broken": false
+              },
+              {
+                "name": "Calm Emotions",
+                "type": "spell",
+                "uuid": "Item.nwVGiN7LfVHKbs4v",
+                "broken": false
+              },
+              {
+                "name": "Charm Monster",
+                "type": "spell",
+                "uuid": "Item.HU8gGZsOU3x2sb1t",
+                "broken": false
+              },
+              {
+                "name": "Charm Person",
+                "type": "spell",
+                "uuid": "Item.br544GZkksL7a35e",
+                "broken": false
+              },
+              {
+                "name": "Clairvoyance",
+                "type": "spell",
+                "uuid": "Item.YVP7IEtk68ZKHIb4",
+                "broken": false
+              },
+              {
+                "name": "Cloud of Daggers",
+                "type": "spell",
+                "uuid": "Item.g6qAwzvPpS3Eb3q5",
+                "broken": false
+              },
+              {
+                "name": "Color Spray",
+                "type": "spell",
+                "uuid": "Item.bV20x0x7MQZY6K4m",
+                "broken": false
+              },
+              {
+                "name": "Command",
+                "type": "spell",
+                "uuid": "Item.NeLn2SUHdgW853AP",
+                "broken": false
+              },
+              {
+                "name": "Comprehend Languages",
+                "type": "spell",
+                "uuid": "Item.Xk8WqDGIKf0hqFyO",
+                "broken": false
+              },
+              {
+                "name": "Compulsion",
+                "type": "spell",
+                "uuid": "Item.tPlce99TYrQ6M09i",
+                "broken": false
+              },
+              {
+                "name": "Confusion",
+                "type": "spell",
+                "uuid": "Item.fSH5E4EpM5NoGXWk",
+                "broken": false
+              },
+              {
+                "name": "Crown of Madness",
+                "type": "spell",
+                "uuid": "Item.RsPgqmC7xMj8VuBa",
+                "broken": false
+              },
+              {
+                "name": "Cure Wounds",
+                "type": "spell",
+                "uuid": "Item.rDp0boYlryIMObbt",
+                "broken": false
+              },
+              {
+                "name": "Detect Magic",
+                "type": "spell",
+                "uuid": "Item.NxrpmeL5N3OIxIuM",
+                "broken": false
+              },
+              {
+                "name": "Detect Thoughts",
+                "type": "spell",
+                "uuid": "Item.5MxOtdtW3LZzNnbf",
+                "broken": false
+              },
+              {
+                "name": "Dimension Door",
+                "type": "spell",
+                "uuid": "Item.5Yk2hi1O62Y8H9GY",
+                "broken": false
+              },
+              {
+                "name": "Disguise Self",
+                "type": "spell",
+                "uuid": "Item.y21ZQWlDzNDrMmNM",
+                "broken": false
+              },
+              {
+                "name": "Dispel Magic",
+                "type": "spell",
+                "uuid": "Item.qOPmidwYpyQDsQRJ",
+                "broken": false
+              },
+              {
+                "name": "Dissonant Whispers",
+                "type": "spell",
+                "uuid": "Item.aStq8aMzdNrPbwhC",
+                "broken": false
+              },
+              {
+                "name": "Dominate Monster",
+                "type": "spell",
+                "uuid": "Item.UChtchqmNyY76uSw",
+                "broken": false
+              },
+              {
+                "name": "Dominate Person",
+                "type": "spell",
+                "uuid": "Item.t1YSCFT6D2wTDQbB",
+                "broken": false
+              },
+              {
+                "name": "Dream",
+                "type": "spell",
+                "uuid": "Item.PVBvBeDDasxWqcIK",
+                "broken": false
+              },
+              {
+                "name": "Enhance Ability",
+                "type": "spell",
+                "uuid": "Item.Wy18TyAsdsSJB8y7",
+                "broken": false
+              },
+              {
+                "name": "Enlarge/Reduce",
+                "type": "spell",
+                "uuid": "Item.n0Hw3f1Fj7wzOlX0",
+                "broken": false
+              },
+              {
+                "name": "Enthrall",
+                "type": "spell",
+                "uuid": "Item.xpOrfh6bBMdOw3Wx",
+                "broken": false
+              },
+              {
+                "name": "Etherealness",
+                "type": "spell",
+                "uuid": "Item.LJ69AWVGsR4Bb2hC",
+                "broken": false
+              },
+              {
+                "name": "Eyebite",
+                "type": "spell",
+                "uuid": "Item.KfxK3tsvsIe14oI1",
+                "broken": false
+              },
+              {
+                "name": "Faerie Fire",
+                "type": "spell",
+                "uuid": "Item.lwhZNvun6SSUne4o",
+                "broken": false
+              },
+              {
+                "name": "Fear",
+                "type": "spell",
+                "uuid": "Item.0O4VxqGi3vCquoXG",
+                "broken": false
+              },
+              {
+                "name": "Feather Fall",
+                "type": "spell",
+                "uuid": "Item.VleKa5vzhhTkkDV0",
+                "broken": false
+              },
+              {
+                "name": "Feign Death",
+                "type": "spell",
+                "uuid": "Item.Z9GSusa62MJbEEMt",
+                "broken": false
+              },
+              {
+                "name": "Find the Path",
+                "type": "spell",
+                "uuid": "Item.nC2jtQwTX4a8ABso",
+                "broken": false
+              },
+              {
+                "name": "Forcecage",
+                "type": "spell",
+                "uuid": "Item.TAOdhIQAAMNcGBGb",
+                "broken": false
+              },
+              {
+                "name": "Foresight",
+                "type": "spell",
+                "uuid": "Item.NUft5azQSJvKtp6m",
+                "broken": false
+              },
+              {
+                "name": "Fount of Moonlight",
+                "type": "spell",
+                "uuid": "Item.D6XrmbXBFCQNDeJC",
+                "broken": false
+              },
+              {
+                "name": "Freedom of Movement",
+                "type": "spell",
+                "uuid": "Item.yVREKBxVdvolCoJa",
+                "broken": false
+              },
+              {
+                "name": "Geas",
+                "type": "spell",
+                "uuid": "Item.rysvBxkV3bPfDtvN",
+                "broken": false
+              },
+              {
+                "name": "Glibness",
+                "type": "spell",
+                "uuid": "Item.PgNotzfd7oDW1CT9",
+                "broken": false
+              },
+              {
+                "name": "Glyph of Warding",
+                "type": "spell",
+                "uuid": "Item.zS4sFDHSnYptggFp",
+                "broken": false
+              },
+              {
+                "name": "Greater Invisibility",
+                "type": "spell",
+                "uuid": "Item.U7oQk2cS1l2kWLtG",
+                "broken": false
+              },
+              {
+                "name": "Greater Restoration",
+                "type": "spell",
+                "uuid": "Item.JABMYM2u3F7mCsEE",
+                "broken": false
+              },
+              {
+                "name": "Guards and Wards",
+                "type": "spell",
+                "uuid": "Item.EIHFeOaFObPXTogo",
+                "broken": false
+              },
+              {
+                "name": "Hallucinatory Terrain",
+                "type": "spell",
+                "uuid": "Item.OS0cy0IMPELiRnpI",
+                "broken": false
+              },
+              {
+                "name": "Healing Word",
+                "type": "spell",
+                "uuid": "Item.JFcOi7A4i2ogjE7J",
+                "broken": false
+              },
+              {
+                "name": "Heat Metal",
+                "type": "spell",
+                "uuid": "Item.j2qHSTZhZb95DDei",
+                "broken": false
+              },
+              {
+                "name": "Heroes' Feast",
+                "type": "spell",
+                "uuid": "Item.x0uPz6HEWVE8v2n4",
+                "broken": false
+              },
+              {
+                "name": "Heroism",
+                "type": "spell",
+                "uuid": "Item.ipiJMQEpTb428whP",
+                "broken": false
+              },
+              {
+                "name": "Hold Monster",
+                "type": "spell",
+                "uuid": "Item.Nfn03hTReJyEDwDn",
+                "broken": false
+              },
+              {
+                "name": "Hold Person",
+                "type": "spell",
+                "uuid": "Item.7Z4myrsmFl31pZCa",
+                "broken": false
+              },
+              {
+                "name": "Hypnotic Pattern",
+                "type": "spell",
+                "uuid": "Item.ETgcAq6rs07p0S6s",
+                "broken": false
+              },
+              {
+                "name": "Identify",
+                "type": "spell",
+                "uuid": "Item.INL8ehH7hc3uWn5J",
+                "broken": false
+              },
+              {
+                "name": "Illusory Script",
+                "type": "spell",
+                "uuid": "Item.YGhHx0E1K47zsSUT",
+                "broken": false
+              },
+              {
+                "name": "Invisibility",
+                "type": "spell",
+                "uuid": "Item.i4saikPrlIFhZzLC",
+                "broken": false
+              },
+              {
+                "name": "Knock",
+                "type": "spell",
+                "uuid": "Item.atkVy9tIcZyAl5hb",
+                "broken": false
+              },
+              {
+                "name": "Legend Lore",
+                "type": "spell",
+                "uuid": "Item.1ytywz0OZf2EADft",
+                "broken": false
+              },
+              {
+                "name": "Leomund's Tiny Hut",
+                "type": "spell",
+                "uuid": "Item.FI85slAf3KMKrz7H",
+                "broken": false
+              },
+              {
+                "name": "Lesser Restoration",
+                "type": "spell",
+                "uuid": "Item.qHotqmdxwFY2DZGj",
+                "broken": false
+              },
+              {
+                "name": "Locate Animals or Plants",
+                "type": "spell",
+                "uuid": "Item.UBhZeTt7fSNE03Ek",
+                "broken": false
+              },
+              {
+                "name": "Locate Creature",
+                "type": "spell",
+                "uuid": "Item.1EMGzlJqgZjmLnkN",
+                "broken": false
+              },
+              {
+                "name": "Locate Object",
+                "type": "spell",
+                "uuid": "Item.VzFttNSbs7mcP6lC",
+                "broken": false
+              },
+              {
+                "name": "Longstrider",
+                "type": "spell",
+                "uuid": "Item.wVREj4tjC0s9ritQ",
+                "broken": false
+              },
+              {
+                "name": "Magic Mouth",
+                "type": "spell",
+                "uuid": "Item.kpANGQtlr93rzE7d",
+                "broken": false
+              },
+              {
+                "name": "Major Image",
+                "type": "spell",
+                "uuid": "Item.gO4WiVJhWUoPFdOv",
+                "broken": false
+              },
+              {
+                "name": "Mass Cure Wounds",
+                "type": "spell",
+                "uuid": "Item.zERSUyZIx5o0Cg5s",
+                "broken": false
+              },
+              {
+                "name": "Mass Healing Word",
+                "type": "spell",
+                "uuid": "Item.VtL0IDoqTTgPl9W3",
+                "broken": false
+              },
+              {
+                "name": "Mass Suggestion",
+                "type": "spell",
+                "uuid": "Item.CJwsvRknqONwre8X",
+                "broken": false
+              },
+              {
+                "name": "Mind Blank",
+                "type": "spell",
+                "uuid": "Item.gqItCgtfKSZAOLQE",
+                "broken": false
+              },
+              {
+                "name": "Mirage Arcane",
+                "type": "spell",
+                "uuid": "Item.SFyCSbRfvUD5rJK0",
+                "broken": false
+              },
+              {
+                "name": "Mirror Image",
+                "type": "spell",
+                "uuid": "Item.fIUjWQyd6UhocI4u",
+                "broken": false
+              },
+              {
+                "name": "Mislead",
+                "type": "spell",
+                "uuid": "Item.kudtXU2VnLmqvVBY",
+                "broken": false
+              },
+              {
+                "name": "Modify Memory",
+                "type": "spell",
+                "uuid": "Item.EpbpItPQUxLxJZGl",
+                "broken": false
+              },
+              {
+                "name": "Mordenkainen's Magnificent Mansion",
+                "type": "spell",
+                "uuid": "Item.38u3bmXglGwA2XUT",
+                "broken": false
+              },
+              {
+                "name": "Mordenkainen's Sword",
+                "type": "spell",
+                "uuid": "Item.nEamODwIZIJ1NS84",
+                "broken": false
+              },
+              {
+                "name": "Nondetection",
+                "type": "spell",
+                "uuid": "Item.QfUGfwfC5M3GfM37",
+                "broken": false
+              },
+              {
+                "name": "Otto's Irresistible Dance",
+                "type": "spell",
+                "uuid": "Item.J4icapEDgTgsjkS0",
+                "broken": false
+              },
+              {
+                "name": "Phantasmal Force",
+                "type": "spell",
+                "uuid": "Item.BvjQZEU0YYGhakVR",
+                "broken": false
+              },
+              {
+                "name": "Phantasmal Killer",
+                "type": "spell",
+                "uuid": "Item.rmXb3XGWZFXx64Rv",
+                "broken": false
+              },
+              {
+                "name": "Planar Binding",
+                "type": "spell",
+                "uuid": "Item.7GU4zhuDcVcn0cUw",
+                "broken": false
+              },
+              {
+                "name": "Plant Growth",
+                "type": "spell",
+                "uuid": "Item.k28Edpc1NWaMy0Cc",
+                "broken": false
+              },
+              {
+                "name": "Polymorph",
+                "type": "spell",
+                "uuid": "Item.ID858VipoE3cTc8O",
+                "broken": false
+              },
+              {
+                "name": "Power Word Fortify",
+                "type": "spell",
+                "uuid": "Item.roMrCHjaV7Cb20PH",
+                "broken": false
+              },
+              {
+                "name": "Power Word Heal",
+                "type": "spell",
+                "uuid": "Item.1ei6UtTAQ2OKf5ZN",
+                "broken": false
+              },
+              {
+                "name": "Power Word Kill",
+                "type": "spell",
+                "uuid": "Item.mln8Vi95kAWKaIC1",
+                "broken": false
+              },
+              {
+                "name": "Power Word Stun",
+                "type": "spell",
+                "uuid": "Item.cxvM3aRjx5v9xuKH",
+                "broken": false
+              },
+              {
+                "name": "Prismatic Spray",
+                "type": "spell",
+                "uuid": "Item.KQ6cBILNVTPUW0tn",
+                "broken": false
+              },
+              {
+                "name": "Prismatic Wall",
+                "type": "spell",
+                "uuid": "Item.x0Z8jgvktnRFy2ql",
+                "broken": false
+              },
+              {
+                "name": "Programmed Illusion",
+                "type": "spell",
+                "uuid": "Item.1a5OrGoFiMS0kiwN",
+                "broken": false
+              },
+              {
+                "name": "Project Image",
+                "type": "spell",
+                "uuid": "Item.8ojSWrRvyqFnhhdl",
+                "broken": false
+              },
+              {
+                "name": "Raise Dead",
+                "type": "spell",
+                "uuid": "Item.KIgQ9BCWkqFpTCDc",
+                "broken": false
+              },
+              {
+                "name": "Rary's Telepathic Bond",
+                "type": "spell",
+                "uuid": "Item.5039KHxQFqVg5bgV",
+                "broken": false
+              },
+              {
+                "name": "Regenerate",
+                "type": "spell",
+                "uuid": "Item.4KC7hiJeGvm0anNp",
+                "broken": false
+              },
+              {
+                "name": "Resurrection",
+                "type": "spell",
+                "uuid": "Item.I8ln6RP2K36IoY7T",
+                "broken": false
+              },
+              {
+                "name": "Scrying",
+                "type": "spell",
+                "uuid": "Item.z91jBv6ipMRg7GCT",
+                "broken": false
+              },
+              {
+                "name": "See Invisibility",
+                "type": "spell",
+                "uuid": "Item.X4R2zYMmJkkmBarj",
+                "broken": false
+              },
+              {
+                "name": "Seeming",
+                "type": "spell",
+                "uuid": "Item.0GxGE6CiIiMnz9eg",
+                "broken": false
+              },
+              {
+                "name": "Sending",
+                "type": "spell",
+                "uuid": "Item.ENY08NvvA4jVKD13",
+                "broken": false
+              },
+              {
+                "name": "Shatter",
+                "type": "spell",
+                "uuid": "Item.59zH394w8WyJ7wWA",
+                "broken": false
+              },
+              {
+                "name": "Silence",
+                "type": "spell",
+                "uuid": "Item.JBkhb97tRjui5tn8",
+                "broken": false
+              },
+              {
+                "name": "Silent Image",
+                "type": "spell",
+                "uuid": "Item.sxesFyXGcuTMAiNs",
+                "broken": false
+              },
+              {
+                "name": "Sleep",
+                "type": "spell",
+                "uuid": "Item.iOpULbwnEqjwzNKJ",
+                "broken": false
+              },
+              {
+                "name": "Slow",
+                "type": "spell",
+                "uuid": "Item.1AoxRXXu8PvIHA3k",
+                "broken": false
+              },
+              {
+                "name": "Speak with Animals",
+                "type": "spell",
+                "uuid": "Item.x7Q7hI699HJRmK4z",
+                "broken": false
+              },
+              {
+                "name": "Speak with Dead",
+                "type": "spell",
+                "uuid": "Item.5nyW7LrO4dqbeE5h",
+                "broken": false
+              },
+              {
+                "name": "Speak with Plants",
+                "type": "spell",
+                "uuid": "Item.aefMv1OLeKAVQvNp",
+                "broken": false
+              },
+              {
+                "name": "Stinking Cloud",
+                "type": "spell",
+                "uuid": "Item.CdaTBrOrCjvR6swI",
+                "broken": false
+              },
+              {
+                "name": "Suggestion",
+                "type": "spell",
+                "uuid": "Item.6qr5BCn4rpLKbpT4",
+                "broken": false
+              },
+              {
+                "name": "Symbol",
+                "type": "spell",
+                "uuid": "Item.VqREckkixBegbiuj",
+                "broken": false
+              },
+              {
+                "name": "Synaptic Static",
+                "type": "spell",
+                "uuid": "Item.2g0XjpX1m8YaU6CW",
+                "broken": false
+              },
+              {
+                "name": "Tasha's Hideous Laughter",
+                "type": "spell",
+                "uuid": "Item.NsgKC4Cz2j7rw22S",
+                "broken": false
+              },
+              {
+                "name": "Teleport",
+                "type": "spell",
+                "uuid": "Item.ugtjahiIzgmOio95",
+                "broken": false
+              },
+              {
+                "name": "Teleportation Circle",
+                "type": "spell",
+                "uuid": "Item.oKZxPpEl0OYe9QNo",
+                "broken": false
+              },
+              {
+                "name": "Thunderwave",
+                "type": "spell",
+                "uuid": "Item.xWj4szVBAJy94wU1",
+                "broken": false
+              },
+              {
+                "name": "Tongues",
+                "type": "spell",
+                "uuid": "Item.UFuzQGIj41rCYcxn",
+                "broken": false
+              },
+              {
+                "name": "True Polymorph",
+                "type": "spell",
+                "uuid": "Item.4zJuUPN3OeSrCIvT",
+                "broken": false
+              },
+              {
+                "name": "True Seeing",
+                "type": "spell",
+                "uuid": "Item.nTphWaaZgp3kviv0",
+                "broken": false
+              },
+              {
+                "name": "Unseen Servant",
+                "type": "spell",
+                "uuid": "Item.sFHvcvAcLMjHQua3",
+                "broken": false
+              },
+              {
+                "name": "Yolande's Regal Presence",
+                "type": "spell",
+                "uuid": "Item.4wNBblpgksKUC3AR",
+                "broken": false
+              },
+              {
+                "name": "Zone of Truth",
+                "type": "spell",
+                "uuid": "Item.f20r8m2YAJR15Ofq",
+                "broken": false
+              }
+            ]
+          }
+        ]
       }
     },
     "Artificer": {
@@ -329,25 +1103,6 @@
       "id": "BB4w1RNuF0r4fQ68",
       "advancements": [
         {
-          "id": "MSF1wogSoeJqfxAR",
-          "title": "Class Features",
-          "type": "ItemGrant",
-          "items": [
-            {
-              "name": "Bard College",
-              "type": "feat",
-              "uuid": "Compendium.dnd5e.classfeatures.ILhzFHiRrqgQ9dFJ",
-              "broken": false
-            },
-            {
-              "name": "Expertise",
-              "type": "feat",
-              "uuid": "Compendium.fftweaks.classes.Item.yFlrSseG1cRM7M5E",
-              "broken": false
-            }
-          ]
-        },
-        {
           "id": "I7HqKmtMcat8Dm08",
           "title": "Features",
           "type": "ItemGrant",
@@ -400,7 +1155,26 @@
           ]
         },
         {
-          "id": "e0FUZL9SxuBimLv3",
+          "id": "OaNqsNIMJWkZdxKY",
+          "title": "Class Features",
+          "type": "ItemGrant",
+          "items": [
+            {
+              "name": "Expertise",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.yFlrSseG1cRM7M5E",
+              "broken": false
+            },
+            {
+              "name": "Jack of All Trades",
+              "type": "feat",
+              "uuid": "Compendium.fftweaks.classes.Item.aT3WQHFu2riqk5R1",
+              "broken": false
+            }
+          ]
+        },
+        {
+          "id": "hUJCSeZPjooChgBv",
           "title": "Class Features",
           "type": "ItemGrant",
           "items": [
@@ -413,97 +1187,64 @@
             {
               "name": "Spellcasting",
               "type": "feat",
-              "uuid": "Compendium.fftweaks.classes.Item.wB5ADHS6pJkl08SJ",
+              "uuid": "Compendium.fftweaks.classes.Item.mdSYsGr5pYuhEHWe",
               "broken": false
             }
           ]
-        },
-        {
-          "id": "lNvFp6OtycF06CoZ",
-          "title": "Cantrips",
-          "type": "ItemChoice",
-          "items": [
+        }
+      ],
+      "subclasses": {
+        "College of Glamour": {
+          "id": "MCXPPPX9PJkCqtae",
+          "advancements": [
             {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.dQXeyKnWmkSIGeID",
-              "broken": true
+              "id": "0Wn8ilqxVDetcEJb",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Magical Discoveries",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbbrdMagicalDis",
+                  "broken": false
+                }
+              ]
             },
             {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.GTHHK3JvCPNiVlTy",
-              "broken": true
+              "id": "yiYMrVRwPpGHPk0N",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Peerless Skill",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbbrdPeerlessSk",
+                  "broken": false
+                }
+              ]
             },
             {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.lpAgc7gqz6W9wRnh",
-              "broken": true
-            },
-            {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.Xqq6UCpGZJfQEWP7",
-              "broken": true
-            },
-            {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.FosC86Gfj2cwK5B3",
-              "broken": true
-            },
-            {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.4aSjsqcW0W7infwd",
-              "broken": true
-            },
-            {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.oDWTRw87W8Ok3UYE",
-              "broken": true
-            },
-            {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.IWRzBgSVTHPQYiqa",
-              "broken": true
-            },
-            {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.Mq8xcoVwrOvEMoRF",
-              "broken": true
-            },
-            {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.c323O6f2wtlSp37B",
-              "broken": true
-            },
-            {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.1qyvdYNuLUbPgu5O",
-              "broken": true
-            },
-            {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.rojyTUU3hZXo5Map",
-              "broken": true
-            },
-            {
-              "name": "[BROKEN]",
-              "type": "unknown",
-              "uuid": "Item.5j9PBff8U5ZXoUEo",
-              "broken": true
+              "id": "P34BmKnqAYXUdYol",
+              "title": "Subclass Features",
+              "type": "ItemGrant",
+              "items": [
+                {
+                  "name": "Bonus Proficiencies",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbbrdBonusProfi",
+                  "broken": false
+                },
+                {
+                  "name": "Cutting Words",
+                  "type": "feat",
+                  "uuid": "Compendium.dnd5e.classes24.Item.phbbrdCuttingWor",
+                  "broken": false
+                }
+              ]
             }
           ]
         }
-      ]
+      }
     },
     "Cleric": {
       "id": "CN36rig6kPJu9nFb",
@@ -3628,7 +4369,7 @@
             {
               "name": "Versatile",
               "type": "feat",
-              "uuid": "Item.ZfnezBQStawJZjuK",
+              "uuid": "Compendium.fftweaks.species.Item.vorwa5Oj8minofOW",
               "broken": false
             }
           ]
