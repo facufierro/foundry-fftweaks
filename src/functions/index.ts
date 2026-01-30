@@ -12,6 +12,7 @@ import { updateSpellLists } from "./utilities/update-spell-lists";
 import { updateAdvancements } from "./utilities/update-advancements";
 import { addFolderToAdvancement } from "./utilities/add-folder-to-advancement";
 import { AdvancementSync } from "../plugins/advancement-sync";
+import { mantleOfInspiration } from "./features/mantle-of-inspiration";
 
 export class Functions {
     static healTokens = healTokens;
@@ -28,4 +29,5 @@ export class Functions {
     static updateAdvancements = updateAdvancements;
     static addFolderToAdvancement = addFolderToAdvancement;
     static syncAdvancements = AdvancementSync.syncAll.bind(AdvancementSync);
+    static mantleOfInspiration = mantleOfInspiration;
 }
