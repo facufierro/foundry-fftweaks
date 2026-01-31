@@ -13,6 +13,7 @@ import { updateAdvancements } from "./utilities/update-advancements";
 import { addFolderToAdvancement } from "./utilities/add-folder-to-advancement";
 import { AdvancementSync } from "../plugins/advancement-sync";
 import { mantleOfInspiration } from "./features/mantle-of-inspiration";
+import { beguilingMagic } from "./features/beguiling-magic";
 
 export class Functions {
     static healTokens = healTokens;
@@ -30,4 +31,5 @@ export class Functions {
     static addFolderToAdvancement = addFolderToAdvancement;
     static syncAdvancements = AdvancementSync.syncAll.bind(AdvancementSync);
     static mantleOfInspiration = mantleOfInspiration;
+    static beguilingMagic = beguilingMagic;
 }
