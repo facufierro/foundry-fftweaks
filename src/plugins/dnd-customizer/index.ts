@@ -23,16 +23,16 @@ export class DNDCustomizer {
         if (this.dnd5eDefaults.has(uuid)) {
             Debug.Log(`Deferring registration of default spell list`);
             this.pendingDefaults.push(uuid);
-            return; 
+            return;
         }
         return this.originalRegister.call(dnd5e.registry.spellLists, uuid);
     }
 
     static async registerCustomSpellLists(): Promise<void> {
         Debug.Log("Searching for custom spell lists...");
-        
+
         const journalEntry: any = await fromUuid("Compendium.fftweaks.journals.JournalEntry.ij43IJbeKdTP3rJd");
-        
+
         if (journalEntry) {
             const spellListPages = journalEntry.pages.filter((page: any) => page.type === "spells");
             Debug.Log(`Found ${spellListPages.length} custom spell list pages`);
@@ -45,7 +45,7 @@ export class DNDCustomizer {
         }
 
         await this.processDeferredDefaults();
-        
+
         Debug.Success("Spell list registration complete");
     }
 
@@ -54,9 +54,9 @@ export class DNDCustomizer {
             const type = page.system?.type;
             const identifier = page.system?.identifier;
             const key = `${type}:${identifier}`;
-            
+
             this.userListsRegistered.add(key);
-            
+
             Debug.Log(`Registering custom spell list: ${page.name} (${key})`);
             await dnd5e.registry.spellLists.register(page.uuid);
         } catch (error) {
@@ -66,12 +66,12 @@ export class DNDCustomizer {
 
     static async processDeferredDefaults(): Promise<void> {
         Debug.Log(`Processing ${this.pendingDefaults.length} deferred default spell lists...`);
-        
+
         for (const uuid of this.pendingDefaults) {
             try {
                 const page: any = await fromUuid(uuid);
                 if (!page) continue;
-                
+
                 const type = page.system?.type;
                 const identifier = page.system?.identifier;
                 const key = `${type}:${identifier}`;

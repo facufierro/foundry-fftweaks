@@ -7,7 +7,9 @@ import { FunctionBar } from "./plugins/function-bar";
 import { TargetPicker } from "./plugins/target-picker";
 import { DNDCustomizer as DNDCustomizer } from "./plugins/dnd-customizer";
 import { AdvancementSync } from "./plugins/advancement-sync";
+
 import { Automations } from "./plugins/automations";
+import { TokenVisuals } from "./plugins/token-visuals";
 
 const FFT = ((globalThis as any).FFT ??= {});
 FFT.Debug = Debug;
@@ -23,5 +25,7 @@ Hooks.once("ready", async () => {
     await FunctionBar.initialize();
     TargetPicker.initialize();
     AdvancementSync.initialize();
+
     Automations.initialize();
+    TokenVisuals.initialize();
 });
