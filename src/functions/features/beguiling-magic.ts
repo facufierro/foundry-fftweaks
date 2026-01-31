@@ -45,6 +45,8 @@ export async function beguilingMagic(item: any): Promise<void> {
                 icon: '<i class="fas fa-check"></i>',
                 label: "Yes",
                 callback: async () => {
+                    console.log("FFTweaks | beguilingMagic | User clicked Yes");
+                    // Using the item directly should trigger the activity selection dialog if multiple exist
                     await beguilingMagicFeature.use();
                 }
             },
