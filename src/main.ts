@@ -8,7 +8,7 @@ import { TargetPicker } from "./plugins/target-picker";
 import { DNDCustomizer as DNDCustomizer } from "./plugins/dnd-customizer";
 import { AdvancementSync } from "./plugins/advancement-sync";
 
-import { Automations } from "./plugins/automations";
+import { Automations } from "./automations";
 import { TokenVisuals } from "./plugins/token-visuals";
 
 const FFT = ((globalThis as any).FFT ??= {});
