@@ -1,49 +1,21 @@
 export function jackOfAllTrades() {
-    const SCOPE = "fftweaks";
-    const FLAG = "jackOfAllTradesActive";
+    (Hooks as any).on("dnd5e.useItem", (i: any) => i.name === "Jack of All Trades" && i.actor?.setFlag("fftweaks", "joat", true));
+    (Hooks as any).on("dnd5e.postUseActivity", (a: any) => a.item?.name === "Jack of All Trades" && a.actor?.setFlag("fftweaks", "joat", true));
 
-    const activate = async (actor: any) => {
-        if (!actor) return;
-        await actor.setFlag(SCOPE, FLAG, true);
-        ui.notifications?.info("Jack of All Trades ready.");
-    };
+    const handle = (c: any) => {
+        const a = c.subject;
+        if (!a?.getFlag?.("fftweaks", "joat") || c._joat) return;
 
-    (Hooks as any).on("dnd5e.useItem", (item: any) => {
-        if (item.name === "Jack of All Trades") activate(item.actor);
-    });
-
-    (Hooks as any).on("dnd5e.postUseActivity", (activity: any) => {
-        if (activity.item?.name === "Jack of All Trades") activate(activity.actor);
-    });
-
-    const onPreRoll = (config: any) => {
-        const actor = config.subject;
-        if (!actor?.getFlag?.(SCOPE, FLAG) || config._fft_joat) return;
-
-        let proficient = false;
-        if (config.skill) {
-            proficient = actor.system.skills[config.skill]?.value >= 1;
-        } else if (config.ability && config.hookNames?.includes("abilityCheck")) {
-            proficient = false;
-        } else {
-            return;
-        }
-
-        if (!proficient) {
-            const bonus = Math.floor((actor.system.attributes.prof ?? 0) / 2);
-            if (bonus > 0) {
-                config._fft_joat = true;
-                config.rolls = config.rolls || [{}];
-                const roll = config.rolls[0];
-                roll.parts = roll.parts || [];
-                roll.parts.push(`${bonus}`);
-
-                actor.unsetFlag(SCOPE, FLAG);
-                ui.notifications?.info(`Jack of All Trades applied (+${bonus})!`);
-            }
+        if ((c.skill && a.system.skills[c.skill]?.value < 1) || (!c.skill && c.ability)) {
+            c._joat = true;
+            const b = Math.floor((a.system.attributes.prof ?? 0) / 2);
+            const r = (c.rolls = c.rolls || [{}])[0];
+            (r.parts = r.parts || []).push(`${b}`);
+            a.unsetFlag("fftweaks", "joat");
+            ui.notifications?.info(`Jack of All Trades (+${b})`);
         }
     };
 
-    (Hooks as any).on("dnd5e.preRollSkill", onPreRoll);
-    (Hooks as any).on("dnd5e.preRollAbilityCheck", onPreRoll);
+    (Hooks as any).on("dnd5e.preRollSkill", handle);
+    (Hooks as any).on("dnd5e.preRollAbilityCheck", handle);
 }
