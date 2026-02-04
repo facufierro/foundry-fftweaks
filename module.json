@@ -11,7 +11,7 @@
       {
         "id": "dnd5e",
         "type": "system",
-        "compatibility": {}
+        "compatibility": { }
       }
     ]
   },
@@ -19,9 +19,9 @@
     "dist/main.js"
   ],
   "styles": [
-    {
-      "src": "src/styles/style.css"
-    }
+    "src/ui/styles/function-bar.css",
+    "src/ui/styles/argon-hud.css",
+    "src/ui/styles/main.css"
   ],
   "packs": [
     {
@@ -149,9 +149,9 @@
   "authors": [
     {
       "name": "fierrof",
-      "flags": {}
+      "flags": { }
     }
   ],
   "description": "",
-  "flags": {}
+  "flags": { }
 }
