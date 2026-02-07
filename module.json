@@ -19,9 +19,8 @@
     "dist/main.js"
   ],
   "styles": [
-    "src/ui/styles/function-bar.css",
-    "src/ui/styles/argon-hud.css",
-    "src/ui/styles/main.css"
+    "src/styles/argon-hud.css",
+    "src/styles/main.css"
   ],
   "packs": [
     {
