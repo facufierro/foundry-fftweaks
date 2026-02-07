@@ -9,6 +9,7 @@ import { distributeExperience } from "./loot/distribute-experience";
 import { lootCorpses } from "./loot/loot-all";
 import { replaceCompendiumItems } from "./utilities/replace-compendium-items";
 import { updateSpellLists } from "./utilities/update-spell-lists";
+import { updateScenePaths } from "./utilities/update-scene-paths";
 
 import { addFolderToAdvancement } from "./utilities/add-folder-to-advancement";
 import { AdvancementSync } from "../plugins/advancement-sync";
@@ -26,6 +27,7 @@ export class Functions {
     static lootCorpses = lootCorpses;
     static replaceCompendiumItems = replaceCompendiumItems;
     static updateSpellLists = updateSpellLists;
+    static updateScenePaths = updateScenePaths;
 
     static addFolderToAdvancement = addFolderToAdvancement;
     static syncAdvancements = AdvancementSync.syncAll.bind(AdvancementSync);
