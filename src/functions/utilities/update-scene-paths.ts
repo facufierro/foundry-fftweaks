@@ -16,7 +16,9 @@ export async function updateScenePaths(
         
         for (const [find, replace] of replacements) {
             if (path.startsWith(find)) {
-                return replace + path.substring(find.length);
+                const newPath = replace + path.substring(find.length);
+                console.log(`fixPath: "${path}" -> "${newPath}"`);
+                return newPath;
             }
         }
         
@@ -70,14 +72,22 @@ export async function updateScenePaths(
         if (tile.texture?.src) {
             const fixed = fixPath(tile.texture.src);
             if (fixed !== tile.texture.src) {
+                console.log(`Tile ${tile.id}: Updating texture from ${tile.texture.src} to ${fixed}`);
                 update["texture.src"] = fixed;
                 hasChanges = true;
             }
         }
 
-        if ((tile.flags as any)?.[" monks-active-tiles"]) {
-            const fixed = fixObject((tile.flags as any)["monks-active-tiles"]);
-            if (JSON.stringify(fixed) !== JSON.stringify((tile.flags as any)["monks-active-tiles"])) {
+        if ((tile.flags as any)?.["monks-active-tiles"]) {
+            const original = (tile.flags as any)["monks-active-tiles"];
+            const fixed = fixObject(original);
+            const originalStr = JSON.stringify(original);
+            const fixedStr = JSON.stringify(fixed);
+            
+            if (fixedStr !== originalStr) {
+                console.log(`Tile ${tile.id}: Updating monks-active-tiles`);
+                console.log("Original files:", original.files?.map((f: any) => f.name));
+                console.log("Fixed files:", fixed.files?.map((f: any) => f.name));
                 update["flags.monks-active-tiles"] = fixed;
                 hasChanges = true;
             }
@@ -88,6 +98,7 @@ export async function updateScenePaths(
         }
     }
     if (tileUpdates.length) {
+        console.log(`Updating ${tileUpdates.length} tiles`);
         await scene.updateEmbeddedDocuments("Tile", tileUpdates);
         updateCount += tileUpdates.length;
     }
