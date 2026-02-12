@@ -45,6 +45,8 @@ export class RestAutomation {
 		try {
 			const effectName = restType === 'long' ? 'Long Rested' : 'Short Rested';
 			const oppositeName = restType === 'long' ? 'Short Rested' : 'Long Rested';
+			const statusId = restType === 'long' ? 'fftweaks.long-rested' : 'fftweaks.short-rested';
+			const tint = restType === 'long' ? '#ffffff' : '#646464';
 
 			await RestAutomation.removeAllEffectsByName(actor, oppositeName);
 			await RestAutomation.removeDuplicateEffectsByName(actor, effectName);
@@ -56,12 +58,16 @@ export class RestAutomation {
 				{
 					name: effectName,
 					label: effectName,
-					icon: restType === 'long' ? 'icons/magic/life/heart-cross-strong-flame-purple-orange.webp' : 'icons/svg/sleep.svg',
+					img: 'icons/svg/sleep.svg',
+					icon: 'icons/svg/sleep.svg',
+					tint,
+					statuses: [statusId],
 					disabled: false,
 					transfer: false,
 					flags: {
 						core: {
-							overlay: false
+							overlay: false,
+							statusId
 						},
 						fftweaks: {
 							restType
