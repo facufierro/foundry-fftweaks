@@ -1,14 +1,22 @@
 import { resourceful } from './species/human/resourceful';
-import { beguilingMagic } from './classes/bard/beguiling-magic';
-import { jackOfAllTrades } from './classes/bard/jack-of-all-trades';
-import { lucky } from './classes/feats/origin/lucky';
+import { Artificer } from './classes/artificer';
+import { Barbarian } from './classes/barbarian';
+import { Bard } from './classes/bard';
+import { Runesmith } from './subclasses/artificer/runesmith';
+import { PathOfTheBerserker } from './subclasses/barbarian/path-of-the-berserker';
+import { CollegeOfGlamour } from './subclasses/bard/college-of-glamour';
+import { lucky } from './feats/origin/lucky';
 import { advancementLinker } from './utilities/update-advancements';
 
 export class Automations {
     static initialize() {
         resourceful();
-        beguilingMagic();
-        jackOfAllTrades();
+        Artificer.initialize();
+        Barbarian.initialize();
+        Bard.initialize();
+        Runesmith.initialize();
+        PathOfTheBerserker.initialize();
+        CollegeOfGlamour.initialize();
         lucky();
         advancementLinker();
     }
