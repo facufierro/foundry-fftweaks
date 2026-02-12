@@ -1,7 +1,9 @@
 ## Automations
-### General
-- [ ] Prepared spells module
-- [ ] Attunement system
+### System
+- [ ] Rest
+- [ ] Actions
+- [ ] Prepared spells
+- [ ] Attunement
 - [ ] Extra Attack
 ### Classes
 - ### Artificer
