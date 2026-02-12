@@ -12,15 +12,20 @@ import { advancementLinker } from './utilities/update-advancements';
 
 export class Automations {
     static initialize() {
-        resourceful();
+        // Artificer
         Artificer.initialize();
-        Barbarian.initialize();
-        Bard.initialize();
         Runesmith.initialize();
+        // Barbarian
+        Barbarian.initialize();
         PathOfTheBerserker.initialize();
+        // Bard
+        Bard.initialize();
         CollegeOfGlamour.initialize();
-        ActionsAutomation.initialize();
+        // System
         RestAutomation.initialize();
+        ActionsAutomation.initialize();
+
+        resourceful();
         lucky();
         advancementLinker();
     }
