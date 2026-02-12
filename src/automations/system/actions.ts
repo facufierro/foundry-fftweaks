@@ -4,11 +4,32 @@ export class ActionsAutomation {
 	private static recentApplications = new Map<string, number>();
 
 	static initialize() {
-		(Hooks as any).on('dnd5e.useItem', (item: any) => {
-			ActionsAutomation.handleItemUse(item?.actor, item, null);
+		(Hooks as any).on('dnd5e.postUseActivity', (activity: any) => {
+			if (ActionsAutomation.wouldTriggerRoll(activity)) return;
+			ActionsAutomation.handleItemUse(activity?.actor ?? activity?.item?.actor, activity?.item, activity);
 		});
 
-		(Hooks as any).on('dnd5e.postUseActivity', (activity: any) => {
+		(Hooks as any).on('dnd5e.postRollAttack', (rolls: any, data: any) => {
+			const activity = data.subject;
+			if (!activity) return;
+			ActionsAutomation.handleItemUse(activity?.actor ?? activity?.item?.actor, activity?.item, activity);
+		});
+
+		(Hooks as any).on('dnd5e.rollDamage', (rolls: any, data: any) => {
+			const activity = data.subject;
+			if (!activity) return;
+			ActionsAutomation.handleItemUse(activity?.actor ?? activity?.item?.actor, activity?.item, activity);
+		});
+
+		(Hooks as any).on('dnd5e.rollFormula', (rolls: any, data: any) => {
+			const activity = data.subject;
+			if (!activity) return;
+			ActionsAutomation.handleItemUse(activity?.actor ?? activity?.item?.actor, activity?.item, activity);
+		});
+
+		(Hooks as any).on('dnd5e.rollToolCheck', (rolls: any, data: any) => {
+			const activity = data.subject;
+			if (!activity) return;
 			ActionsAutomation.handleItemUse(activity?.actor ?? activity?.item?.actor, activity?.item, activity);
 		});
 
@@ -62,6 +83,27 @@ export class ActionsAutomation {
 				}
 			}
 		]);
+	}
+
+	private static wouldTriggerRoll(activity: any): boolean {
+		if (!activity) return false;
+
+		// Check for attacks (dnd5e 3.x+ usually has attack object or rolls)
+		if (activity.attack) return true;
+
+		// Check for saves (dc object)
+		if (activity.save?.ability) return true;
+
+		// Check for damage parts
+		if (activity.damage?.parts?.length > 0) return true;
+
+		// Check for generic rolls collection (dnd5e 3.x+)
+		if (activity.rolls?.size > 0 || activity.rolls?.length > 0) return true;
+
+		// Check for Healing activity specifically if not covered above
+		if (activity.type === "heal") return true;
+
+		return false;
 	}
 
 	private static getActionType(item: any, activity: any): ActionType | null {
