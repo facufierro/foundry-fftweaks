@@ -1,6 +1,6 @@
 ## Automations
 ### System
-- [ ] Rest
+- [x] Rest
 - [ ] Actions
 - [ ] Prepared spells
 - [ ] Attunement
@@ -70,6 +70,10 @@
 ## Functions
 - [ ] 
 
-
 ## Modules
 - [ ] 
+
+## Utils
+- [ ] Effect util
+- [ ] Item util
+
