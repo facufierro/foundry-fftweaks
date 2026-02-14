@@ -43,6 +43,19 @@ export class RestAutomation {
 		RestAutomation.pendingRestEffects.add(pendingKey);
 
 		try {
+			if (restType === 'long') {
+				// Trigger Spellcasting activities
+				const spellcastingItems = actor.items.filter((i: any) => i.name.toLowerCase() === "spellcasting");
+				for (const item of spellcastingItems) {
+					if (item.system.activities) {
+						for (const activity of item.system.activities) {
+							// Execute the activity with configuration dialog (user needs to make choices if any)
+							activity.use({ configure: true });
+						}
+					}
+				}
+			}
+
 			const effectName = restType === 'long' ? 'Long Rested' : 'Short Rested';
 			const oppositeName = restType === 'long' ? 'Short Rested' : 'Long Rested';
 			const statusId = restType === 'long' ? 'fftweaks.long-rested' : 'fftweaks.short-rested';
