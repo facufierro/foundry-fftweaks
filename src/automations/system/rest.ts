@@ -96,6 +96,9 @@ export class RestAutomation {
 						fftweaks: {
 							restType
 						}
+					},
+					duration: {
+						seconds: 6
 					}
 				}
 			]);
