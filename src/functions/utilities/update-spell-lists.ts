@@ -1,5 +1,6 @@
 /**
- * Update spell list journal pages from a folder of spells
+ * Replaces the spell list in a target Journal Page (matching the folder name) with Compendium UUIDs of spells found in the specified World Folder.
+ * 
  * @param sourceFolderId - The folder ID containing spells (e.g., "Folder.qE8ivHilYnuVFpyk")
  * @param sourceCompendiumId - The source compendium with spell items (e.g., "fftweaks.spells")
  * @param targetJournalPackId - The target journal compendium (e.g., "fftweaks.journals")
