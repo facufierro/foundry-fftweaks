@@ -45,12 +45,23 @@ export class RestAutomation {
 		try {
 			if (restType === 'long') {
 				// Trigger Spellcasting activities
-				const spellcastingItems = actor.items.filter((i: any) => i.name.toLowerCase() === "spellcasting");
-				for (const item of spellcastingItems) {
-					if (item.system.activities) {
-						for (const activity of item.system.activities) {
-							// Execute the activity with configuration dialog (user needs to make choices if any)
-							activity.use({ configure: true });
+				const spellcastingItems = actor.items.filter((i: any) => i.name.toLowerCase() === "spellcasting" && i.system.activities?.size > 0);
+				
+				if (spellcastingItems.length > 0) {
+					const confirmed = await Dialog.confirm({
+						title: "Spellcasting",
+						content: "<p>Do you want to change your spells?</p>",
+						defaultYes: false
+					});
+
+					if (confirmed) {
+						for (const item of spellcastingItems) {
+							if (item.system.activities?.size) {
+								for (const activity of item.system.activities) {
+									// Execute the activity with configuration dialog (user needs to make choices if any)
+									activity.use({ configure: true });
+								}
+							}
 						}
 					}
 				}
