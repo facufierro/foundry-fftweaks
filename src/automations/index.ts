@@ -5,6 +5,7 @@ import { Bard } from './classes/bard';
 import { Runesmith } from './subclasses/artificer/runesmith';
 import { PathOfTheBerserker } from './subclasses/barbarian/path-of-the-berserker';
 import { CollegeOfGlamour } from './subclasses/bard/college-of-glamour';
+import { PreparedSpellsAutomation } from './system/prepared-spells';
 import { ActionsAutomation } from './system/actions';
 import { RestAutomation } from './system/rest';
 import { lucky } from './feats/origin/lucky';
@@ -24,6 +25,7 @@ export class Automations {
         // System
         RestAutomation.initialize();
         ActionsAutomation.initialize();
+        PreparedSpellsAutomation.initialize();
 
         resourceful();
         lucky();
