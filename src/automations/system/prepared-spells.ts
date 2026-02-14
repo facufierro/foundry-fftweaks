@@ -11,6 +11,9 @@ export class PreparedSpellsAutomation {
 			// Always allow un-preparing (setting to 0 or false)
 			if (!preparedUpdate) return;
 
+            // Cantrips are always allowed
+            if (item.system.level === 0) return;
+
 			const actor = item.actor;
 			if (!actor) return;
 
@@ -20,28 +23,23 @@ export class PreparedSpellsAutomation {
 
 			// Get scale values dynamically based on class identifier
 			const maxPrepared = foundry.utils.getProperty(actor, `system.scale.${sourceClass}.prepared-spells`);
-			const maxCantrips = foundry.utils.getProperty(actor, `system.scale.${sourceClass}.known-cantrips`);
-
-			const isCantrip = item.system.level === 0;
-			const limit = isCantrip ? maxCantrips : maxPrepared;
 
 			// If no limit is set via scale for this class, allow it
-			if (limit === undefined) return;
+			if (maxPrepared === undefined) return;
 
 			// Count currently prepared spells of relevant type AND same source class
 			const currentPrepared = actor.items.filter((i: any) => 
 				i.type === 'spell' && 
 				i.system.prepared === 1 && 
-				(isCantrip ? i.system.level === 0 : i.system.level > 0) &&
+				i.system.level > 0 && // Only count leveled spells
 				i.system.sourceClass === sourceClass && // Only count spells from the same class
 				i.id !== item.id
 			).length;
 
-			if (currentPrepared >= limit) {
-				const type = isCantrip ? "Cantrips" : "Spells";
+			if (currentPrepared >= maxPrepared) {
 				// Title case the class name for the message if possible, or just use identifier
 				const className = sourceClass.charAt(0).toUpperCase() + sourceClass.slice(1);
-				ui.notifications?.warn(`Maximum ${className} ${type} Preparation Limit Reached (${limit}).`);
+				ui.notifications?.warn(`Maximum ${className} Spells Preparation Limit Reached (${maxPrepared}).`);
 				return false;
 			}
 		});
