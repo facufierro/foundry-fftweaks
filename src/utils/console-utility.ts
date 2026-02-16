@@ -109,11 +109,18 @@ export class ConsoleCapture {
     private static addEntry(level: string, ...args: any[]): void {
         // Filter out CSS styling arguments (come after %c in console calls)
         const filteredArgs = args.filter(arg => {
-            if (typeof arg === "string" && /^(color:|font-|background)/.test(arg.trim())) {
-                return false;
+            if (typeof arg === "string") {
+                // Remove CSS styling commands
+                if (/^(color:|font-|background)/.test(arg.trim())) return false;
+                
+                // IGNORE: Foundry warning about uploading to system/module folder
+                // This warning triggers on every upload, causing an infinite loop
+                if (arg.includes("You have uploaded files into a module or system folder")) return false;
             }
             return true;
         });
+
+        if (filteredArgs.length === 0) return;
 
         const message = filteredArgs.map(a => this.formatArg(a)).join(" ");
         const line = `[${this.timestamp()}] [${level.padEnd(5)}] ${message}`;
@@ -164,7 +171,33 @@ export class ConsoleCapture {
 
             const file = new File([this.fullLog], this.FILE_NAME, { type: "text/plain" });
             const FP = this.getFilePicker();
-            await FP.upload("data", this.UPLOAD_PATH, file, {}, { notify: false });
+            
+            // SUPPRESS WARNING: Temporarily monkey-patch console.warn and console.log to silence the upload messages from Foundry
+            // This prevents "unsafe upload" warning AND "file saved" success message from appearing in the console
+            const originalWarn = console.warn;
+            const originalLog = console.log;
+            
+            console.warn = (...args: any[]) => {
+                if (args.some(arg => typeof arg === "string" && arg.includes("You have uploaded files into a module or system folder"))) {
+                    return;
+                }
+                originalWarn.apply(console, args);
+            };
+
+            console.log = (...args: any[]) => {
+                if (args.some(arg => typeof arg === "string" && arg.includes(`${this.FILE_NAME} saved to`))) {
+                    return;
+                }
+                originalLog.apply(console, args);
+            };
+
+            try {
+                await FP.upload("data", this.UPLOAD_PATH, file, {}, { notify: false });
+            } finally {
+                // Restore original console methods immediately after upload
+                console.warn = originalWarn;
+                console.log = originalLog;
+            }
         } catch (err) {
             // Use original console to avoid infinite loop
             this.originalError("[ConsoleCapture] Failed to flush log:", err);
