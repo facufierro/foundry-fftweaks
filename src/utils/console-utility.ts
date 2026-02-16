@@ -1,217 +1,126 @@
 /**
- * ConsoleCapture - Intercepts all browser console output and persists it
- * to a console.txt file in the Foundry Data root via FilePicker API.
- * 
- * The log file resets on each page reload (matching Foundry's native console behavior).
- * Uses .txt extension since Foundry blocks .log uploads.
+ * ConsoleCapture - Bare minimum console capture utility.
+ * Captures all console logs and saves them to a file via Foundry's FilePicker.
+ * Filters out Foundry's upload messages to prevent infinite loops and console bloat.
  */
 export class ConsoleCapture {
     private static buffer: string[] = [];
+    private static fullLog = "";
     private static flushInterval: number | null = null;
     private static isReady = false;
     private static isFlushing = false;
-    private static fullLog = "";
 
     private static readonly FLUSH_INTERVAL_MS = 2000;
     private static readonly UPLOAD_PATH = "modules/fftweaks";
     private static readonly FILE_NAME = "console.txt";
 
-    // Store original console methods
+    // Original console methods
     private static originalLog = console.log.bind(console);
     private static originalWarn = console.warn.bind(console);
     private static originalError = console.error.bind(console);
     private static originalInfo = console.info.bind(console);
     private static originalDebug = console.debug.bind(console);
 
-    /**
-     * Initialize console capture. Call as early as possible in the module lifecycle.
-     * Starts intercepting immediately but defers file writes until Foundry is ready.
-     */
     static initialize(): void {
         this.patchConsole();
-        this.addEntry("INFO", "=== Console capture started ===");
-
-        // Wait for Foundry to be fully ready before starting file writes
+        
         Hooks.once("ready" as any, () => {
             this.isReady = true;
             this.startFlushTimer();
-            this.registerUnloadHandler();
+            window.addEventListener("beforeunload", () => this.flushSync());
         });
     }
 
-    /**
-     * Monkey-patch all console methods to intercept output.
-     */
     private static patchConsole(): void {
-        console.log = (...args: any[]) => {
-            this.addEntry("LOG", ...args);
-            this.originalLog(...args);
-        };
+        const methods = ['log', 'warn', 'error', 'info', 'debug'] as const;
+        
+        methods.forEach(method => {
+            (console as any)[method] = (...args: any[]) => {
+                // If it's one of Foundry's upload messages, we must ignore it to prevent loops
+                // But we let it pass through to the real console ONLY if it's NOT the upload message
+                // However, the user wants "no output itself". The upload message IS output from this utility's action.
+                // So we suppress it from BOTH the log file AND the browser console.
+                
+                const isUploadMessage = args.some(arg => 
+                    typeof arg === "string" && (
+                        arg.includes("You have uploaded files into a module or system folder") || 
+                        arg.includes(`${this.FILE_NAME} saved to`)
+                    )
+                );
 
-        console.warn = (...args: any[]) => {
-            this.addEntry("WARN", ...args);
-            this.originalWarn(...args);
-        };
+                if (isUploadMessage) {
+                    return; // Suppress completely
+                }
 
-        console.error = (...args: any[]) => {
-            this.addEntry("ERROR", ...args);
-            this.originalError(...args);
-        };
+                // Capture for file
+                this.addEntry(method.toUpperCase(), ...args);
 
-        console.info = (...args: any[]) => {
-            this.addEntry("INFO", ...args);
-            this.originalInfo(...args);
-        };
-
-        console.debug = (...args: any[]) => {
-            this.addEntry("DEBUG", ...args);
-            this.originalDebug(...args);
-        };
+                // Pass to original console
+                switch (method) {
+                    case 'log': this.originalLog(...args); break;
+                    case 'warn': this.originalWarn(...args); break;
+                    case 'error': this.originalError(...args); break;
+                    case 'info': this.originalInfo(...args); break;
+                    case 'debug': this.originalDebug(...args); break;
+                }
+            };
+        });
     }
 
-    /**
-     * Format a single argument for the log file.
-     */
+    private static addEntry(level: string, ...args: any[]): void {
+        // Filter CSS styling
+        const content = args.filter(arg => typeof arg !== "string" || !/^(color:|font-|background)/.test(arg.trim()))
+                            .map(arg => this.formatArg(arg))
+                            .join(" ");
+
+        if (!content) return;
+        
+        // Simple format: [LEVEL] Message
+        this.buffer.push(`[${level.padEnd(5)}] ${content}`);
+    }
+
     private static formatArg(arg: any): string {
         if (arg === undefined) return "undefined";
         if (arg === null) return "null";
-
-        if (arg instanceof Error) {
-            return `${arg.message}\n${arg.stack ?? ""}`;
-        }
-
+        if (arg instanceof Error) return `${arg.message}\n${arg.stack || ""}`;
         if (typeof arg === "object") {
-            try {
-                return JSON.stringify(arg, null, 2);
-            } catch {
-                return String(arg);
-            }
+            try { return JSON.stringify(arg); } // Compact JSON (no indentation) to save space
+            catch { return String(arg); }
         }
-
         return String(arg);
     }
 
-    /**
-     * Build a timestamp string in HH:MM:SS.mmm format.
-     */
-    private static timestamp(): string {
-        const now = new Date();
-        const h = String(now.getHours()).padStart(2, "0");
-        const m = String(now.getMinutes()).padStart(2, "0");
-        const s = String(now.getSeconds()).padStart(2, "0");
-        const ms = String(now.getMilliseconds()).padStart(3, "0");
-        return `${h}:${m}:${s}.${ms}`;
-    }
-
-    /**
-     * Add a formatted entry to the buffer.
-     */
-    private static addEntry(level: string, ...args: any[]): void {
-        // Filter out CSS styling arguments (come after %c in console calls)
-        const filteredArgs = args.filter(arg => {
-            if (typeof arg === "string") {
-                // Remove CSS styling commands
-                if (/^(color:|font-|background)/.test(arg.trim())) return false;
-                
-                // IGNORE: Foundry warning about uploading to system/module folder
-                // This warning triggers on every upload, causing an infinite loop
-                if (arg.includes("You have uploaded files into a module or system folder")) return false;
-            }
-            return true;
-        });
-
-        if (filteredArgs.length === 0) return;
-
-        const message = filteredArgs.map(a => this.formatArg(a)).join(" ");
-        const line = `[${this.timestamp()}] [${level.padEnd(5)}] ${message}`;
-        this.buffer.push(line);
-    }
-
-    /**
-     * Start the periodic flush timer.
-     */
     private static startFlushTimer(): void {
-        this.flushInterval = window.setInterval(() => {
-            this.flush();
-        }, this.FLUSH_INTERVAL_MS);
+        this.flushInterval = window.setInterval(() => this.flush(), this.FLUSH_INTERVAL_MS);
     }
 
-    /**
-     * Register a beforeunload handler for a final flush.
-     */
-    private static registerUnloadHandler(): void {
-        window.addEventListener("beforeunload", () => {
-            if (this.flushInterval !== null) {
-                window.clearInterval(this.flushInterval);
-            }
-            this.flushSync();
-        });
-    }
-
-    /**
-     * Get the FilePicker class using the v13 namespaced path.
-     */
-    private static getFilePicker(): any {
-        return (foundry as any).applications.apps.FilePicker.implementation;
-    }
-
-    /**
-     * Async flush: upload the accumulated buffer to the log file.
-     * Appends new entries to the full log and overwrites the file each time.
-     */
     private static async flush(): Promise<void> {
-        if (this.buffer.length === 0 || this.isFlushing) return;
+        if (this.buffer.length === 0 || this.isFlushing || !this.isReady) return;
 
         this.isFlushing = true;
-
+        
         try {
-            // Append new buffer entries to the full log
             this.fullLog += this.buffer.join("\n") + "\n";
             this.buffer = [];
 
             const file = new File([this.fullLog], this.FILE_NAME, { type: "text/plain" });
-            const FP = this.getFilePicker();
-            
-            // SUPPRESS WARNING: Temporarily monkey-patch console.warn and console.log to silence the upload messages from Foundry
-            // This prevents "unsafe upload" warning AND "file saved" success message from appearing in the console
-            const originalWarn = console.warn;
-            const originalLog = console.log;
-            
-            console.warn = (...args: any[]) => {
-                if (args.some(arg => typeof arg === "string" && arg.includes("You have uploaded files into a module or system folder"))) {
-                    return;
-                }
-                originalWarn.apply(console, args);
-            };
+            const FP = (foundry as any).applications.apps.FilePicker.implementation;
 
-            console.log = (...args: any[]) => {
-                if (args.some(arg => typeof arg === "string" && arg.includes(`${this.FILE_NAME} saved to`))) {
-                    return;
-                }
-                originalLog.apply(console, args);
-            };
-
-            try {
-                await FP.upload("data", this.UPLOAD_PATH, file, {}, { notify: false });
-            } finally {
-                // Restore original console methods immediately after upload
-                console.warn = originalWarn;
-                console.log = originalLog;
-            }
+            // We don't need to monkey-patch here anymore because our MAIN patch (above)
+            // already filters out the upload messages from both the log file AND the browser console.
+            // When FilePicker calls console.warn/info, it hits our patched method, sees the string, and returns early.
+            
+            await FP.upload("data", this.UPLOAD_PATH, file, {}, { notify: false });
         } catch (err) {
-            // Use original console to avoid infinite loop
-            this.originalError("[ConsoleCapture] Failed to flush log:", err);
+            this.originalError("[ConsoleCapture] Flush failed:", err);
         } finally {
             this.isFlushing = false;
         }
     }
 
-    /**
-     * Synchronous flush using sendBeacon (best-effort for unload events).
-     */
     private static flushSync(): void {
         if (this.buffer.length === 0) return;
-
+        
         try {
             this.fullLog += this.buffer.join("\n") + "\n";
             this.buffer = [];
@@ -223,8 +132,6 @@ export class ConsoleCapture {
             formData.append("upload", file, this.FILE_NAME);
 
             navigator.sendBeacon("/upload", formData);
-        } catch {
-            // Best-effort, nothing more we can do during unload
-        }
+        } catch { /* best effort */ }
     }
 }
