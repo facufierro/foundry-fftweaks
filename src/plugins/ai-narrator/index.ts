@@ -139,7 +139,11 @@ export const AINarrator = {
             .replace("{result}", resultText);
             
         // Forcibly append instructions to ensure settings are respected
-        prompt += ` Answer in ${language} (if Spanish, use Neutral/Latin American Spanish). Write a single, concise sentence in the style of a high-quality fantasy novel. Describe the physical action and impact in the FIRST PERSON PRESENT TENSE (e.g. "I swing", not "I swung"). Do not describe feelings, only the action.`;
+        const isPC = actor.type === "character";
+        const perspective = isPC ? "FIRST PERSON" : "THIRD PERSON";
+        const perspectiveExample = isPC ? '(e.g. "I swing", not "I swung")' : `(e.g. "${actor.name} swings", not "${actor.name} swung")`;
+        
+        prompt += ` Answer in ${language} (if Spanish, use Neutral/Latin American Spanish). Write a single, concise sentence in the style of a high-quality fantasy novel. Describe the physical action and impact in the ${perspective} PRESENT TENSE ${perspectiveExample}. Do not describe feelings, only the action.`;
 
         try {
             console.log("FFTweaks | AI Narrator | Sending prompt to AI...", prompt);
@@ -235,12 +239,18 @@ export const AINarrator = {
         
         const language = game.settings.get(MODULE_ID as any, `${PLUGIN_ID}.language`) as string;
         const promptTemplate = game.settings.get(MODULE_ID as any, `${PLUGIN_ID}.prompt`) as string;
-        const prompt = promptTemplate
+        let prompt = promptTemplate
             .replace("{actor}", actor.name)
             .replace("{item}", item.name)
             .replace("{targets}", targets)
-            .replace("{result}", "an attempt")
-            .replace("{language}", language);
+            .replace("{result}", "an attempt");
+            
+        // Forcibly append instructions to ensure settings are respected
+        const isPC = actor.type === "character";
+        const perspective = isPC ? "FIRST PERSON" : "THIRD PERSON";
+        const perspectiveExample = isPC ? '(e.g. "I swing", not "I swung")' : `(e.g. "${actor.name} swings", not "${actor.name} swung")`;
+        
+        prompt += ` Answer in ${language} (if Spanish, use Neutral/Latin American Spanish). Write a single, concise sentence in the style of a high-quality fantasy novel. Describe the physical action and impact in the ${perspective} PRESENT TENSE ${perspectiveExample}. Do not describe feelings, only the action.`;
 
          try {
             const genAI = new GoogleGenerativeAI(apiKey);
