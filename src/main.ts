@@ -1,5 +1,9 @@
 // Utils
 import { Debug } from "./utils/debug";
+import { ConsoleCapture } from "./utils/console-utility";
+
+// Initialize console capture immediately (before hooks) so all output is logged
+ConsoleCapture.initialize();
 
 // Plugins
 import { Functions } from "./functions";
