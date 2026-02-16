@@ -12,17 +12,18 @@ import { PointBuy } from "./plugins/point-buy";
 
 import { Automations } from "./automations";
 import { TokenVisuals } from "./plugins/token-visuals";
+import { AINarrator } from "./plugins/ai-narrator";
 
 const FFT = ((globalThis as any).FFT ??= {});
 FFT.Debug = Debug;
 FFT.Functions = Functions;
 
-Hooks.once("init", () => {
+Hooks.once("init" as any, () => {
     Debug.Log("FFTweaks | Initializing Init Hooks");
     DNDCustomizer.initialize();
 });
 
-Hooks.once("ready", async () => {
+Hooks.once("ready" as any, async () => {
     console.log("FFTweaks | READY HOOK FIRED");
     Debug.Log("FFTweaks | Initializing Ready Hooks");
     await FunctionBar.initialize();
@@ -45,4 +46,7 @@ Hooks.once("ready", async () => {
     } catch (e) {
         console.error("FFTweaks | PointBuy initialization failed", e);
     }
+    
+    AINarrator.initialize();
+
 });

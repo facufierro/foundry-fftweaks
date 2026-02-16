@@ -12,7 +12,12 @@
     "@league-of-foundry-developers/foundry-vtt-types": "^13.346.0-beta.20250812191140",
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
-    "vite-plugin-checker": "^0.6.2"  },
+    "vite-plugin-checker": "^0.6.2"
+  },
   "peerDependencies": {
-    "@league-of-foundry-developers/foundry-vtt-types": ">=11"  }
+    "@league-of-foundry-developers/foundry-vtt-types": ">=11"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1"
+  }
 }

@@ -85,6 +85,11 @@ declare global {
         token?: string;
         alias?: string;
     }
+
+    // Extend HOOKS
+    interface HOOKS {
+        "dnd5e.useItem": (item: any, config: any, options: any) => void;
+    }
 }
 
 export {};
