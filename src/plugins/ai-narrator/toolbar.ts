@@ -16,8 +16,7 @@ export class AINarratorToolbar {
      * Inject the toolbar into the chat controls.
      */
     static async render(_html?: any): Promise<void> {
-        console.log("FFTweaks | AINarratorToolbar | render() called");
-        const MAX_RETRIES = 50; // Increased to 5s
+        const MAX_RETRIES = 50; // Keep robust retry
         let retries = 0;
         let chatControls: HTMLElement | null = null;
         let controlButtons: Element | null = null;
@@ -34,11 +33,12 @@ export class AINarratorToolbar {
         }
 
         if (!chatControls || !controlButtons) {
-            console.warn(`FFTweaks | AINarratorToolbar | Failed to find element after ${retries} retries. chatControls: ${!!chatControls}, controlButtons: ${!!controlButtons}`);
+            // Only warn if we truly fail
+            // console.warn(`FFTweaks | AINarratorToolbar | Failed to find element after ${retries} retries`);
             return;
         }
 
-        console.log(`FFTweaks | AINarratorToolbar | Found elements after ${retries} retries`);
+        // console.log(`FFTweaks | AINarratorToolbar | Found elements after ${retries} retries`);
 
         // Remove existing if any
         const existingBtn = controlButtons.querySelector(".ai-narrator-trigger");
@@ -80,8 +80,8 @@ export class AINarratorToolbar {
         );
         panel.appendChild(combatToggle);
 
-        // Append panel to chat-controls relative container
-        chatControls.appendChild(panel);
+        // Append panel to control-buttons so we can position relative to the button row
+        controlButtons.appendChild(panel);
 
         AINarratorToolbar.toolbar = controlButtons as HTMLElement; // storing parent helper
         AINarratorToolbar.panel = panel;

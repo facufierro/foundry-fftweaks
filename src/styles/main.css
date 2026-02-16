@@ -12,30 +12,35 @@
    AI Narrator Toolbar (Popup Style)
    ================================================ */
 
-/* Trigger Button - Native Foundry look is handled by .ui-control class, 
-   we just add specific active state styling if needed */
+/* Parent container adjustments */
+#chat-controls .control-buttons {
+    position: relative !important;
+    overflow: visible !important; /* Ensure popup isn't clipped */
+}
+
+/* Trigger Button Active State */
 .ai-narrator-trigger.active {
-    color: #c89eff;
-    text-shadow: 0 0 10px #a060ff;
+    color: #fff;
+    text-shadow: 0 0 10px #aaa;
 }
 
 /* Popup Panel */
 .ai-narrator-panel-popup {
     position: absolute;
-    bottom: 40px; /* Above the chat controls */
-    right: 8px;   /* Aligned roughly with the buttons */
+    bottom: 100%; /* Anchor to top of container */
+    right: 0;     /* Align with right edge */
+    margin-bottom: 8px; /* Spacing above buttons */
     z-index: 100;
     
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse; /* Items stack from bottom up */
     gap: 4px;
     padding: 6px;
     
-    background: url(../../../ui/parchment.jpg) repeat; /* Foundry parchment texture */
-    background-color: #f0f0e0; /* Fallback */
-    border: 1px solid #666;
+    background-color: #222; /* Dark background */
+    border: 1px solid #444; /* Dark grey border */
     border-radius: 4px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
     
     min-width: 150px;
 }
@@ -49,19 +54,19 @@
     padding: 4px;
     border-radius: 2px;
     font-size: 13px;
-    color: #111; /* Dark text for parchment */
+    color: #eee; /* Light text */
 }
 
 .ai-narrator-toggle i {
     font-size: 13px;
-    color: #333; /* Darker icon */
+    color: #ccc; /* Light grey icon */
     width: 16px;
     text-align: center;
 }
 
 .ai-narrator-toggle-label {
     font-size: 13px;
-    color: #111;
+    color: #ddd;
     font-weight: bold;
     user-select: none;
     flex: 1;
@@ -89,8 +94,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.15); /* Darker track for light bg */
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    /* Dark theme slider */
+    background-color: rgba(255, 255, 255, 0.1); 
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 18px;
     transition: all 0.25s ease;
 }
@@ -98,24 +104,28 @@
 .ai-narrator-slider:before {
     position: absolute;
     content: "";
-    height: 12px;
-    width: 12px;
+    height: 14px;
+    width: 14px;
     left: 2px;
-    bottom: 2px;
-    background-color: #888;
+    bottom: 1px;
+    background-color: #bbb; /* Grey knob when off */
     border-radius: 50%;
     transition: all 0.25s ease;
 }
 
 .ai-narrator-switch input:checked + .ai-narrator-slider {
-    background-color: rgba(100, 60, 180, 0.4);
-    border-color: rgba(180, 130, 255, 0.4);
+    background-color: #eee; /* White(ish) background when on */
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.ai-narrator-switch input:focus + .ai-narrator-slider {
+    box-shadow: 0 0 1px #eee;
 }
 
 .ai-narrator-switch input:checked + .ai-narrator-slider:before {
-    transform: translateX(14px);
-    background-color: #c89eff;
-    box-shadow: 0 0 4px rgba(180, 130, 255, 0.4);
+    transform: translateX(14px); /* Original value was 14px, new instruction was 18px but width is 14px, so 14px is correct for 32px width */
+    background-color: #222; /* Dark knob when on */
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
 /* AI Narrator Chat Response */
