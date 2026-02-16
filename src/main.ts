@@ -8,6 +8,7 @@ import { TargetPicker } from "./plugins/target-picker";
 import { DNDCustomizer as DNDCustomizer } from "./plugins/dnd-customizer";
 import { AdvancementSync } from "./plugins/advancement-sync";
 import { ContainerAdvancement } from "./plugins/container-advancement";
+import { PointBuy } from "./plugins/point-buy";
 
 import { Automations } from "./automations";
 import { TokenVisuals } from "./plugins/token-visuals";
@@ -35,5 +36,13 @@ Hooks.once("ready", async () => {
     }
 
     Automations.initialize();
+    console.log("FFTweaks | Automations initialized");
     TokenVisuals.initialize();
+    console.log("FFTweaks | TokenVisuals initialized");
+    try {
+        PointBuy.initialize();
+        console.log("FFTweaks | PointBuy initialized successfully");
+    } catch (e) {
+        console.error("FFTweaks | PointBuy initialization failed", e);
+    }
 });
