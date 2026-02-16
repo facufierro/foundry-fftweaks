@@ -159,7 +159,7 @@ export const AINarrator = {
 
             const model = genAI.getGenerativeModel({ model: modelId });
 
-            console.log(`FFTweaks | AI Narrator | Calling generateContent with model: ${modelId}`);
+            console.log("FFTweaks | AI Narrator | Calling generateContent with model: ${modelId}");
             const result = await model.generateContent(prompt);
             console.log("FFTweaks | AI Narrator | generateContent result received:", result);
             
@@ -167,10 +167,42 @@ export const AINarrator = {
             const text = response.text();
             console.log("FFTweaks | AI Narrator | AI Response Text:", text);
 
+            // Calculate Cost
+            let costString = "";
+            try {
+                const usage = response.usageMetadata;
+                if (usage) {
+                    const inputTokens = usage.promptTokenCount || 0;
+                    const outputTokens = usage.candidatesTokenCount || 0;
+                    
+                    // Pricing (Estimate per 1M tokens) - Update as needed
+                    // Flash: ~$0.10 input / $0.40 output (blended safe estimate)
+                    // Pro: ~$3.50 input / $10.50 output
+                    let inputRate = 0.10;
+                    let outputRate = 0.40;
+                    
+                    if (modelId.includes("pro")) {
+                        inputRate = 3.50;
+                        outputRate = 10.50;
+                    }
+
+                    const cost = ((inputTokens / 1_000_000) * inputRate) + ((outputTokens / 1_000_000) * outputRate);
+                    // const costMicros = cost * 100; // cents (unused)
+                    // Show generic extremely low cost if < 0.0001
+                    const costDisplay = cost < 0.0001 ? "<$0.0001" : `$${cost.toFixed(5)}`;
+                    
+                    costString = `<div style="font-size: 0.7em; color: #888; text-align: right; margin-top: 4px;">
+                        Tokens: ${inputTokens} + ${outputTokens} | Est. Cost: ${costDisplay}
+                    </div>`;
+                }
+            } catch (e) {
+                console.warn("FFTweaks | AI Narrator | Failed to calculate cost:", e);
+            }
+
             if (text) {
                 console.log("FFTweaks | AI Narrator | Creating ChatMessage...");
                 ChatMessage.create({
-                    content: `<div class="ai-narrator-response"><b>AI Narrator:</b> ${text}</div>`,
+                    content: `<div class="ai-narrator-response"><b>AI Narrator:</b> ${text}</div>${costString}`,
                     whisper: [game.user.id],
                     speaker: ChatMessage.getSpeaker({ alias: "AI" }),
                 } as any);
