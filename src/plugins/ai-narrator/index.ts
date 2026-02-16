@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { CombatNarration } from "./combat-narration";
+import { AINarratorToolbar } from "./toolbar";
 
 const MODULE_ID = "fftweaks";
 const PLUGIN_ID = "ai-narrator";
@@ -85,5 +86,10 @@ export class AINarrator {
 
         // Fallback: dnd5e.useItem (when midi-qol is not active)
         Hooks.on("dnd5e.useItem" as any, CombatNarration.onUseItem);
+
+        // Render toolbar when chat sidebar is ready
+        Hooks.on("renderChatLog" as any, () => {
+            setTimeout(() => AINarratorToolbar.render(), 100);
+        });
     }
 }
