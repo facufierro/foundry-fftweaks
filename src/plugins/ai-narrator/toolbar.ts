@@ -13,37 +13,59 @@ export class AINarratorToolbar {
     private static isExpanded = false;
 
     /**
-     * Inject the toolbar into the chat sidebar.
+     * Inject the toolbar into the chat controls.
      */
-    static render(): void {
-        // Wait for the chat form to exist
-        const chatForm = document.getElementById("chat-form");
-        if (!chatForm) {
-            console.warn("FFTweaks | AINarratorToolbar | #chat-form not found");
+    static async render(_html?: any): Promise<void> {
+        console.log("FFTweaks | AINarratorToolbar | render() called");
+        const MAX_RETRIES = 50; // Increased to 5s
+        let retries = 0;
+        let chatControls: HTMLElement | null = null;
+        let controlButtons: Element | null = null;
+
+        while (retries < MAX_RETRIES) {
+            chatControls = document.getElementById("chat-controls");
+            if (chatControls) {
+                controlButtons = chatControls.querySelector(".control-buttons");
+                if (controlButtons) break;
+            }
+            // Wait 100ms and try again
+            await new Promise(resolve => setTimeout(resolve, 100));
+            retries++;
+        }
+
+        if (!chatControls || !controlButtons) {
+            console.warn(`FFTweaks | AINarratorToolbar | Failed to find element after ${retries} retries. chatControls: ${!!chatControls}, controlButtons: ${!!controlButtons}`);
             return;
         }
 
-        // Remove existing toolbar if re-rendering
-        const existing = document.getElementById("ai-narrator-toolbar");
-        if (existing) existing.remove();
+        console.log(`FFTweaks | AINarratorToolbar | Found elements after ${retries} retries`);
 
-        // Create the main toolbar container
-        const toolbar = document.createElement("div");
-        toolbar.id = "ai-narrator-toolbar";
-        toolbar.className = "ai-narrator-toolbar";
+        // Remove existing if any
+        const existingBtn = controlButtons.querySelector(".ai-narrator-trigger");
+        if (existingBtn) existingBtn.remove();
+        const existingPanel = document.getElementById("ai-narrator-panel");
+        if (existingPanel) existingPanel.remove();
 
-        // Create the trigger button (always visible)
+        // Create the trigger button matching Foundry's style
         const triggerBtn = document.createElement("button");
         triggerBtn.type = "button";
-        triggerBtn.className = "ai-narrator-trigger";
-        triggerBtn.title = "AI Narrator";
+        triggerBtn.className = "ui-control icon ai-narrator-trigger";
+        triggerBtn.dataset.tooltip = "AI Narrator";
+        triggerBtn.ariaLabel = "AI Narrator";
         triggerBtn.innerHTML = `<i class="fas fa-hat-wizard"></i>`;
-        triggerBtn.addEventListener("click", () => AINarratorToolbar.togglePanel());
-        toolbar.appendChild(triggerBtn);
+        triggerBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            AINarratorToolbar.togglePanel();
+        });
 
-        // Create the expandable panel
+        // Prepend or append to control buttons? Append seems standard.
+        controlButtons.appendChild(triggerBtn);
+
+        // Create the popup panel (attached to body or chat-controls to avoid overflow issues, 
+        // but let's try appending to chat-controls with absolute positioning first)
         const panel = document.createElement("div");
-        panel.className = "ai-narrator-panel";
+        panel.id = "ai-narrator-panel";
+        panel.className = "ai-narrator-panel-popup"; // Renamed class for specific styling
         panel.style.display = "none";
 
         // — Combat Narration Toggle —
@@ -54,39 +76,44 @@ export class AINarratorToolbar {
             game.settings.get(MODULE_ID as any, `${PLUGIN_ID}.enabled`) === true,
             (enabled: boolean) => {
                 game.settings.set(MODULE_ID as any, `${PLUGIN_ID}.enabled`, enabled);
-                console.log(`FFTweaks | AINarratorToolbar | Combat Narration: ${enabled}`);
             }
         );
         panel.appendChild(combatToggle);
 
-        // — Placeholder: Message Embellishment (future feature) —
-        // const embellishToggle = AINarratorToolbar.createToggle(...)
-        // panel.appendChild(embellishToggle);
+        // Append panel to chat-controls relative container
+        chatControls.appendChild(panel);
 
-        toolbar.appendChild(panel);
-
-        // Insert above the chat form
-        chatForm.parentElement?.insertBefore(toolbar, chatForm);
-
-        AINarratorToolbar.toolbar = toolbar;
+        AINarratorToolbar.toolbar = controlButtons as HTMLElement; // storing parent helper
         AINarratorToolbar.panel = panel;
 
-        console.log("FFTweaks | AINarratorToolbar | Rendered");
+        // Close panel when clicking outside
+        document.addEventListener("click", (e) => {
+            if (AINarratorToolbar.isExpanded && 
+                !panel.contains(e.target as Node) && 
+                !triggerBtn.contains(e.target as Node)) {
+                AINarratorToolbar.togglePanel(false);
+            }
+        });
+
+        console.log("FFTweaks | AINarratorToolbar | Rendered in chat controls");
     }
 
     /**
      * Toggle the expandable panel open/closed.
      */
-    private static togglePanel(): void {
+    private static togglePanel(force?: boolean): void {
         if (!AINarratorToolbar.panel) return;
 
-        AINarratorToolbar.isExpanded = !AINarratorToolbar.isExpanded;
+        AINarratorToolbar.isExpanded = force !== undefined ? force : !AINarratorToolbar.isExpanded;
         AINarratorToolbar.panel.style.display = AINarratorToolbar.isExpanded ? "flex" : "none";
 
         // Update trigger button active state
-        const trigger = AINarratorToolbar.toolbar?.querySelector(".ai-narrator-trigger");
+        const trigger = document.querySelector(".ai-narrator-trigger");
         if (trigger) {
             trigger.classList.toggle("active", AINarratorToolbar.isExpanded);
+            // Foundry style active state
+            if (AINarratorToolbar.isExpanded) trigger.classList.add("active");
+            else trigger.classList.remove("active");
         }
     }
 

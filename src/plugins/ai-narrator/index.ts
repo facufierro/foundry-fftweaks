@@ -88,8 +88,11 @@ export class AINarrator {
         Hooks.on("dnd5e.useItem" as any, CombatNarration.onUseItem);
 
         // Render toolbar when chat sidebar is ready
-        Hooks.on("renderChatLog" as any, () => {
-            setTimeout(() => AINarratorToolbar.render(), 100);
+        Hooks.on("renderChatLog" as any, (_app: any, html: any) => {
+            AINarratorToolbar.render(html);
         });
+
+        // Attempt initial render in case we missed the hook or it's already there
+        AINarratorToolbar.render();
     }
 }
