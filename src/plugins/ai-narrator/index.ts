@@ -147,6 +147,14 @@ export const AINarrator = {
 
         try {
             console.log("FFTweaks | AI Narrator | Sending prompt to AI...", prompt);
+            
+            // Create a pending ChatMessage immediately
+            const chatMessage = await ChatMessage.create({
+                content: `<div class="ai-narrator-response"><i class="fas fa-spinner fa-spin"></i> Consulting the spirits...</div>`,
+                whisper: [game.user.id],
+                speaker: ChatMessage.getSpeaker({ alias: "AI" }),
+            });
+
             const genAI = new GoogleGenerativeAI(apiKey);
             let modelId = game.settings.get(MODULE_ID as any, `${PLUGIN_ID}.model`) as string;
             
@@ -163,7 +171,7 @@ export const AINarrator = {
 
             const model = genAI.getGenerativeModel({ model: modelId });
 
-            console.log("FFTweaks | AI Narrator | Calling generateContent with model: ${modelId}");
+            console.log(`FFTweaks | AI Narrator | Calling generateContent with model: ${modelId}`);
             const result = await model.generateContent(prompt);
             console.log("FFTweaks | AI Narrator | generateContent result received:", result);
             
@@ -204,15 +212,16 @@ export const AINarrator = {
             }
 
             if (text) {
-                console.log("FFTweaks | AI Narrator | Creating ChatMessage...");
-                ChatMessage.create({
-                    content: `<div class="ai-narrator-response"><b>AI Narrator:</b> ${text}</div>${costString}`,
-                    whisper: [game.user.id],
-                    speaker: ChatMessage.getSpeaker({ alias: "AI" }),
-                } as any);
-                console.log("FFTweaks | AI Narrator | ChatMessage created.");
+                console.log("FFTweaks | AI Narrator | Updating ChatMessage...");
+                if (chatMessage) {
+                    await chatMessage.update({
+                        content: `<div class="ai-narrator-response"><b>AI Narrator:</b> ${text}</div>${costString}`
+                    });
+                }
+                console.log("FFTweaks | AI Narrator | ChatMessage updated.");
             } else {
                 console.warn("FFTweaks | AI Narrator | Text response was empty.");
+                if (chatMessage) await chatMessage.delete();
             }
         } catch (error) {
             console.error("AI Narrator Error:", error);
@@ -253,6 +262,13 @@ export const AINarrator = {
         prompt += ` Answer in ${language} (if Spanish, use Neutral/Latin American Spanish). Write a single, concise sentence in the style of a high-quality fantasy novel. Describe the physical action and impact in the ${perspective} PRESENT TENSE ${perspectiveExample}. Do not describe feelings, only the action.`;
 
          try {
+            // Create a pending ChatMessage immediately
+            const chatMessage = await ChatMessage.create({
+                content: `<div class="ai-narrator-response"><i class="fas fa-spinner fa-spin"></i> Consulting the spirits...</div>`,
+                whisper: [game.user.id],
+                speaker: ChatMessage.getSpeaker({ alias: "AI" }),
+            });
+
             const genAI = new GoogleGenerativeAI(apiKey);
             let modelId = game.settings.get(MODULE_ID as any, `${PLUGIN_ID}.model`) as string;
             
@@ -266,12 +282,12 @@ export const AINarrator = {
             const response = result.response;
             const text = response.text();
 
-            if (text) {
-                ChatMessage.create({
+            if (text && chatMessage) {
+                 await chatMessage.update({
                     content: `<div class="ai-narrator-response"><b>AI Narrator:</b> ${text}</div>`,
-                    whisper: [game.user.id],
-                    speaker: ChatMessage.getSpeaker({ alias: "AI" }),
-                } as any);
+                });
+            } else if (chatMessage) {
+                 await chatMessage.delete();
             }
         } catch (error) {
             console.error("AI Narrator Error:", error);
