@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { CombatNarration } from "./combat-narration";
 import { AINarratorToolbar } from "./toolbar";
+import { MessageImprovement } from "./message-improvement";
 
 const MODULE_ID = "fftweaks";
 const PLUGIN_ID = "ai-narrator";
@@ -25,6 +26,15 @@ export class AINarrator {
         game.settings.register(MODULE_ID as any, `${PLUGIN_ID}.enabled`, {
             name: "Enable AI Narrator",
             hint: "Enables AI-generated combat descriptions.",
+            scope: "client",
+            config: true,
+            type: Boolean,
+            default: false,
+        });
+
+        game.settings.register(MODULE_ID as any, `${PLUGIN_ID}.improve_messages`, {
+            name: "Improve Messages",
+            hint: "Automatically rewrites your chat messages to be more immersive.",
             scope: "client",
             config: true,
             type: Boolean,
@@ -90,6 +100,11 @@ export class AINarrator {
         // Render toolbar when chat sidebar is ready
         Hooks.on("renderChatLog" as any, (_app: any, html: any) => {
             AINarratorToolbar.render(html);
+        });
+        
+        // Intercept chat messages for improvement
+        Hooks.on("chatMessage" as any, (chatLog: any, message: string, chatData: any) => {
+            return MessageImprovement.onChatMessage(chatLog, message, chatData);
         });
 
         // Attempt initial render in case we missed the hook or it's already there

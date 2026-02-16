@@ -88,6 +88,18 @@ export class AINarratorToolbar {
         );
         panel.appendChild(combatToggle);
 
+        // — Improve Messages Toggle —
+        const improveToggle = AINarratorToolbar.createToggle(
+            "ai-improve-messages",
+            "Improve Messages",
+            "fas fa-magic",
+            game.settings.get(MODULE_ID as any, `${PLUGIN_ID}.improve_messages`) === true,
+            (enabled: boolean) => {
+                game.settings.set(MODULE_ID as any, `${PLUGIN_ID}.improve_messages`, enabled);
+            }
+        );
+        panel.appendChild(improveToggle);
+
         // Append panel to control-buttons so we can position relative to the button row
         controlButtons.appendChild(panel);
 
