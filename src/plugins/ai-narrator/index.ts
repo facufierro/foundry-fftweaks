@@ -102,22 +102,44 @@ export const AINarrator = {
         const hitTargets = Array.from(workflow.hitTargets).map((t: any) => t.name);
         
         let resultText = "an attempt";
+        let isKill = false;
+        
+        // Detect hits and damage
         if (workflow.hitTargets.size > 0 && workflow.damageRoll) {
             resultText = `a hit dealing ${workflow.damageTotal} damage`;
+            
+            // Check for kills if damageList exists
+            if (workflow.damageList) {
+                for (const damageItem of workflow.damageList) {
+                    if (damageItem.newHP <= 0) {
+                        isKill = true;
+                        break;
+                    }
+                }
+            }
         } else if (workflow.hitTargets.size > 0) {
            resultText = "a hit";
         } else if (workflow.targets.size > 0) {
             resultText = "a miss";
         }
 
+        if (isKill) {
+            resultText += " and killing the target";
+        }
+
         const language = game.settings.get(MODULE_ID as any, `${PLUGIN_ID}.language`) as string;
         const promptTemplate = game.settings.get(MODULE_ID as any, `${PLUGIN_ID}.prompt`) as string;
-        const prompt = promptTemplate
+        
+        // Construct the prompt by combining the user template with mandatory instructions
+        // We append the instructions effectively enforcing them even if the user has an old template saved.
+        let prompt = promptTemplate
             .replace("{actor}", actor.name)
             .replace("{item}", item.name)
             .replace("{targets}", targets)
-            .replace("{result}", resultText)
-            .replace("{language}", language);
+            .replace("{result}", resultText);
+            
+        // Forcibly append instructions to ensure settings are respected
+        prompt += ` Answer in ${language} (if Spanish, use Neutral/Latin American Spanish). Write a single, concise sentence in the style of a high-quality fantasy novel. Describe the physical action and impact in the FIRST PERSON PRESENT TENSE (e.g. "I swing", not "I swung"). Do not describe feelings, only the action.`;
 
         try {
             console.log("FFTweaks | AI Narrator | Sending prompt to AI...", prompt);
