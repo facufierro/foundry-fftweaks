@@ -28,6 +28,12 @@ export class MessageImprovement {
         // We return false to stop Foundry from processing the message.
         // Then we process it ourselves asynchronously.
         MessageImprovement.processMessage(message);
+
+        // Manually clear chat input so it looks like it was "sent" (and vanishes)
+        if (ui.chat && ui.chat.element) {
+            ui.chat.element.find("#chat-message").val("");
+        }
+
         return false;
     }
 
@@ -39,7 +45,8 @@ export class MessageImprovement {
         const pendingMessage = await ChatMessage.create({
             content: `<div class="ai-narrator-response"><i class="fas fa-spinner fa-spin"></i> Refining message...</div>`,
             speaker: speaker,
-            type: CONST.CHAT_MESSAGE_TYPES.IC // Assume IC for improvements? Or OOC?
+            type: CONST.CHAT_MESSAGE_TYPES.IC,
+            whisper: [game.user.id]
         });
 
         try {
