@@ -12,31 +12,39 @@ export class AINarratorToolbar {
     private static panel: HTMLElement | null = null;
     private static isExpanded = false;
 
+    private static _rendering = false;
+
     /**
      * Inject the toolbar into the chat controls.
      */
     static async render(_html?: any): Promise<void> {
-        const MAX_RETRIES = 50; // Keep robust retry
+        if (this._rendering) return;
+        this._rendering = true;
+
+        const MAX_RETRIES = 20; // Reduced to 2s
         let retries = 0;
         let chatControls: HTMLElement | null = null;
         let controlButtons: Element | null = null;
 
-        while (retries < MAX_RETRIES) {
-            chatControls = document.getElementById("chat-controls");
-            if (chatControls) {
-                controlButtons = chatControls.querySelector(".control-buttons");
-                if (controlButtons) break;
+        try {
+            while (retries < MAX_RETRIES) {
+                chatControls = document.getElementById("chat-controls");
+                if (chatControls) {
+                    controlButtons = chatControls.querySelector(".control-buttons");
+                    if (controlButtons) break;
+                }
+                // Wait 100ms and try again
+                await new Promise(resolve => setTimeout(resolve, 100));
+                retries++;
             }
-            // Wait 100ms and try again
-            await new Promise(resolve => setTimeout(resolve, 100));
-            retries++;
-        }
 
-        if (!chatControls || !controlButtons) {
-            // Only warn if we truly fail
-            // console.warn(`FFTweaks | AINarratorToolbar | Failed to find element after ${retries} retries`);
-            return;
-        }
+            if (!chatControls || !controlButtons) {
+                // console.warn(`FFTweaks | AINarratorToolbar | Failed to find element after ${retries} retries`);
+                return;
+            }
+            
+            // ... render logic ...
+
 
         // console.log(`FFTweaks | AINarratorToolbar | Found elements after ${retries} retries`);
 
@@ -95,7 +103,10 @@ export class AINarratorToolbar {
             }
         });
 
-        console.log("FFTweaks | AINarratorToolbar | Rendered in chat controls");
+        // console.log("FFTweaks | AINarratorToolbar | Rendered in chat controls");
+        } finally {
+            this._rendering = false;
+        }
     }
 
     /**
