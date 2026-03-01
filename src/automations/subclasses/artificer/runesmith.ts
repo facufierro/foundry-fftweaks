@@ -16,53 +16,28 @@ export class Runesmith {
 	private static battleRune() {}
 
 	private static runicInscription() {
-		Hooks.on('createActiveEffect', async (effect: any) => {
-			if (effect.name !== 'Glyph') return;
-			const targetItem = effect.parent;
-			if (!targetItem || targetItem.documentName !== 'Item') return;
-			if (targetItem.name === 'Runic Inscription') return;
-			const actor = targetItem.parent;
-			if (!actor) return;
-			const runicInscription = actor.items?.find((i: any) => i.name === 'Runic Inscription');
-			if (!runicInscription) return;
-			Runesmith.handleRunicInscription(targetItem, actor);
-		});
-
-		Hooks.on('deleteActiveEffect', async (effect: any) => {
-			if (effect.name !== 'Glyph') return;
-			const item = effect.parent;
-			if (!item || item.documentName !== 'Item') return;
-			if (item.name === 'Runic Inscription') return;
-			await Runesmith.removeRunicCastActivities(item);
-		});
-
-		Hooks.on('updateActiveEffect', async (effect: any, changes: any) => {
-			if (effect.name !== 'Glyph' || !changes.disabled) return;
-			const item = effect.parent;
-			if (!item || item.documentName !== 'Item') return;
-			if (item.name === 'Runic Inscription') return;
-			await Runesmith.removeRunicCastActivities(item);
+		(Hooks as any).on('dnd5e.postUseActivity', (activity: any) => {
+			if (activity?.item?.name !== 'Runic Inscription') return;
+			Runesmith.handleRunicInscription(activity.item);
 		});
 	}
 
-	private static async removeRunicCastActivities(item: any) {
-		if (!item) return;
-		const runicEntries = Object.entries(item.system.activities ?? {})
-			.filter(([_, a]: [string, any]) => a.flags?.fftweaks?.runicInscription);
-		for (const [id] of runicEntries) {
-			await item.deleteActivity(id);
+	private static async handleRunicInscription(item: any) {
+		const owningActor = item.parent;
+		if (!owningActor) return;
+
+		const effect = item.effects.find((e: any) => e.name === 'Glyph');
+		if (!effect) {
+			ui.notifications?.warn("Effect named 'Glyph' not found in item.");
+			return;
 		}
-	}
-
-	private static async handleRunicInscription(targetItem: any, owningActor: any) {
-		if (!targetItem || !owningActor) return;
 
 		const spellMap = new Map<string, any>();
-		for (const item of owningActor.items) {
-			const level = item.system?.level;
-			if (item.type !== 'spell' || typeof level !== 'number' || level < 1) continue;
-			const key = `${item.name}::${level}`;
-			if (!spellMap.has(key)) spellMap.set(key, item);
+		for (const i of owningActor.items) {
+			const level = i.system?.level;
+			if (i.type !== 'spell' || typeof level !== 'number' || level < 1) continue;
+			const key = `${i.name}::${level}`;
+			if (!spellMap.has(key)) spellMap.set(key, i);
 		}
 		const spells = [...spellMap.values()];
 
@@ -226,24 +201,19 @@ export class Runesmith {
 
 		if (!chosenSpellUUID) return;
 
-		await Runesmith.removeRunicCastActivities(targetItem);
+		const changes = foundry.utils.duplicate(effect.changes);
+		const change = changes.find((c: any) => c.key === 'activities[cast].spell.uuid');
 
-		const activityId = foundry.utils.randomID();
-		const activities = foundry.utils.duplicate(targetItem.system.toObject().activities ?? {});
-		activities[activityId] = {
-			type: 'cast',
-			_id: activityId,
-			spell: { uuid: chosenSpellUUID },
-			uses: {
-				max: '@scale.runesmith.rune-charges',
-				spent: 0,
-				recovery: [{ period: 'sr', type: 'recoverAll' }]
-			},
-			flags: { fftweaks: { runicInscription: true } }
-		};
-
-		await targetItem.update({ 'system.activities': activities });
-		ui.notifications?.info(`Runic Inscription applied to ${targetItem.name}.`);
+		if (change && typeof change === 'object') {
+			change.value = chosenSpellUUID;
+			await item.updateEmbeddedDocuments('ActiveEffect', [{
+				_id: effect.id,
+				changes
+			}]);
+			ui.notifications?.info('Glyph updated with selected spell.');
+		} else {
+			ui.notifications?.warn('Change key not found in effect.');
+		}
 	}
 
 	private static extraAttack() {}

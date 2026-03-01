@@ -77,3 +77,27 @@
 - [ ] Effect util
 - [ ] Item util
 
+
+
+point buy should start at 10
+check artificer prepared spells
+agregar checks e integracion con journal
+agregar journal saving
+add difficulty dc if needed and button rolls in the chat for suggestions
+add multi suggestion
+add turn highligh
+check auto targeting
+
+effect deletion permission
+
+Concentration cancel
+image to chat not working
+
+improve reage
+
+
+only the user can see the prompts
+
+automate save rolls on tuyrn
+
+add standard actions
