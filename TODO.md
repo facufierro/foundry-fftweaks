@@ -1,14 +1,21 @@
 ## Automations
+
 ### System
 - [x] Rest
-- [ ] Actions
-- [ ] Prepared spells
+- [x] Actions
+- [x] Prepared Spells
 - [ ] Attunement
 - [ ] Extra Attack
+- [ ] Concentration Cancel
+- [ ] Automate Save Rolls on Turn
+- [ ] Check Auto Targeting
+
 ### Classes
+
 - ### Artificer
   - [ ] Level 1: Spellcasting
   - [ ] Level 1: Tinker's Magic
+  - [ ] Level 1: Check Prepared Spells
   - [ ] Level 2: Replicate Magic Item
   - [ ] Level 6: Magic Item Tinker
   - [ ] Level 7: Flash of Genius
@@ -25,8 +32,10 @@
     - [ ] Level 5: Extra Attack
     - [ ] Level 9: Arcane Inscription
     - [ ] Level 15: Perfected Runes
+
 - ### Barbarian
   - [ ] Level 1: Rage
+  - [ ] Level 1: Improve Rage
   - [ ] Level 1: Unarmored Defense
   - [ ] Level 1: Weapon Mastery
   - [ ] Level 2: Danger Sense
@@ -48,6 +57,7 @@
     - [ ] Level 6: Mindless Rage
     - [ ] Level 10: Retaliation
     - [ ] Level 14: Intimidating Presence
+
 - ### Bard
   - [ ] Level 1: Bardic Inspiration
   - [ ] Level 1: Spellcasting
@@ -65,39 +75,39 @@
     - [ ] Level 6: Mantle of Majesty
     - [ ] Level 14: Unbreakable Majesty
 
-
+---
 
 ## Functions
-- [ ] 
+
+### Combat
+- [ ] Add Turn Highlight
+
+---
 
 ## Modules
-- [ ] 
+
+### AI Narrator
+- [ ] Add checks and journal integration
+- [ ] Add journal saving
+- [ ] Add difficulty DC and chat button rolls for suggestions
+- [ ] Add multi-suggestion support
+- [ ] Only the user can see the prompts
+
+---
+
+## Plugins
+
+### Point Buy
+- [x] Should start at 10
+
+---
 
 ## Utils
 - [ ] Effect util
 - [ ] Item util
+- [ ] Effect deletion permission
 
+---
 
-
-point buy should start at 10
-check artificer prepared spells
-agregar checks e integracion con journal
-agregar journal saving
-add difficulty dc if needed and button rolls in the chat for suggestions
-add multi suggestion
-add turn highligh
-check auto targeting
-
-effect deletion permission
-
-Concentration cancel
-image to chat not working
-
-improve reage
-
-
-only the user can see the prompts
-
-automate save rolls on tuyrn
-
-add standard actions
+## Bug Fixes
+- [x] Image to chat not working
