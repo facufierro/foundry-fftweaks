@@ -83,9 +83,9 @@ export class PointBuy {
             int: "Intelligence", wis: "Wisdom", cha: "Charisma"
         };
         const costs: Record<number, number> = {
-            8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9
+            8: -2, 9: -1, 10: 0, 11: 1, 12: 2, 13: 3, 14: 5, 15: 7
         };
-        const totalBudget = 27;
+        const totalBudget = 15;
         const calcRemaining = (abs: Record<string, number>) =>
             totalBudget - Object.values(abs).reduce((sum, v) => sum + (costs[v] ?? 0), 0);
 
@@ -189,7 +189,7 @@ export class PointBuy {
         });
 
         if (remaining < 0) {
-            ui.notifications.error("Invalid point allocation. Please stay within the 27 points.");
+            ui.notifications.error("Invalid point allocation. Please stay within the budget.");
             return;
         }
 
