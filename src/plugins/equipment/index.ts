@@ -134,16 +134,26 @@ const _collapsedCategories = new Set<string>();
 export class Equipment {
     private static form: HTMLElement;
     private static _actor: any = null;
-    private static _visible = false;
+    private static _showFull = false;
+    private static readonly _viewPrefKey = "fftweaks.equipment.showFull";
+    private static readonly _posXKey = "fftweaks.equipment.posX";
+    private static readonly _posYKey = "fftweaks.equipment.posY";
 
     static initialize() {
         new Equipment();
 
-        Hooks.on("controlToken" as any, (token: any, controlled: boolean) => {
-            if (controlled && token.actor?.type === "character") {
-                this._actor = token.actor;
-                this.refresh();
-            }
+        try {
+            this._showFull = globalThis.localStorage?.getItem(this._viewPrefKey) === "1";
+        } catch {
+            this._showFull = false;
+        }
+
+        Hooks.on("controlToken" as any, () => {
+            this._syncActorFromControlled();
+        });
+
+        Hooks.on("canvasReady" as any, () => {
+            this._syncActorFromControlled();
         });
 
         // Refresh inventory when items change
@@ -157,16 +167,63 @@ export class Equipment {
             if (item.actor?.id === this._actor?.id) this.refresh();
         });
 
+        this._syncActorFromControlled();
+
         Debug.Log("Equipment | Initialized");
+    }
+
+    private static _syncActorFromControlled() {
+        const controlled = (canvas as any)?.tokens?.controlled ?? [];
+        const token = controlled.length === 1 ? controlled[0] : null;
+        const isPlayerCharacter = !!(token?.actor?.type === "character" && token?.actor?.hasPlayerOwner);
+        this._actor = isPlayerCharacter ? token.actor : null;
+        this._applyPanelMode();
+        if (this._actor) this.refresh();
+    }
+
+    private static _applyPanelMode() {
+        if (!this.form) return;
+
+        if (!this._actor) {
+            this.form.style.display = "none";
+            return;
+        }
+
+        this.form.style.display = "flex";
+
+        const topSection = this.form.querySelector("#fft-equip-top") as HTMLElement | null;
+        const gearCol = this.form.querySelector("#fft-equip-gear") as HTMLElement | null;
+        const invCol = this.form.querySelector("#fft-equip-inventory") as HTMLElement | null;
+
+        if (this._showFull) {
+            if (gearCol) gearCol.style.display = "flex";
+            if (invCol) invCol.style.display = "flex";
+            if (topSection) topSection.style.borderBottom = "1px solid #222";
+            return;
+        }
+
+        if (gearCol) gearCol.style.display = "none";
+        if (invCol) invCol.style.display = "none";
+        if (topSection) topSection.style.borderBottom = "0";
     }
 
     // --- Toggle ---
 
     static toggle() {
         if (!this.form) return;
-        this._visible = !this._visible;
-        this.form.style.display = this._visible ? "flex" : "none";
-        if (this._visible) this.refresh();
+        if (!this._actor) {
+            this.form.style.display = "none";
+            return;
+        }
+
+        this._showFull = !this._showFull;
+        try {
+            globalThis.localStorage?.setItem(this._viewPrefKey, this._showFull ? "1" : "0");
+        } catch {
+            // ignore storage failures
+        }
+        this._applyPanelMode();
+        this.refresh();
     }
 
     // --- Constructor (builds the DOM once) ---
@@ -177,10 +234,22 @@ export class Equipment {
 
         Equipment.form = document.createElement("div");
         Equipment.form.id = "fft-equipment-panel";
+
+        let posX = "200px";
+        let posY = "200px";
+        try {
+            const savedX = globalThis.localStorage?.getItem(this._posXKey);
+            const savedY = globalThis.localStorage?.getItem(this._posYKey);
+            if (savedX) posX = savedX;
+            if (savedY) posY = savedY;
+        } catch {
+            // ignore storage failures
+        }
+
         Object.assign(Equipment.form.style, {
             position: "fixed",
-            top: "200px",
-            left: "200px",
+            top: posY,
+            left: posX,
             zIndex: "60",
             display: "none",
             flexDirection: "column",
@@ -233,6 +302,7 @@ export class Equipment {
 
         // Top section: equipment slots (left) + weapon sets (right)
         const topSection = document.createElement("div");
+        topSection.id = "fft-equip-top";
         Object.assign(topSection.style, {
             display: "flex",
             flexDirection: "row",
@@ -566,6 +636,12 @@ export class Equipment {
         const onMouseUp = () => {
             document.removeEventListener("mousemove", onMouseMove);
             document.removeEventListener("mouseup", onMouseUp);
+            try {
+                globalThis.localStorage?.setItem(Equipment._posXKey, Equipment.form.style.left || "200px");
+                globalThis.localStorage?.setItem(Equipment._posYKey, Equipment.form.style.top || "200px");
+            } catch {
+                // ignore storage failures
+            }
         };
         handle.addEventListener("mousedown", (event: MouseEvent) => {
             mouseX = event.clientX;
