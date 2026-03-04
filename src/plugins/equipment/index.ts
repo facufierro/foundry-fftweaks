@@ -368,7 +368,7 @@ export class Equipment {
             const uuid = drop?.uuid;
             if (!uuid) return;
             const item = Equipment._actor.items.find((i: any) => i.uuid === uuid);
-            if (item && (item.type === "weapon" || item.type === "equipment")) {
+            if (item && (item.type === "weapon" || item.type === "equipment" || item.type === "tool")) {
                 await Equipment.setWeaponSlot(Equipment._actor, setIndex, slot, uuid);
             }
         });
@@ -745,6 +745,15 @@ export class Equipment {
                 await this.quickEquipWeaponItem(actor, item);
                 return;
             }
+            if (category === "tools" || category === "instruments") {
+                await this.quickEquipWeaponItem(actor, item);
+                return;
+            }
+        }
+
+        if (item.type === "tool") {
+            await this.quickEquipWeaponItem(actor, item);
+            return;
         }
 
         if (item.system && typeof item.system.equipped !== "undefined") {
@@ -832,6 +841,10 @@ export class Equipment {
         if (item.type === "weapon") {
             const twoHanded = this._isTwoHandedWeaponItem(item);
             return { canMain: true, canOff: !twoHanded, offOnly: false };
+        }
+
+        if (item.type === "tool") {
+            return { canMain: true, canOff: true, offOnly: false };
         }
 
         return { canMain: false, canOff: false, offOnly: false };
@@ -936,8 +949,13 @@ export class Equipment {
             menu.appendChild(btn);
         };
 
-        const weaponLike = item.type === "weapon" || getInventoryCategory(item) === "weapons";
-        const isConsumable = item.type === "consumable" || getInventoryCategory(item) === "consumables";
+        const category = getInventoryCategory(item);
+        const weaponLike = item.type === "weapon"
+            || item.type === "tool"
+            || category === "weapons"
+            || category === "tools"
+            || category === "instruments";
+        const isConsumable = item.type === "consumable" || category === "consumables";
         const isEquipped = !!item.system?.equipped;
         const equipLabel = (!weaponLike && isEquipped) ? "Unequip" : "Equip";
 
