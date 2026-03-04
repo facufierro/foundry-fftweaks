@@ -3,6 +3,8 @@ import type { KeyBindings } from "./interfaces/keybindings";
 
 export class FunctionBar {
     private form: HTMLElement;
+    private static readonly _posXKey = "fftweaks.functionbar.posX";
+    private static readonly _posYKey = "fftweaks.functionbar.posY";
 
     private constructor(buttons: Button[]) {
         const existing = document.getElementById("fft-functionbar");
@@ -10,10 +12,22 @@ export class FunctionBar {
 
         this.form = document.createElement("div");
         this.form.id = "fft-functionbar";
+
+        let posX = "150px";
+        let posY = "150px";
+        try {
+            const savedX = globalThis.localStorage?.getItem(FunctionBar._posXKey);
+            const savedY = globalThis.localStorage?.getItem(FunctionBar._posYKey);
+            if (savedX && /px$/.test(savedX)) posX = savedX;
+            if (savedY && /px$/.test(savedY)) posY = savedY;
+        } catch {
+            // ignore storage failures
+        }
+
         Object.assign(this.form.style, {
             position: "fixed",
-            top: "150px",
-            left: "150px",
+            top: posY,
+            left: posX,
             zIndex: "60",
             display: "flex",
             flexDirection: "column",
@@ -108,6 +122,12 @@ export class FunctionBar {
         const onMouseUp = () => {
             document.removeEventListener("mousemove", onMouseMove);
             document.removeEventListener("mouseup", onMouseUp);
+            try {
+                globalThis.localStorage?.setItem(FunctionBar._posXKey, this.form.style.left || "150px");
+                globalThis.localStorage?.setItem(FunctionBar._posYKey, this.form.style.top || "150px");
+            } catch {
+                // ignore storage failures
+            }
         };
 
         handle.addEventListener("mousedown", (event: MouseEvent) => {
