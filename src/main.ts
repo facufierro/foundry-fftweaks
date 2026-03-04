@@ -26,6 +26,13 @@ FFT.Functions = Functions;
 Hooks.once("init" as any, () => {
     Debug.Log("FFTweaks | Initializing Init Hooks");
     DNDCustomizer.initialize();
+
+    (game as any).keybindings.register("fftweaks", "toggleEquipment", {
+        name: "Toggle Equipment Panel",
+        hint: "Open/close the equipment & inventory panel",
+        editable: [{ key: "KeyI" }],
+        onDown: () => { Equipment.toggle(); return true; }
+    });
 });
 
 Hooks.once("ready" as any, async () => {
