@@ -1,3 +1,4 @@
+
 import { Debug } from "../../utils/debug";
 
 // --- Interfaces ---
@@ -47,7 +48,7 @@ const DEFAULT_EQUIP: EquipmentSlotsData = {
 };
 
 const EQUIP_SLOT_META: Record<string, { label: string; icon: string }> = {
-    armor: { label: "Armor", icon: "fas fa-shield-halved" },
+    armor: { label: "Armor", icon: "fa-duotone fa-solid fa-shirt" },
     clothes: { label: "Clothes", icon: "fas fa-shirt" },
     trinket1: { label: "Trinket", icon: "fas fa-gem" },
     trinket2: { label: "Trinket", icon: "fas fa-gem" },
@@ -60,9 +61,9 @@ const EQUIP_SLOT_META: Record<string, { label: string; icon: string }> = {
 const SLOT_STYLE = {
     width: "36px",
     height: "36px",
-    border: "1px solid #444",
+    border: "1px solid #3a3a45",
     borderRadius: "4px",
-    background: "rgba(0,0,0,0.3)",
+    background: "rgba(0,0,0,0.34)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -73,17 +74,8 @@ const SLOT_STYLE = {
 
 const BIG_SLOT_STYLE = {
     ...SLOT_STYLE,
-    width: "70px",
-    height: "70px",
-};
-
-const SECTION_LABEL_STYLE = {
-    fontSize: "11px",
-    color: "#666",
-    textTransform: "uppercase" as any,
-    letterSpacing: "0.5px",
-    padding: "6px 6px 3px",
-    textAlign: "center" as any
+    width: "75px",
+    height: "75px",
 };
 
 // Only equippable item types in inventory
@@ -179,6 +171,7 @@ export class Equipment {
         });
 
         this.buildUI();
+        this.makePanelDropUnequipTarget();
         document.body.appendChild(Equipment.form);
     }
 
@@ -221,6 +214,7 @@ export class Equipment {
         Object.assign(topSection.style, {
             display: "flex",
             flexDirection: "row",
+            alignItems: "flex-start",
             borderBottom: "1px solid #222"
         });
 
@@ -238,12 +232,14 @@ export class Equipment {
     private buildWeaponSetsColumn(): HTMLElement {
         const col = document.createElement("div");
         col.id = "fft-equip-weapons";
-        Object.assign(col.style, { display: "flex", flexDirection: "column", padding: "0" });
-
-        const label = document.createElement("div");
-        Object.assign(label.style, SECTION_LABEL_STYLE);
-        label.textContent = "Weapon Sets";
-        col.appendChild(label);
+        Object.assign(col.style, {
+            display: "flex",
+            flexDirection: "column",
+            gap: "6px",
+            justifyContent: "center",
+            padding: "8px 8px 8px 10px",
+            minWidth: "136px"
+        });
 
         for (let i = 0; i < 3; i++) {
             const row = document.createElement("div");
@@ -254,7 +250,9 @@ export class Equipment {
                 flexDirection: "row",
                 alignItems: "center",
                 gap: "6px",
-                padding: "5px 8px",
+                minHeight: "34px",
+                padding: "0 4px",
+                borderRadius: "4px",
                 cursor: "pointer"
             });
 
@@ -263,7 +261,7 @@ export class Equipment {
             num.textContent = String(i + 1);
             Object.assign(num.style, {
                 fontSize: "12px", fontWeight: "bold", color: "#555",
-                width: "14px", textAlign: "center"
+                width: "16px", textAlign: "center"
             });
             row.appendChild(num);
 
@@ -290,6 +288,7 @@ export class Equipment {
         el.dataset.slotType = "weapon";
         el.title = slot === "primary" ? "Main Hand" : "Off Hand";
         Object.assign(el.style, SLOT_STYLE);
+        el.draggable = true;
 
         const icon = document.createElement("i");
         icon.className = slot === "primary" ? "fas fa-hand-fist" : "fas fa-shield-halved";
@@ -303,8 +302,38 @@ export class Equipment {
             await Equipment.clearWeaponSlot(Equipment._actor, setIndex, slot);
         });
 
-        this.makeDropTarget(el, async (uuid) => {
+        el.addEventListener("dragstart", (e: DragEvent) => {
+            const uuid = el.dataset.itemUuid;
+            if (!uuid) {
+                e.preventDefault();
+                return;
+            }
+            e.dataTransfer?.setData("text/plain", JSON.stringify({
+                type: "Item",
+                uuid,
+                source: { kind: "weapon-slot", setIndex, slot }
+            }));
+            if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
+        });
+
+        this.makeDropTarget(el, async (drop) => {
             if (!Equipment._actor) return;
+            if (
+                drop?.source?.kind === "weapon-slot"
+                && typeof drop.source.setIndex === "number"
+                && (drop.source.slot === "primary" || drop.source.slot === "secondary")
+            ) {
+                await Equipment.swapWeaponSlots(
+                    Equipment._actor,
+                    drop.source.setIndex,
+                    drop.source.slot,
+                    setIndex,
+                    slot
+                );
+                return;
+            }
+            const uuid = drop?.uuid;
+            if (!uuid) return;
             const item = Equipment._actor.items.find((i: any) => i.uuid === uuid);
             if (item && (item.type === "weapon" || item.type === "equipment")) {
                 await Equipment.setWeaponSlot(Equipment._actor, setIndex, slot, uuid);
@@ -322,9 +351,9 @@ export class Equipment {
         Object.assign(col.style, {
             display: "flex",
             flexDirection: "column",
+            width: "156px",
             padding: "8px",
-            gap: "6px",
-            borderRight: "1px solid #222"
+            gap: "6px"
         });
 
         // Big slots row: Armor + Clothes
@@ -336,7 +365,7 @@ export class Equipment {
 
         // Trinkets row: 4 small slots aligned under big ones
         const trinketRow = document.createElement("div");
-        Object.assign(trinketRow.style, { display: "flex", gap: "4px" });
+        Object.assign(trinketRow.style, { display: "flex", gap: "4px", justifyContent: "space-between" });
         trinketRow.appendChild(this.createEquipSlot("trinket1", false));
         trinketRow.appendChild(this.createEquipSlot("trinket2", false));
         trinketRow.appendChild(this.createEquipSlot("trinket3", false));
@@ -352,8 +381,10 @@ export class Equipment {
         el.className = "fft-equip-slot";
         el.dataset.equipSlot = slotName;
         el.dataset.slotType = "gear";
+        el.dataset.slotSize = big ? "big" : "small";
         el.title = meta.label;
         Object.assign(el.style, big ? BIG_SLOT_STYLE : SLOT_STYLE);
+        el.draggable = true;
 
         const icon = document.createElement("i");
         icon.className = meta.icon;
@@ -367,6 +398,9 @@ export class Equipment {
             Object.assign(label.style, {
                 position: "absolute",
                 bottom: "2px",
+                left: "0",
+                right: "0",
+                textAlign: "center",
                 fontSize: "8px",
                 color: "#555",
                 textTransform: "uppercase",
@@ -383,8 +417,24 @@ export class Equipment {
             await Equipment.clearEquipmentSlot(Equipment._actor, slotName as keyof EquipmentSlotsData);
         });
 
-        this.makeDropTarget(el, async (uuid) => {
+        el.addEventListener("dragstart", (e: DragEvent) => {
+            const uuid = el.dataset.itemUuid;
+            if (!uuid) {
+                e.preventDefault();
+                return;
+            }
+            e.dataTransfer?.setData("text/plain", JSON.stringify({
+                type: "Item",
+                uuid,
+                source: { kind: "gear-slot", slotName }
+            }));
+            if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
+        });
+
+        this.makeDropTarget(el, async (drop) => {
             if (!Equipment._actor) return;
+            const uuid = drop?.uuid;
+            if (!uuid) return;
             const item = Equipment._actor.items.find((i: any) => i.uuid === uuid);
             if (item && item.type === "equipment") {
                 await Equipment.setEquipmentSlot(Equipment._actor, slotName as keyof EquipmentSlotsData, uuid);
@@ -401,17 +451,12 @@ export class Equipment {
         col.id = "fft-equip-inventory";
         Object.assign(col.style, { display: "flex", flexDirection: "column", padding: "0" });
 
-        const label = document.createElement("div");
-        Object.assign(label.style, SECTION_LABEL_STYLE);
-        label.textContent = "Inventory";
-        col.appendChild(label);
-
         const scrollArea = document.createElement("div");
         scrollArea.id = "fft-equip-inv-grid";
         Object.assign(scrollArea.style, {
             overflowY: "auto",
             maxHeight: "300px",
-            padding: "4px 8px"
+            padding: "8px"
         });
 
         col.appendChild(scrollArea);
@@ -420,7 +465,7 @@ export class Equipment {
 
     // --- Shared: drop target helper ---
 
-    private makeDropTarget(el: HTMLElement, onDrop: (uuid: string) => Promise<void>) {
+    private makeDropTarget(el: HTMLElement, onDrop: (drop: any) => Promise<void>) {
         el.addEventListener("dragover", (e) => {
             e.preventDefault();
             el.style.borderColor = "#8cf";
@@ -436,10 +481,38 @@ export class Equipment {
                 if (!raw) return;
                 const drop = JSON.parse(raw);
                 if (drop.type === "Item" && drop.uuid) {
-                    await onDrop(drop.uuid);
+                    await onDrop(drop);
                 }
             } catch (err) {
                 Debug.Warn("Equipment | Drop failed", err);
+            }
+        });
+    }
+
+    private makePanelDropUnequipTarget() {
+        Equipment.form.addEventListener("dragover", (e) => {
+            e.preventDefault();
+        });
+
+        Equipment.form.addEventListener("drop", async (e) => {
+            if (!Equipment._actor) return;
+            const target = e.target as HTMLElement | null;
+            if (target?.closest(".fft-equip-slot")) return;
+
+            try {
+                const raw = e.dataTransfer?.getData("text/plain");
+                if (!raw) return;
+                const drop = JSON.parse(raw);
+                if (drop?.type !== "Item" || !drop?.uuid) return;
+
+                const item = Equipment._actor.items.find((i: any) => i.uuid === drop.uuid);
+                if (!item?.system?.equipped) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+                await Equipment.unequipItemWithinPanel(Equipment._actor, drop.uuid);
+            } catch (err) {
+                Debug.Warn("Equipment | Unequip drop failed", err);
             }
         });
     }
@@ -497,6 +570,29 @@ export class Equipment {
             await this._equipActiveWeaponSet(actor, data);
             await this._fireHook(actor, data);
         }
+        this.refresh();
+    }
+
+    static async swapWeaponSlots(
+        actor: any,
+        sourceSetIndex: number,
+        sourceSlot: "primary" | "secondary",
+        targetSetIndex: number,
+        targetSlot: "primary" | "secondary"
+    ) {
+        if (sourceSetIndex === targetSetIndex && sourceSlot === targetSlot) return;
+        const data = await this.getWeaponSets(actor);
+        const sourceValue = data.sets[sourceSetIndex]?.[sourceSlot] ?? null;
+        const targetValue = data.sets[targetSetIndex]?.[targetSlot] ?? null;
+        data.sets[targetSetIndex][targetSlot] = sourceValue;
+        data.sets[sourceSetIndex][sourceSlot] = targetValue;
+        await actor.setFlag("fftweaks", WEAPON_FLAG, data);
+
+        if (data.activeSet === sourceSetIndex || data.activeSet === targetSetIndex) {
+            await this._equipActiveWeaponSet(actor, data);
+            await this._fireHook(actor, data);
+        }
+
         this.refresh();
     }
 
@@ -584,6 +680,45 @@ export class Equipment {
         this.refresh();
     }
 
+    static async unequipItemWithinPanel(actor: any, itemUuid: string) {
+        const item = actor.items.find((i: any) => i.uuid === itemUuid);
+        if (item?.system?.equipped) {
+            await item.update({ "system.equipped": false });
+        }
+
+        let weaponDataChanged = false;
+        const weaponData = await this.getWeaponSets(actor);
+        for (const set of weaponData.sets) {
+            if (set.primary === itemUuid) {
+                set.primary = null;
+                weaponDataChanged = true;
+            }
+            if (set.secondary === itemUuid) {
+                set.secondary = null;
+                weaponDataChanged = true;
+            }
+        }
+        if (weaponDataChanged) {
+            await actor.setFlag("fftweaks", WEAPON_FLAG, weaponData);
+            await this._equipActiveWeaponSet(actor, weaponData);
+            await this._fireHook(actor, weaponData);
+        }
+
+        let equipDataChanged = false;
+        const equipData = await this.getEquipmentSlots(actor);
+        for (const key of Object.keys(equipData) as (keyof EquipmentSlotsData)[]) {
+            if (equipData[key] === itemUuid) {
+                equipData[key] = null;
+                equipDataChanged = true;
+            }
+        }
+        if (equipDataChanged) {
+            await actor.setFlag("fftweaks", EQUIP_FLAG, equipData);
+        }
+
+        this.refresh();
+    }
+
     // ==============================
     // UI Refresh
     // ==============================
@@ -627,6 +762,7 @@ export class Equipment {
 
     private static _renderSlotContent(slotEl: HTMLElement, uuid: string | null, placeholderIcon: string) {
         slotEl.innerHTML = "";
+        slotEl.dataset.itemUuid = uuid ?? "";
         const item = uuid ? this._actor.items.find((i: any) => i.uuid === uuid) : null;
         if (item) {
             const img = document.createElement("img");
@@ -634,12 +770,18 @@ export class Equipment {
             img.alt = item.name;
             img.draggable = false;
             Object.assign(img.style, { width: "100%", height: "100%", objectFit: "cover", borderRadius: "3px" });
+            img.addEventListener("dblclick", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                item.sheet?.render(true);
+            });
             slotEl.appendChild(img);
             slotEl.title = item.name;
         } else {
             const icon = document.createElement("i");
             icon.className = placeholderIcon;
-            Object.assign(icon.style, { color: "#444", fontSize: "14px" });
+            const iconSize = slotEl.dataset.slotSize === "big" ? "22px" : "14px";
+            Object.assign(icon.style, { color: "#444", fontSize: iconSize });
             slotEl.appendChild(icon);
         }
     }
@@ -731,6 +873,12 @@ export class Equipment {
 
                 cell.addEventListener("dragstart", (e: DragEvent) => {
                     e.dataTransfer?.setData("text/plain", JSON.stringify({ type: "Item", uuid: item.uuid }));
+                });
+
+                cell.addEventListener("dblclick", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    item.sheet?.render(true);
                 });
 
                 const img = document.createElement("img");
