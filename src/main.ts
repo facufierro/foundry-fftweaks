@@ -15,6 +15,7 @@ import { ContainerAdvancement } from "./plugins/container-advancement";
 import { PointBuy } from "./plugins/point-buy";
 
 import { Automations } from "./automations";
+import { Equipment } from "./plugins/equipment";
 import { TokenVisuals } from "./plugins/token-visuals";
 import { AINarrator } from "./plugins/ai-narrator";
 
@@ -42,6 +43,8 @@ Hooks.once("ready" as any, async () => {
 
     Automations.initialize();
     console.log("FFTweaks | Automations initialized");
+    Equipment.initialize();
+    console.log("FFTweaks | Equipment initialized");
     TokenVisuals.initialize();
     console.log("FFTweaks | TokenVisuals initialized");
     try {

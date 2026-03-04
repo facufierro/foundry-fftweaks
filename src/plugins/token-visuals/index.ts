@@ -1,18 +1,36 @@
 import { Debug } from "../../utils/debug";
+import { Equipment } from "../equipment";
 
 export class TokenVisuals {
     private static _fileCache = new Map<string, Set<string>>();
 
     static initialize() {
-        Hooks.on("updateItem", this.handleTokenEquipmentUpdate);
-        Hooks.on("preCreateToken", this.handleTokenSizeScaling);
-        Hooks.on("preCreateToken", this.handleTokenNameShortening);
-        Hooks.on("preCreateToken", this.handleNPCHiding);
+        // Listen for weapon set changes from the Equipment plugin
+        Hooks.on("fftweaks.weaponSetChanged" as any, this.handleWeaponSetChanged);
+
+        // Also listen for item equip/unequip as a fallback trigger
+        Hooks.on("updateItem" as any, this.handleTokenEquipmentUpdate);
+
+        Hooks.on("preCreateToken" as any, this.handleTokenSizeScaling);
+        Hooks.on("preCreateToken" as any, this.handleTokenNameShortening);
+        Hooks.on("preCreateToken" as any, this.handleNPCHiding);
     }
 
-    static async handleTokenEquipmentUpdate(item: any, updateData: any) {
+    static handleWeaponSetChanged = async (payload: {
+        actor: any;
+        activeSet: number;
+        primary: any | null;
+        secondary: any | null;
+    }) => {
+        const { actor, primary, secondary } = payload;
+        if (!actor || actor.type !== "character") return;
+        await TokenVisuals.updateTokenImage(actor, primary, secondary);
+    };
+
+    static handleTokenEquipmentUpdate = async (item: any, updateData: any) => {
         const actor = item.actor;
         if (!actor || !updateData?.system?.equipped) return;
+        if (actor.type !== "character") return;
 
         const gameAny = game as any;
         gameAny._tokenImageDebounce ??= {};
@@ -21,112 +39,52 @@ export class TokenVisuals {
         clearTimeout(gameAny._tokenImageDebounce[actorId]);
 
         gameAny._tokenImageDebounce[actorId] = setTimeout(async () => {
-            const token = actor.getActiveTokens()[0];
-            if (!token) return;
+            const weapons = await Equipment.getActiveWeapons(actor);
+            await TokenVisuals.updateTokenImage(actor, weapons.primary, weapons.secondary);
+        }, 250);
+    };
 
-            const actorSlug = actor.name.split(" ")[0].slugify();
-            // Debug.Log(`[FFT] Updating token image for: ${actor.name} (${actorSlug})`);
+    private static async updateTokenImage(actor: any, primary: any | null, secondary: any | null) {
+        const token = actor.getActiveTokens()[0];
+        if (!token) return;
 
-            // Use BG3 hotbar and detect the active weapon set
-            const hudRoot = document.getElementById("bg3-hotbar-container");
-            const weaponContainer = hudRoot?.querySelector(".bg3-weapon-container") as HTMLElement;
-            let activeSetIndex = "0";
-            if (weaponContainer) {
-                activeSetIndex = weaponContainer.getAttribute("data-active-set") || "0";
+        const actorSlug = actor.name.split(" ")[0].slugify();
+
+        // Resolve weapon base types
+        const mainHand = primary?.system?.type?.baseItem?.slugify?.() ?? "none";
+        const offHand = secondary?.system?.type?.baseItem?.slugify?.() ?? "none";
+
+        // D&D convention: main hand first, off hand second
+        const suffix = `${mainHand}-${offHand}`;
+        const imageFile = `${actorSlug}-${suffix}.webp`;
+        const folderPath = `assets/fftweaks/tokens/Players/${actorSlug}`;
+        const imagePath = `${folderPath}/${imageFile}`;
+
+        // Check cache first to avoid FilePicker spam
+        let cachedFiles = TokenVisuals._fileCache.get(folderPath);
+
+        if (!cachedFiles) {
+            try {
+                const result = await FilePicker.browse("data", folderPath);
+                cachedFiles = new Set(result.files);
+                TokenVisuals._fileCache.set(folderPath, cachedFiles);
+            } catch (err) {
+                cachedFiles = new Set();
+                TokenVisuals._fileCache.set(folderPath, cachedFiles);
             }
-            const activeSet = hudRoot?.querySelector(`.bg3-weapon-set[data-container-index='${activeSetIndex}']`);
-            if (!activeSet) {
-                // Debug.Warn(`[FFT] No active weapon set found in BG3 hotbar (index ${activeSetIndex}).`);
-                return;
-            }
+        }
 
-            const extractSlotItem = (slotIndex: number): string | null => {
-                // Find the hotbar cell for the slot
-                const slot = activeSet.querySelector(`.bg3-grid-cell[data-slot='${slotIndex}-0']`) as HTMLElement;
+        const finalImage = cachedFiles.has(imagePath)
+            ? imagePath
+            : `${folderPath}/${actorSlug}.webp`;
 
-                if (slot?.classList.contains("two-handed-duplicate")) {
-                    return "none";
-                }
+        if (token && token.document.texture.src !== finalImage) {
+            await token.document.update({ texture: { src: finalImage } });
+        }
 
-                const img = slot?.querySelector("img.hotbar-item") as HTMLImageElement;
-                if (!img || !img.src) {
-                    // Debug.Log(`[FFT] Slot ${slotIndex} image is empty.`);
-                    return "none";
-                }
-                // Extract the filename from the image src
-                const match = img.src.match(/\/([^\/]+\.webp)/);
-                const imgPath = match?.[1];
-                // Debug.Log(`[FFT] Slot ${slotIndex} image src: ${img?.src}`);
-                // Debug.Log(`[FFT] Extracted image filename: ${imgPath}`);
-
-                if (!imgPath) {
-                    return "none";
-                }
-
-                const itemMatch = actor.items.find((i: any) =>
-                    i.img.includes(imgPath) &&
-                    i.system?.equipped
-                );
-
-                if (!itemMatch) {
-                    // Debug.Warn(`[FFT] No equipped item found for image ${imgPath} in slot ${slotIndex}`);
-                    return "none";
-                }
-
-                // Use the base weapon type for the image filename
-                const baseItem = itemMatch.system?.type?.baseItem;
-                const baseWeaponType = baseItem?.slugify?.() ?? "none";
-                // Debug.Log(`[FFT] Matched item: ${itemMatch.name}, baseItem: ${baseItem}, slugified: ${baseWeaponType}`);
-                return baseWeaponType;
-            };
-
-            const right = extractSlotItem(0); // primary weapon slot
-            const left = extractSlotItem(1);  // secondary/shield slot
-
-            const rightFinal = right && right !== "" ? right : "none";
-            const leftFinal = left && left !== "" ? left : "none";
-            const suffix = `${rightFinal}-${leftFinal}`;
-            const imageFile = `${actorSlug}-${suffix}.webp`;
-            const folderPath = `assets/fftweaks/tokens/Players/${actorSlug}`;
-            const imagePath = `${folderPath}/${imageFile}`;
-
-            // Debug.Log(`[FFT] Attempting to load image: ${imagePath}`);
-
-            // Check cache first to avoid FilePicker spam
-            let cachedFiles = TokenVisuals._fileCache.get(folderPath);
-
-            if (!cachedFiles) {
-                try {
-                    const result = await FilePicker.browse("data", folderPath);
-                    cachedFiles = new Set(result.files);
-                    TokenVisuals._fileCache.set(folderPath, cachedFiles);
-                } catch (err) {
-                    // Debug.Warn(`[FFT] Could not browse directory: ${folderPath}`, err);
-                    // Store empty set to prevent retrying constantly
-                    cachedFiles = new Set();
-                    TokenVisuals._fileCache.set(folderPath, cachedFiles);
-                }
-            }
-
-            const finalImage = cachedFiles.has(imagePath)
-                ? imagePath
-                : `${folderPath}/${actorSlug}.webp`;
-
-            if (finalImage !== imagePath) {
-                // Debug.Warn(`[FFT] Image not found: ${imagePath}. Falling back to: ${finalImage}`);
-            } else {
-                // Debug.Log(`[FFT] Image found: ${finalImage}`);
-            }
-
-            if (token && token.document.texture.src !== finalImage) {
-                await token.document.update({ texture: { src: finalImage } });
-            }
-
-            if (actor.prototypeToken.texture.src !== finalImage) {
-                await actor.prototypeToken.update({ texture: { src: finalImage } });
-            }
-
-        }, 250); // Increased debounce to reduce frequency during rapid changes
+        if (actor.prototypeToken.texture.src !== finalImage) {
+            await actor.prototypeToken.update({ texture: { src: finalImage } });
+        }
     }
 
     static handleTokenSizeScaling(tokenDocument: any) {
@@ -137,7 +95,6 @@ export class TokenVisuals {
             return;
         }
 
-        // Only resize player characters
         if (actor.type !== "character") {
             Debug.Log(`TokenVisuals | Actor type is ${actor.type}, skipping resize`);
             return;
@@ -154,13 +111,13 @@ export class TokenVisuals {
 
         const sizeKey = actor.system.traits?.size;
         const expectedScale = sizeScaleMap[sizeKey] ?? 2;
-        
+
         Debug.Log(`TokenVisuals | Size Key: ${sizeKey}, Expected Scale: ${expectedScale}`);
 
         const currentTexture = tokenDocument.texture ?? {};
         const currentScaleX = currentTexture.scaleX ?? 1;
         const currentScaleY = currentTexture.scaleY ?? 1;
-        
+
         Debug.Log(`TokenVisuals | Current Scale: ${currentScaleX}, ${currentScaleY}`);
 
         if (currentScaleX !== expectedScale || currentScaleY !== expectedScale) {
@@ -171,7 +128,7 @@ export class TokenVisuals {
                     scaleY: expectedScale
                 }
             });
-            
+
             actor.prototypeToken.update({
                 texture: {
                     scaleX: expectedScale,
@@ -197,7 +154,6 @@ export class TokenVisuals {
 
         if (actor.type === "npc") {
             tokenDocument.updateSource({ hidden: true });
-            // Ensure data is updated as well, covering both document source and initial data object
             if (typeof data === 'object') {
                 data.hidden = true;
             }
