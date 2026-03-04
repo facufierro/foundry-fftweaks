@@ -71,14 +71,47 @@ const SLOT_STYLE = {
     flexShrink: "0"
 };
 
+const BIG_SLOT_STYLE = {
+    ...SLOT_STYLE,
+    width: "70px",
+    height: "70px",
+};
+
 const SECTION_LABEL_STYLE = {
-    fontSize: "9px",
+    fontSize: "11px",
     color: "#666",
     textTransform: "uppercase" as any,
     letterSpacing: "0.5px",
-    padding: "4px 4px 2px",
+    padding: "6px 6px 3px",
     textAlign: "center" as any
 };
+
+// Only equippable item types in inventory
+const EQUIPPABLE_TYPES = new Set(["weapon", "equipment"]);
+
+const INVENTORY_CATEGORIES: { key: string; label: string; icon: string }[] = [
+    { key: "weapons", label: "Weapons", icon: "fas fa-sword" },
+    { key: "armor", label: "Armor", icon: "fas fa-shield-halved" },
+    { key: "clothing", label: "Clothing", icon: "fas fa-shirt" },
+    { key: "trinkets", label: "Trinkets", icon: "fas fa-gem" },
+];
+
+// Map item → inventory category based on item.type and equipment subtype (system.type.value)
+function getInventoryCategory(item: any): string | null {
+    if (item.type === "weapon") return "weapons";
+    if (item.type !== "equipment") return null;
+    const sub = item.system?.type?.value ?? item.system?.armor?.type ?? "";
+    switch (sub) {
+        case "heavy": case "medium": case "light": return "armor";
+        case "shield": case "rod": case "wand": return "weapons";
+        case "clothing": return "clothing";
+        case "trinket": case "wondrous": case "ring": return "trinkets";
+        default: return "trinkets"; // fallback for unknown equipment subtypes
+    }
+}
+
+// Track collapsed state per category
+const _collapsedCategories = new Set<string>();
 
 // ==============================
 // Equipment Plugin
@@ -155,15 +188,15 @@ export class Equipment {
         // Handle bar
         const handle = document.createElement("div");
         Object.assign(handle.style, {
-            height: "22px",
+            height: "30px",
             background: "rgb(0 0 0 / 50%)",
             cursor: "move",
             borderBottom: "1px solid #222",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "0 6px",
-            fontSize: "10px",
+            padding: "0 10px",
+            fontSize: "12px",
             color: "#888",
             letterSpacing: "0.5px",
             textTransform: "uppercase" as any,
@@ -176,36 +209,31 @@ export class Equipment {
 
         const closeBtn = document.createElement("span");
         closeBtn.innerHTML = "&times;";
-        Object.assign(closeBtn.style, { cursor: "pointer", fontSize: "14px", color: "#888" });
+        Object.assign(closeBtn.style, { cursor: "pointer", fontSize: "18px", color: "#888" });
         closeBtn.addEventListener("click", () => Equipment.toggle());
         handle.appendChild(closeBtn);
 
         Equipment.form.appendChild(handle);
         this.makeDraggable(handle);
 
-        // Body — 3 columns
-        const body = document.createElement("div");
-        Object.assign(body.style, {
+        // Top section: equipment slots (left) + weapon sets (right)
+        const topSection = document.createElement("div");
+        Object.assign(topSection.style, {
             display: "flex",
-            flexDirection: "row"
+            flexDirection: "row",
+            borderBottom: "1px solid #222"
         });
 
-        body.appendChild(this.buildWeaponSetsColumn());
-        body.appendChild(this.buildSeparator());
-        body.appendChild(this.buildEquipmentSlotsColumn());
-        body.appendChild(this.buildSeparator());
-        body.appendChild(this.buildInventoryColumn());
+        topSection.appendChild(this.buildEquipmentSlotsColumn());
+        topSection.appendChild(this.buildWeaponSetsColumn());
 
-        Equipment.form.appendChild(body);
+        Equipment.form.appendChild(topSection);
+
+        // Bottom: full-width inventory
+        Equipment.form.appendChild(this.buildInventoryColumn());
     }
 
-    private buildSeparator(): HTMLElement {
-        const sep = document.createElement("div");
-        Object.assign(sep.style, { width: "1px", background: "#222", flexShrink: "0" });
-        return sep;
-    }
-
-    // --- Left Column: Weapon Sets ---
+    // --- Weapon Sets (right side of top section) ---
 
     private buildWeaponSetsColumn(): HTMLElement {
         const col = document.createElement("div");
@@ -214,7 +242,7 @@ export class Equipment {
 
         const label = document.createElement("div");
         Object.assign(label.style, SECTION_LABEL_STYLE);
-        label.textContent = "Weapons";
+        label.textContent = "Weapon Sets";
         col.appendChild(label);
 
         for (let i = 0; i < 3; i++) {
@@ -225,8 +253,8 @@ export class Equipment {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
-                gap: "3px",
-                padding: "3px 4px",
+                gap: "6px",
+                padding: "5px 8px",
                 cursor: "pointer"
             });
 
@@ -234,8 +262,8 @@ export class Equipment {
             num.className = "fft-equip-set-label";
             num.textContent = String(i + 1);
             Object.assign(num.style, {
-                fontSize: "10px", fontWeight: "bold", color: "#555",
-                width: "12px", textAlign: "center"
+                fontSize: "12px", fontWeight: "bold", color: "#555",
+                width: "14px", textAlign: "center"
             });
             row.appendChild(num);
 
@@ -286,47 +314,67 @@ export class Equipment {
         return el;
     }
 
-    // --- Center Column: Equipment Slots ---
+    // --- Equipment Slots (left side of top section) ---
 
     private buildEquipmentSlotsColumn(): HTMLElement {
         const col = document.createElement("div");
         col.id = "fft-equip-gear";
-        Object.assign(col.style, { display: "flex", flexDirection: "column", padding: "0" });
-
-        const label = document.createElement("div");
-        Object.assign(label.style, SECTION_LABEL_STYLE);
-        label.textContent = "Gear";
-        col.appendChild(label);
-
-        const grid = document.createElement("div");
-        Object.assign(grid.style, {
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "3px",
-            padding: "3px 4px"
+        Object.assign(col.style, {
+            display: "flex",
+            flexDirection: "column",
+            padding: "8px",
+            gap: "6px",
+            borderRight: "1px solid #222"
         });
 
-        for (const slotName of ["armor", "clothes", "trinket1", "trinket2", "trinket3", "trinket4"]) {
-            grid.appendChild(this.createEquipSlot(slotName));
-        }
+        // Big slots row: Armor + Clothes
+        const bigRow = document.createElement("div");
+        Object.assign(bigRow.style, { display: "flex", gap: "6px" });
+        bigRow.appendChild(this.createEquipSlot("armor", true));
+        bigRow.appendChild(this.createEquipSlot("clothes", true));
+        col.appendChild(bigRow);
 
-        col.appendChild(grid);
+        // Trinkets row: 4 small slots aligned under big ones
+        const trinketRow = document.createElement("div");
+        Object.assign(trinketRow.style, { display: "flex", gap: "4px" });
+        trinketRow.appendChild(this.createEquipSlot("trinket1", false));
+        trinketRow.appendChild(this.createEquipSlot("trinket2", false));
+        trinketRow.appendChild(this.createEquipSlot("trinket3", false));
+        trinketRow.appendChild(this.createEquipSlot("trinket4", false));
+        col.appendChild(trinketRow);
+
         return col;
     }
 
-    private createEquipSlot(slotName: string): HTMLElement {
+    private createEquipSlot(slotName: string, big: boolean): HTMLElement {
         const meta = EQUIP_SLOT_META[slotName];
         const el = document.createElement("div");
         el.className = "fft-equip-slot";
         el.dataset.equipSlot = slotName;
         el.dataset.slotType = "gear";
         el.title = meta.label;
-        Object.assign(el.style, SLOT_STYLE);
+        Object.assign(el.style, big ? BIG_SLOT_STYLE : SLOT_STYLE);
 
         const icon = document.createElement("i");
         icon.className = meta.icon;
-        Object.assign(icon.style, { color: "#444", fontSize: "14px" });
+        Object.assign(icon.style, { color: "#444", fontSize: big ? "22px" : "14px" });
         el.appendChild(icon);
+
+        // Label under big slots
+        if (big) {
+            const label = document.createElement("div");
+            label.textContent = meta.label;
+            Object.assign(label.style, {
+                position: "absolute",
+                bottom: "2px",
+                fontSize: "8px",
+                color: "#555",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+                pointerEvents: "none"
+            });
+            el.appendChild(label);
+        }
 
         el.addEventListener("contextmenu", async (e) => {
             e.preventDefault();
@@ -346,7 +394,7 @@ export class Equipment {
         return el;
     }
 
-    // --- Right Column: Inventory ---
+    // --- Inventory (full width, bottom) ---
 
     private buildInventoryColumn(): HTMLElement {
         const col = document.createElement("div");
@@ -358,20 +406,15 @@ export class Equipment {
         label.textContent = "Inventory";
         col.appendChild(label);
 
-        const grid = document.createElement("div");
-        grid.id = "fft-equip-inv-grid";
-        Object.assign(grid.style, {
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "3px",
-            padding: "3px 4px",
+        const scrollArea = document.createElement("div");
+        scrollArea.id = "fft-equip-inv-grid";
+        Object.assign(scrollArea.style, {
             overflowY: "auto",
-            maxHeight: "250px",
-            width: "210px",
-            alignContent: "flex-start"
+            maxHeight: "300px",
+            padding: "4px 8px"
         });
 
-        col.appendChild(grid);
+        col.appendChild(scrollArea);
         return col;
     }
 
@@ -602,52 +645,124 @@ export class Equipment {
     }
 
     private static _refreshInventory() {
-        const grid = this.form.querySelector("#fft-equip-inv-grid");
-        if (!grid || !this._actor) return;
-        grid.innerHTML = "";
+        const container = this.form.querySelector("#fft-equip-inv-grid");
+        if (!container || !this._actor) return;
+        container.innerHTML = "";
 
-        const items = [...this._actor.items].sort((a: any, b: any) => a.name.localeCompare(b.name));
-        for (const item of items) {
-            const cell = document.createElement("div");
-            Object.assign(cell.style, {
-                ...SLOT_STYLE,
-                cursor: "grab",
-                border: "1px solid #333"
+        // Group equippable items by inventory category
+        const grouped = new Map<string, any[]>();
+        for (const item of this._actor.items) {
+            if (!EQUIPPABLE_TYPES.has(item.type)) continue;
+            const cat = getInventoryCategory(item);
+            if (!cat) continue;
+            if (!grouped.has(cat)) grouped.set(cat, []);
+            grouped.get(cat)!.push(item);
+        }
+
+        // Render in category order
+        for (const cat of INVENTORY_CATEGORIES) {
+            const items = grouped.get(cat.key);
+            if (!items || items.length === 0) continue;
+            items.sort((a: any, b: any) => a.name.localeCompare(b.name));
+
+            const collapsed = _collapsedCategories.has(cat.key);
+
+            // Category header
+            const header = document.createElement("div");
+            Object.assign(header.style, {
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "4px 2px",
+                cursor: "pointer",
+                fontSize: "11px",
+                color: "#999",
+                borderBottom: "1px solid #222",
+                marginBottom: "4px",
+                userSelect: "none"
             });
-            cell.title = item.name;
-            cell.draggable = true;
 
-            cell.addEventListener("dragstart", (e: DragEvent) => {
-                e.dataTransfer?.setData("text/plain", JSON.stringify({ type: "Item", uuid: item.uuid }));
+            const arrow = document.createElement("i");
+            arrow.className = collapsed ? "fas fa-caret-right" : "fas fa-caret-down";
+            Object.assign(arrow.style, { fontSize: "10px", width: "10px", textAlign: "center", color: "#666" });
+            header.appendChild(arrow);
+
+            const catIcon = document.createElement("i");
+            catIcon.className = cat.icon;
+            Object.assign(catIcon.style, { fontSize: "11px", color: "#666" });
+            header.appendChild(catIcon);
+
+            const catLabel = document.createElement("span");
+            catLabel.textContent = `${cat.label} (${items.length})`;
+            header.appendChild(catLabel);
+
+            header.addEventListener("click", () => {
+                if (_collapsedCategories.has(cat.key)) {
+                    _collapsedCategories.delete(cat.key);
+                } else {
+                    _collapsedCategories.add(cat.key);
+                }
+                this._refreshInventory();
             });
 
-            const img = document.createElement("img");
-            img.src = item.img;
-            img.alt = item.name;
-            img.draggable = false;
-            Object.assign(img.style, { width: "100%", height: "100%", objectFit: "cover", borderRadius: "3px" });
-            cell.appendChild(img);
+            container.appendChild(header);
 
-            // Quantity badge
-            const qty = item.system?.quantity;
-            if (qty && qty > 1) {
-                const badge = document.createElement("span");
-                badge.textContent = String(qty);
-                Object.assign(badge.style, {
-                    position: "absolute",
-                    bottom: "1px",
-                    right: "2px",
-                    fontSize: "9px",
-                    color: "#fff",
-                    background: "rgba(0,0,0,0.7)",
-                    borderRadius: "2px",
-                    padding: "0 2px",
-                    lineHeight: "1.2"
+            if (collapsed) continue;
+
+            // Item grid for this category
+            const grid = document.createElement("div");
+            Object.assign(grid.style, {
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "4px",
+                marginBottom: "6px",
+                alignContent: "flex-start"
+            });
+
+            for (const item of items) {
+                const cell = document.createElement("div");
+                Object.assign(cell.style, {
+                    ...SLOT_STYLE,
+                    cursor: "grab",
+                    border: "1px solid #333"
                 });
-                cell.appendChild(badge);
+                cell.title = item.name;
+                cell.draggable = true;
+
+                cell.addEventListener("dragstart", (e: DragEvent) => {
+                    e.dataTransfer?.setData("text/plain", JSON.stringify({ type: "Item", uuid: item.uuid }));
+                });
+
+                const img = document.createElement("img");
+                img.src = item.img;
+                img.alt = item.name;
+                img.draggable = false;
+                Object.assign(img.style, { width: "100%", height: "100%", objectFit: "cover", borderRadius: "3px" });
+                cell.appendChild(img);
+
+                const qty = item.system?.quantity;
+                if (qty && qty > 1) {
+                    const badge = document.createElement("span");
+                    badge.textContent = String(qty);
+                    Object.assign(badge.style, {
+                        position: "absolute",
+                        bottom: "1px",
+                        right: "2px",
+                        fontSize: "9px",
+                        color: "#fff",
+                        background: "rgba(0,0,0,0.7)",
+                        borderRadius: "2px",
+                        padding: "0 2px",
+                        lineHeight: "1.2"
+                    });
+                    cell.appendChild(badge);
+                }
+
+                grid.appendChild(cell);
             }
 
-            grid.appendChild(cell);
+            container.appendChild(grid);
         }
+
     }
 }
