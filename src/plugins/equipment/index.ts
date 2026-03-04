@@ -78,19 +78,32 @@ const BIG_SLOT_STYLE = {
     height: "75px",
 };
 
-// Only equippable item types in inventory
-const EQUIPPABLE_TYPES = new Set(["weapon", "equipment"]);
+const CONTEXT_MENU_ID = "fft-equip-item-context";
+
+// Inventory item types shown in panel
+const INVENTORY_ITEM_TYPES = new Set(["weapon", "equipment", "tool", "consumable"]);
 
 const INVENTORY_CATEGORIES: { key: string; label: string; icon: string }[] = [
     { key: "weapons", label: "Weapons", icon: "fas fa-sword" },
     { key: "armor", label: "Armor", icon: "fas fa-shield-halved" },
     { key: "clothing", label: "Clothing", icon: "fas fa-shirt" },
     { key: "trinkets", label: "Trinkets", icon: "fas fa-gem" },
+    { key: "tools", label: "Tools", icon: "fas fa-screwdriver-wrench" },
+    { key: "instruments", label: "Instruments", icon: "fas fa-music" },
+    { key: "consumables", label: "Consumables", icon: "fas fa-flask" },
 ];
 
 // Map item → inventory category based on item.type and equipment subtype (system.type.value)
 function getInventoryCategory(item: any): string | null {
     if (item.type === "weapon") return "weapons";
+    if (item.type === "tool") {
+        const toolType = String(item.system?.type?.value ?? item.system?.toolType ?? "").toLowerCase();
+        if (toolType.includes("music") || toolType.includes("instrument") || toolType.includes("musical")) {
+            return "instruments";
+        }
+        return "tools";
+    }
+    if (item.type === "consumable") return "consumables";
     if (item.type !== "equipment") return null;
     const sub = item.system?.type?.value ?? item.system?.armor?.type ?? "";
     switch (sub) {
@@ -100,6 +113,19 @@ function getInventoryCategory(item: any): string | null {
         case "trinket": case "wondrous": case "ring": return "trinkets";
         default: return "trinkets"; // fallback for unknown equipment subtypes
     }
+}
+
+function isValidEquipmentForSlot(item: any, slotName: keyof EquipmentSlotsData): boolean {
+    if (!item || item.type !== "equipment") return false;
+
+    const category = getInventoryCategory(item);
+    if (!category) return false;
+
+    if (slotName === "armor") return category === "armor";
+    if (slotName === "clothes") return category === "clothing";
+    if (slotName.startsWith("trinket")) return category === "trinkets";
+
+    return false;
 }
 
 // Track collapsed state per category
@@ -654,6 +680,12 @@ export class Equipment {
     }
 
     static async setEquipmentSlot(actor: any, slotName: keyof EquipmentSlotsData, itemUuid: string) {
+        const newItem = actor.items.find((i: any) => i.uuid === itemUuid);
+        if (!isValidEquipmentForSlot(newItem, slotName)) {
+            ui.notifications?.warn("That item cannot be equipped in this slot.");
+            return;
+        }
+
         const data = await this.getEquipmentSlots(actor);
         // Unequip old item in this slot
         const oldUuid = data[slotName];
@@ -664,9 +696,139 @@ export class Equipment {
         data[slotName] = itemUuid;
         await actor.setFlag("fftweaks", EQUIP_FLAG, data);
         // Equip new item
-        const newItem = actor.items.find((i: any) => i.uuid === itemUuid);
         if (newItem && !newItem.system?.equipped) await newItem.update({ "system.equipped": true });
         this.refresh();
+    }
+
+    private static async quickEquipItem(actor: any, item: any) {
+        if (!item) return;
+
+        if (item.type === "weapon") {
+            const sets = await this.getWeaponSets(actor);
+            const active = sets.activeSet;
+            const set = sets.sets[active];
+            const slot: "primary" | "secondary" = !set.primary ? "primary" : (!set.secondary ? "secondary" : "primary");
+            await this.setWeaponSlot(actor, active, slot, item.uuid);
+            return;
+        }
+
+        if (item.type === "equipment") {
+            const category = getInventoryCategory(item);
+            if (category === "armor") {
+                await this.setEquipmentSlot(actor, "armor", item.uuid);
+                return;
+            }
+            if (category === "clothing") {
+                await this.setEquipmentSlot(actor, "clothes", item.uuid);
+                return;
+            }
+            if (category === "trinkets") {
+                const eq = await this.getEquipmentSlots(actor);
+                const target = (Object.keys(eq) as (keyof EquipmentSlotsData)[])
+                    .find((k) => k.startsWith("trinket") && !eq[k]) ?? "trinket1";
+                await this.setEquipmentSlot(actor, target, item.uuid);
+                return;
+            }
+            if (category === "weapons") {
+                const sets = await this.getWeaponSets(actor);
+                const active = sets.activeSet;
+                const set = sets.sets[active];
+                const slot: "primary" | "secondary" = !set.secondary ? "secondary" : (!set.primary ? "primary" : "secondary");
+                await this.setWeaponSlot(actor, active, slot, item.uuid);
+                return;
+            }
+        }
+
+        if (item.system && typeof item.system.equipped !== "undefined") {
+            await item.update({ "system.equipped": true });
+            this.refresh();
+            return;
+        }
+
+        ui.notifications?.warn("This item cannot be equipped.");
+    }
+
+    private static removeContextMenu() {
+        const existing = document.getElementById(CONTEXT_MENU_ID);
+        if (existing) existing.remove();
+    }
+
+    private static showInventoryItemContextMenu(item: any, x: number, y: number) {
+        this.removeContextMenu();
+        const menu = document.createElement("div");
+        menu.id = CONTEXT_MENU_ID;
+        Object.assign(menu.style, {
+            position: "fixed",
+            left: `${x}px`,
+            top: `${y}px`,
+            zIndex: "10000",
+            minWidth: "130px",
+            background: "rgba(11,10,19,0.98)",
+            border: "1px solid #2f3340",
+            borderRadius: "4px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
+            padding: "4px"
+        });
+
+        const addAction = (label: string, onClick: () => Promise<void> | void) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.textContent = label;
+            Object.assign(btn.style, {
+                display: "block",
+                width: "100%",
+                textAlign: "left",
+                background: "transparent",
+                border: "0",
+                color: "#d3d7e2",
+                fontSize: "12px",
+                padding: "6px 8px",
+                borderRadius: "3px",
+                cursor: "pointer"
+            });
+            btn.addEventListener("mouseenter", () => (btn.style.background = "rgba(255,255,255,0.08)"));
+            btn.addEventListener("mouseleave", () => (btn.style.background = "transparent"));
+            btn.addEventListener("click", async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.removeContextMenu();
+                await onClick();
+            });
+            menu.appendChild(btn);
+        };
+
+        addAction("Equip", async () => {
+            if (!this._actor) return;
+            await this.quickEquipItem(this._actor, item);
+        });
+
+        addAction("Show Item", () => {
+            item.sheet?.render(true);
+        });
+
+        addAction("Use", async () => {
+            if (typeof item.use === "function") {
+                await item.use();
+                return;
+            }
+            if (typeof item.roll === "function") {
+                await item.roll();
+                return;
+            }
+            ui.notifications?.warn("This item has no use action.");
+        });
+
+        document.body.appendChild(menu);
+
+        requestAnimationFrame(() => {
+            const onDocClick = () => {
+                this.removeContextMenu();
+                document.removeEventListener("click", onDocClick, true);
+                document.removeEventListener("contextmenu", onDocClick, true);
+            };
+            document.addEventListener("click", onDocClick, true);
+            document.addEventListener("contextmenu", onDocClick, true);
+        });
     }
 
     static async clearEquipmentSlot(actor: any, slotName: keyof EquipmentSlotsData) {
@@ -794,7 +956,7 @@ export class Equipment {
         // Group equippable items by inventory category
         const grouped = new Map<string, any[]>();
         for (const item of this._actor.items) {
-            if (!EQUIPPABLE_TYPES.has(item.type)) continue;
+            if (!INVENTORY_ITEM_TYPES.has(item.type)) continue;
             const cat = getInventoryCategory(item);
             if (!cat) continue;
             if (!grouped.has(cat)) grouped.set(cat, []);
@@ -879,6 +1041,12 @@ export class Equipment {
                     e.preventDefault();
                     e.stopPropagation();
                     item.sheet?.render(true);
+                });
+
+                cell.addEventListener("contextmenu", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    Equipment.showInventoryItemContextMenu(item, e.clientX, e.clientY);
                 });
 
                 const img = document.createElement("img");
