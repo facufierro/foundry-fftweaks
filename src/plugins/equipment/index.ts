@@ -276,26 +276,9 @@ export class Equipment {
             background: "rgb(0 0 0 / 50%)",
             cursor: "move",
             borderBottom: "1px solid #222",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 10px",
-            fontSize: "12px",
-            color: "#888",
-            letterSpacing: "0.5px",
-            textTransform: "uppercase" as any,
+            display: "block",
             borderRadius: "4px 4px 0 0"
         });
-
-        const title = document.createElement("span");
-        title.textContent = "Equipment";
-        handle.appendChild(title);
-
-        const closeBtn = document.createElement("span");
-        closeBtn.innerHTML = "&times;";
-        Object.assign(closeBtn.style, { cursor: "pointer", fontSize: "18px", color: "#888" });
-        closeBtn.addEventListener("click", () => Equipment.toggle());
-        handle.appendChild(closeBtn);
 
         Equipment.form.appendChild(handle);
         this.makeDraggable(handle);
