@@ -10,7 +10,7 @@ export interface WeaponSlot {
 
 export interface WeaponSetsData {
     activeSet: number;
-    sets: [WeaponSlot, WeaponSlot, WeaponSlot];
+    sets: WeaponSlot[];
 }
 
 export interface ActiveWeapons {
@@ -35,11 +35,7 @@ const HOOK_NAME = "fftweaks.weaponSetChanged";
 
 const DEFAULT_WEAPONS: WeaponSetsData = {
     activeSet: 0,
-    sets: [
-        { primary: null, secondary: null },
-        { primary: null, secondary: null },
-        { primary: null, secondary: null }
-    ]
+    sets: [{ primary: null, secondary: null }]
 };
 
 const DEFAULT_EQUIP: EquipmentSlotsData = {
@@ -261,52 +257,63 @@ export class Equipment {
         Object.assign(col.style, {
             display: "flex",
             flexDirection: "column",
-            gap: "6px",
-            justifyContent: "center",
             padding: "8px 8px 8px 10px",
             minWidth: "136px"
         });
 
-        for (let i = 0; i < 3; i++) {
-            const row = document.createElement("div");
-            row.dataset.setIndex = String(i);
-            row.className = "fft-weapon-row";
-            Object.assign(row.style, {
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: "6px",
-                minHeight: "34px",
-                padding: "0 4px",
-                borderRadius: "4px",
-                cursor: "pointer"
-            });
-
-            const num = document.createElement("div");
-            num.className = "fft-equip-set-label";
-            num.textContent = String(i + 1);
-            Object.assign(num.style, {
-                fontSize: "12px", fontWeight: "bold", color: "#555",
-                width: "16px", textAlign: "center"
-            });
-            row.appendChild(num);
-
-            row.appendChild(this.createWeaponSlot(i, "primary"));
-            row.appendChild(this.createWeaponSlot(i, "secondary"));
-
-            row.addEventListener("click", (e) => {
-                if ((e.target as HTMLElement).closest(".fft-equip-slot")) return;
-                if (!Equipment._actor) return;
-                Equipment.setActiveSet(Equipment._actor, i);
-            });
-
-            col.appendChild(row);
-        }
+        const rows = document.createElement("div");
+        rows.id = "fft-equip-weapon-rows";
+        Object.assign(rows.style, {
+            display: "flex",
+            flexDirection: "column",
+            gap: "6px",
+            maxHeight: "116px",
+            overflowY: "auto",
+            paddingRight: "2px"
+        });
+        rows.appendChild(Equipment.createWeaponRow(0));
+        col.appendChild(rows);
 
         return col;
     }
 
-    private createWeaponSlot(setIndex: number, slot: "primary" | "secondary"): HTMLElement {
+    private static createWeaponRow(setIndex: number): HTMLElement {
+        const row = document.createElement("div");
+        row.dataset.setIndex = String(setIndex);
+        row.className = "fft-weapon-row";
+        Object.assign(row.style, {
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "6px",
+            minHeight: "34px",
+            padding: "0 4px",
+            borderRadius: "4px",
+            cursor: "pointer"
+        });
+
+        const num = document.createElement("div");
+        num.className = "fft-equip-set-label";
+        num.textContent = String(setIndex + 1);
+        Object.assign(num.style, {
+            fontSize: "12px", fontWeight: "bold", color: "#555",
+            width: "16px", textAlign: "center"
+        });
+        row.appendChild(num);
+
+        row.appendChild(this.createWeaponSlot(setIndex, "primary"));
+        row.appendChild(this.createWeaponSlot(setIndex, "secondary"));
+
+        row.addEventListener("click", (e) => {
+            if ((e.target as HTMLElement).closest(".fft-equip-slot")) return;
+            if (!Equipment._actor) return;
+            Equipment.setActiveSet(Equipment._actor, setIndex);
+        });
+
+        return row;
+    }
+
+    private static createWeaponSlot(setIndex: number, slot: "primary" | "secondary"): HTMLElement {
         const el = document.createElement("div");
         el.className = "fft-equip-slot";
         el.dataset.setIndex = String(setIndex);
@@ -342,7 +349,7 @@ export class Equipment {
             if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
         });
 
-        this.makeDropTarget(el, async (drop) => {
+        Equipment.makeDropTarget(el, async (drop) => {
             if (!Equipment._actor) return;
             if (
                 drop?.source?.kind === "weapon-slot"
@@ -457,7 +464,7 @@ export class Equipment {
             if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
         });
 
-        this.makeDropTarget(el, async (drop) => {
+        Equipment.makeDropTarget(el, async (drop) => {
             if (!Equipment._actor) return;
             const uuid = drop?.uuid;
             if (!uuid) return;
@@ -491,7 +498,7 @@ export class Equipment {
 
     // --- Shared: drop target helper ---
 
-    private makeDropTarget(el: HTMLElement, onDrop: (drop: any) => Promise<void>) {
+    private static makeDropTarget(el: HTMLElement, onDrop: (drop: any) => Promise<void>) {
         el.addEventListener("dragover", (e) => {
             e.preventDefault();
             el.style.borderColor = "#8cf";
@@ -574,14 +581,17 @@ export class Equipment {
 
     static async getWeaponSets(actor: any): Promise<WeaponSetsData> {
         const stored = actor.getFlag("fftweaks", WEAPON_FLAG);
-        if (stored) return stored as WeaponSetsData;
-        return JSON.parse(JSON.stringify(DEFAULT_WEAPONS));
+        const data = stored ? (stored as WeaponSetsData) : JSON.parse(JSON.stringify(DEFAULT_WEAPONS));
+        const changed = this._normalizeWeaponSetsData(data);
+        if (changed) await actor.setFlag("fftweaks", WEAPON_FLAG, data);
+        return data;
     }
 
     static async setActiveSet(actor: any, index: number) {
-        if (index < 0 || index > 2) return;
         const data = await this.getWeaponSets(actor);
+        if (index < 0 || index >= data.sets.length) return;
         data.activeSet = index;
+        this._normalizeWeaponSetsData(data);
         await actor.setFlag("fftweaks", WEAPON_FLAG, data);
         await this._equipActiveWeaponSet(actor, data);
         await this._fireHook(actor, data);
@@ -590,7 +600,9 @@ export class Equipment {
 
     static async setWeaponSlot(actor: any, setIndex: number, slot: "primary" | "secondary", itemUuid: string) {
         const data = await this.getWeaponSets(actor);
+        if (!data.sets[setIndex]) return;
         data.sets[setIndex][slot] = itemUuid;
+        this._normalizeWeaponSetsData(data);
         await actor.setFlag("fftweaks", WEAPON_FLAG, data);
         if (setIndex === data.activeSet) {
             await this._equipActiveWeaponSet(actor, data);
@@ -610,8 +622,10 @@ export class Equipment {
         const data = await this.getWeaponSets(actor);
         const sourceValue = data.sets[sourceSetIndex]?.[sourceSlot] ?? null;
         const targetValue = data.sets[targetSetIndex]?.[targetSlot] ?? null;
+        if (!data.sets[sourceSetIndex] || !data.sets[targetSetIndex]) return;
         data.sets[targetSetIndex][targetSlot] = sourceValue;
         data.sets[sourceSetIndex][sourceSlot] = targetValue;
+        this._normalizeWeaponSetsData(data);
         await actor.setFlag("fftweaks", WEAPON_FLAG, data);
 
         if (data.activeSet === sourceSetIndex || data.activeSet === targetSetIndex) {
@@ -624,8 +638,10 @@ export class Equipment {
 
     static async clearWeaponSlot(actor: any, setIndex: number, slot: "primary" | "secondary") {
         const data = await this.getWeaponSets(actor);
+        if (!data.sets[setIndex]) return;
         const oldUuid = data.sets[setIndex][slot];
         data.sets[setIndex][slot] = null;
+        this._normalizeWeaponSetsData(data);
         await actor.setFlag("fftweaks", WEAPON_FLAG, data);
         if (setIndex === data.activeSet && oldUuid) {
             const item = actor.items.find((i: any) => i.uuid === oldUuid);
@@ -704,11 +720,7 @@ export class Equipment {
         if (!item) return;
 
         if (item.type === "weapon") {
-            const sets = await this.getWeaponSets(actor);
-            const active = sets.activeSet;
-            const set = sets.sets[active];
-            const slot: "primary" | "secondary" = !set.primary ? "primary" : (!set.secondary ? "secondary" : "primary");
-            await this.setWeaponSlot(actor, active, slot, item.uuid);
+            await this.quickEquipWeaponItem(actor, item);
             return;
         }
 
@@ -730,11 +742,7 @@ export class Equipment {
                 return;
             }
             if (category === "weapons") {
-                const sets = await this.getWeaponSets(actor);
-                const active = sets.activeSet;
-                const set = sets.sets[active];
-                const slot: "primary" | "secondary" = !set.secondary ? "secondary" : (!set.primary ? "primary" : "secondary");
-                await this.setWeaponSlot(actor, active, slot, item.uuid);
+                await this.quickEquipWeaponItem(actor, item);
                 return;
             }
         }
@@ -746,6 +754,137 @@ export class Equipment {
         }
 
         ui.notifications?.warn("This item cannot be equipped.");
+    }
+
+    private static _isEmptyWeaponSet(set: WeaponSlot | undefined): boolean {
+        if (!set) return true;
+        return !set.primary && !set.secondary;
+    }
+
+    private static _normalizeWeaponSetsData(data: WeaponSetsData): boolean {
+        let changed = false;
+
+        if (!Array.isArray(data.sets)) {
+            data.sets = [];
+            changed = true;
+        }
+
+        data.sets = data.sets.map((set) => ({
+            primary: set?.primary ?? null,
+            secondary: set?.secondary ?? null
+        }));
+
+        if (data.sets.length === 0) {
+            data.sets.push({ primary: null, secondary: null });
+            changed = true;
+        }
+
+        while (
+            data.sets.length > 1
+            && this._isEmptyWeaponSet(data.sets[data.sets.length - 1])
+            && this._isEmptyWeaponSet(data.sets[data.sets.length - 2])
+        ) {
+            data.sets.pop();
+            changed = true;
+        }
+
+        if (!this._isEmptyWeaponSet(data.sets[data.sets.length - 1])) {
+            data.sets.push({ primary: null, secondary: null });
+            changed = true;
+        }
+
+        const maxIndex = data.sets.length - 1;
+        if (!Number.isInteger(data.activeSet)) {
+            data.activeSet = 0;
+            changed = true;
+        }
+        if (data.activeSet < 0) {
+            data.activeSet = 0;
+            changed = true;
+        }
+        if (data.activeSet > maxIndex) {
+            data.activeSet = maxIndex;
+            changed = true;
+        }
+
+        return changed;
+    }
+
+    private static _isTwoHandedWeaponItem(item: any): boolean {
+        const props = item?.system?.properties;
+        if (!props) return false;
+        if (Array.isArray(props)) return props.includes("two");
+        if (props instanceof Set) return props.has("two");
+        if (Array.isArray(props?.value)) return props.value.includes("two");
+        if (typeof props === "object") return props.two === true;
+        return false;
+    }
+
+    private static _getWeaponHandOptions(item: any): { canMain: boolean; canOff: boolean; offOnly: boolean } {
+        if (!item) return { canMain: false, canOff: false, offOnly: false };
+
+        if (item.type === "equipment") {
+            const subtype = String(item.system?.type?.value ?? item.system?.armor?.type ?? "").toLowerCase();
+            if (subtype === "shield") return { canMain: false, canOff: true, offOnly: true };
+            return { canMain: true, canOff: true, offOnly: false };
+        }
+
+        if (item.type === "weapon") {
+            const twoHanded = this._isTwoHandedWeaponItem(item);
+            return { canMain: true, canOff: !twoHanded, offOnly: false };
+        }
+
+        return { canMain: false, canOff: false, offOnly: false };
+    }
+
+    private static async quickEquipWeaponItem(actor: any, item: any) {
+        const data = await this.getWeaponSets(actor);
+        const hand = this._getWeaponHandOptions(item);
+
+        let targetSet = -1;
+        let targetSlot: "primary" | "secondary" | null = null;
+
+        for (let i = 0; i < data.sets.length; i++) {
+            const set = data.sets[i];
+            const mainItem = set.primary ? actor.items.find((it: any) => it.uuid === set.primary) : null;
+            const mainTwoHanded = mainItem ? this._isTwoHandedWeaponItem(mainItem) : false;
+
+            if (hand.canMain && !set.primary) {
+                targetSet = i;
+                targetSlot = "primary";
+                break;
+            }
+
+            if (hand.canOff && !set.secondary && (!mainTwoHanded || hand.offOnly)) {
+                targetSet = i;
+                targetSlot = "secondary";
+                break;
+            }
+        }
+
+        if (targetSet < 0 || !targetSlot) {
+            data.sets.push({ primary: null, secondary: null });
+            this._normalizeWeaponSetsData(data);
+            targetSet = data.sets.length - 1;
+            if (hand.canMain) targetSlot = "primary";
+            else if (hand.canOff) targetSlot = "secondary";
+        }
+
+        if (targetSet < 0 || !targetSlot) {
+            ui.notifications?.warn("This weapon cannot be equipped in available hand slots.");
+            return;
+        }
+
+        data.sets[targetSet][targetSlot] = item.uuid;
+        this._normalizeWeaponSetsData(data);
+        await actor.setFlag("fftweaks", WEAPON_FLAG, data);
+
+        if (targetSet === data.activeSet) {
+            await this._equipActiveWeaponSet(actor, data);
+            await this._fireHook(actor, data);
+        }
+
+        this.refresh();
     }
 
     private static removeContextMenu() {
@@ -797,8 +936,16 @@ export class Equipment {
             menu.appendChild(btn);
         };
 
-        addAction("Equip", async () => {
+        const weaponLike = item.type === "weapon" || getInventoryCategory(item) === "weapons";
+        const isEquipped = !!item.system?.equipped;
+        const equipLabel = (!weaponLike && isEquipped) ? "Unequip" : "Equip";
+
+        addAction(equipLabel, async () => {
             if (!this._actor) return;
+            if (!weaponLike && isEquipped) {
+                await this.unequipItemWithinPanel(this._actor, item.uuid);
+                return;
+            }
             await this.quickEquipItem(this._actor, item);
         });
 
@@ -816,6 +963,11 @@ export class Equipment {
                 return;
             }
             ui.notifications?.warn("This item has no use action.");
+        });
+
+        addAction("Delete Item", async () => {
+            await item.delete();
+            this.refresh();
         });
 
         document.body.appendChild(menu);
@@ -861,6 +1013,7 @@ export class Equipment {
             }
         }
         if (weaponDataChanged) {
+            this._normalizeWeaponSetsData(weaponData);
             await actor.setFlag("fftweaks", WEAPON_FLAG, weaponData);
             await this._equipActiveWeaponSet(actor, weaponData);
             await this._fireHook(actor, weaponData);
@@ -890,7 +1043,8 @@ export class Equipment {
 
         // --- Refresh weapon sets ---
         const wData = await this.getWeaponSets(this._actor);
-        for (let i = 0; i < 3; i++) {
+        this._syncWeaponSetRows(wData);
+        for (let i = 0; i < wData.sets.length; i++) {
             const row = this.form.querySelector(`.fft-weapon-row[data-set-index="${i}"]`) as HTMLElement;
             if (!row) continue;
             const isActive = wData.activeSet === i;
@@ -920,6 +1074,17 @@ export class Equipment {
 
         // --- Refresh inventory ---
         this._refreshInventory();
+    }
+
+    private static _syncWeaponSetRows(data: WeaponSetsData) {
+        const rows = this.form.querySelector("#fft-equip-weapon-rows") as HTMLElement | null;
+        if (!rows) return;
+        if (rows.children.length === data.sets.length) return;
+
+        rows.innerHTML = "";
+        for (let i = 0; i < data.sets.length; i++) {
+            rows.appendChild(this.createWeaponRow(i));
+        }
     }
 
     private static _renderSlotContent(slotEl: HTMLElement, uuid: string | null, placeholderIcon: string) {
