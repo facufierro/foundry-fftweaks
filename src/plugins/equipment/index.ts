@@ -937,17 +937,20 @@ export class Equipment {
         };
 
         const weaponLike = item.type === "weapon" || getInventoryCategory(item) === "weapons";
+        const isConsumable = item.type === "consumable" || getInventoryCategory(item) === "consumables";
         const isEquipped = !!item.system?.equipped;
         const equipLabel = (!weaponLike && isEquipped) ? "Unequip" : "Equip";
 
-        addAction(equipLabel, async () => {
-            if (!this._actor) return;
-            if (!weaponLike && isEquipped) {
-                await this.unequipItemWithinPanel(this._actor, item.uuid);
-                return;
-            }
-            await this.quickEquipItem(this._actor, item);
-        });
+        if (!isConsumable) {
+            addAction(equipLabel, async () => {
+                if (!this._actor) return;
+                if (!weaponLike && isEquipped) {
+                    await this.unequipItemWithinPanel(this._actor, item.uuid);
+                    return;
+                }
+                await this.quickEquipItem(this._actor, item);
+            });
+        }
 
         addAction("Show Item", () => {
             item.sheet?.render(true);
