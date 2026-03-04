@@ -238,10 +238,10 @@ export class Equipment {
         let posX = "200px";
         let posY = "200px";
         try {
-            const savedX = globalThis.localStorage?.getItem(this._posXKey);
-            const savedY = globalThis.localStorage?.getItem(this._posYKey);
-            if (savedX) posX = savedX;
-            if (savedY) posY = savedY;
+            const savedX = globalThis.localStorage?.getItem(Equipment._posXKey);
+            const savedY = globalThis.localStorage?.getItem(Equipment._posYKey);
+            if (savedX && /px$/.test(savedX)) posX = savedX;
+            if (savedY && /px$/.test(savedY)) posY = savedY;
         } catch {
             // ignore storage failures
         }
